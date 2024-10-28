@@ -4,12 +4,12 @@
 #' @param graph The graph object. This should be the appropriate object type needed for the `func.name` specified.
 #' @param package.name A character string of the name of the package the `func.name` function is in. If left as `NULL` if the function will be called as loaded in the users environment.
 #' @param func.args A list of additional arguments the `func.name` function may need beyond the `graph` object.
-#' @returns A numeric vector of the centrality statitic as calculated by `func.name`.
+#' @returns A numeric vector of the centrality statistic as calculated by `func.name`.
 #' @examples
 #' #COME BACK TO THESE EXAMPLES ONCE DATA IS WRITTEN
 #' #get_centrality("closeness", paul.igraph, package.name = "igraph, func.args = list(normalized = T))
 #' #get_centrality("degree", paul.igraph, package.name = "igraph, func.args = list(normalized = T))
-#'
+#' @export
 
 get_centrality <- function(func.name,
                            graph,
