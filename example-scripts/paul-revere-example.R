@@ -25,5 +25,17 @@ paul.igraph <- graph_from_adjacency_matrix(
   diag=FALSE)
 
 
-###
+### Testing get_centrality --------------------
+test <- get_centrality(
+  func.name ="closeness",
+  graph = paul.igraph,
+  package.name = "igraph",
+  func.args = list(normalized = T))
+test
 
+test <-  get_centrality(
+    func.name ="eigen_centrality",
+    graph = paul.igraph,
+    package.name = "igraph",
+    func.args = NULL)
+test

@@ -22,6 +22,15 @@ pkgdown::build_site()
 Do not use `usethis::use_pkgdown_github_pages()`. We do not want their defaults so we will do it manually.
 
 
+2.1 Some small checks 
+
+- Make sure "^docs$" is **IN** the .Rbuildignore
+
+- Make sure "docs/" is **NOT IN** .gitignore
+
+- Add "destination: docs" to line 2 of _pkgdown.yml in main directory. 
+
+
 DO NOT PUSH TO GITHUB YET
 
 3. Open repo on Github.com. Go to Settings> Pages > Build and Deployment. Under Branch, choose "main" then "/docs"
