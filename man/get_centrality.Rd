@@ -16,7 +16,7 @@ get_centrality(func.name, graph, package.name = NULL, func.args = NULL)
 \item{func.args}{A list of additional arguments the `func.name` function may need beyond the `graph` object.}
 }
 \value{
-A numeric vector of the centrality statitic as calculated by `func.name`.
+A numeric vector of the centrality statistic as calculated by `func.name`.
 }
 \description{
 Calculate give centrality statistic on a network
@@ -25,5 +25,4 @@ Calculate give centrality statistic on a network
 #COME BACK TO THESE EXAMPLES ONCE DATA IS WRITTEN
 #get_centrality("closeness", paul.igraph, package.name = "igraph, func.args = list(normalized = T))
 #get_centrality("degree", paul.igraph, package.name = "igraph, func.args = list(normalized = T))
-
 }

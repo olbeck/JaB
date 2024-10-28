@@ -13,6 +13,12 @@
     <loc>/index.html</loc>
   </url>
   <url>
+    <loc>/reference/ASE.html</loc>
+  </url>
+  <url>
+    <loc>/reference/bootstrap_latent_space.html</loc>
+  </url>
+  <url>
     <loc>/reference/get_centrality.html</loc>
   </url>
   <url>
@@ -20,5 +26,8 @@
   </url>
   <url>
     <loc>/reference/index.html</loc>
+  </url>
+  <url>
+    <loc>/reference/pipe.html</loc>
   </url>
 </urlset>

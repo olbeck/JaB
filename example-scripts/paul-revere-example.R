@@ -39,3 +39,10 @@ test <-  get_centrality(
     package.name = "igraph",
     func.args = NULL)
 test
+
+
+## Testing Latent space bootstrap ---------------------
+Z <- ASE(paul.igraph, 2)
+test<-bootstrap_latent_space(paul.igraph, d=2, B=10, output.type = "matrix")
+test
+
