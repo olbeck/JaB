@@ -1,11 +1,17 @@
 Package: JaB
 Type: Package
-Title: R Package for Jackknife-after-Bootstrap algorithm for network data.
+Title: R Package for Jackknife-after-Bootstrap algorithm for network data
 Version: 0.1.0
 Author: Olivia Beck
 Maintainer: Olivia Beck <olb5053@psu.edu>
-Description: Run the Jackknife-after-Bootstrap algroithm for network data with many centrality statitics and bootstraping options.
+Description: Run the Jackknife-after-Bootstrap algroithm for network data with many centrality statitics and bootstraping options. Currently in the development stages.
 License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.2.3
+BugReports: https://github.com/olbeck/JaB/issues
+URL: https://olbeck.github.io/JaB/, https://github.com/olbeck/JaB
+Imports:
+    dplyr,
+    igraph,
+    snowboot
