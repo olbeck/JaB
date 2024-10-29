@@ -38,7 +38,8 @@ ASE <- function(graph, d){
 #' The default is `igraph` which will make bootstrap samples of class "igraph". Note that for large \eqn{B}, this may not be an efficient use of storage space.
 #' Other options include `matrix` which will return bootstrap samples as an \eqn{n}-by-\eqn{n} adjacency matrix,
 #' `sparsematrix` which will return scarce matrices (package `Matrix` must be loaded).
-#' @returns A list of length \eqn{B} where each element is an bootstrap sample as an igraph object.
+#' @returns A list of length \eqn{B} where each element is an bootstrap sample.
+#' Each element is of class `output.type`.
 #' @examples
 #' # bootstrap_latent_space(paul.igraph, d=2, B=10, output.type = "matrix")
 #'

@@ -19,7 +19,8 @@ Other options include `matrix` which will return bootstrap samples as an \eqn{n}
 `sparsematrix` which will return scarce matrices (package `Matrix` must be loaded).}
 }
 \value{
-A list of length \eqn{B} where each element is an bootstrap sample as an igraph object.
+A list of length \eqn{B} where each element is an bootstrap sample.
+Each element is of class `output.type`.
 }
 \description{
 Add explanation of how latent space bootstrap works

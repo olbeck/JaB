@@ -17,5 +17,6 @@ Imports:
     magrittr,
     snowboot
 Suggests: 
-    Matrix
+    Matrix,
+    spelling
 Language: en-US

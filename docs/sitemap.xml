@@ -19,6 +19,9 @@
     <loc>/reference/bootstrap_latent_space.html</loc>
   </url>
   <url>
+    <loc>/reference/bootstrap_snowboot.html</loc>
+  </url>
+  <url>
     <loc>/reference/get_centrality.html</loc>
   </url>
   <url>
@@ -29,5 +32,8 @@
   </url>
   <url>
     <loc>/reference/pipe.html</loc>
+  </url>
+  <url>
+    <loc>/reference/sample_about_one_seed_modified.html</loc>
   </url>
 </urlset>

@@ -46,3 +46,21 @@ Z <- ASE(paul.igraph, 2)
 test<-bootstrap_latent_space(paul.igraph, d=2, B=10, output.type = "matrix")
 test
 
+
+
+### Karate example for snowboot -------------------------
+library(igraphdata)
+data(karate)
+karate
+graph <- karate
+num.seed = 2
+num.wave = 2
+seeds = NULL
+
+bootstrap_snowboot(
+  karate, B = 10,
+  num.seed = 1, num.wave = 3,
+  seeds = NULL,
+  output.type = "edgelist")
+
+
