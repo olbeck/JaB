@@ -1,12 +1,14 @@
 ASE
 LSMI
-LSMIs
 Levin
 Levina
+SNOWBOOT
 Sussman
+VERTEXT
 al
 algroithm
 betweenness
+dgCMatrix
 edgelist
 et
 func
@@ -14,7 +16,5 @@ igraph
 interpretability
 lsmi
 magrittr
-pre
 snowboot
-sparsematrix
-undirected
+vertboot

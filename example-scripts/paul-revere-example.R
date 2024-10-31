@@ -27,32 +27,43 @@ paul.igraph <- graph_from_adjacency_matrix(
 
 ### Testing get_centrality --------------------
 test <- get_centrality(
+  network = paul.igraph,
   func.name ="closeness",
-  graph = paul.igraph,
   package.name = "igraph",
   func.args = list(normalized = T))
 test
 
 test <-  get_centrality(
     func.name ="eigen_centrality",
-    graph = paul.igraph,
+    network = paul.igraph,
     package.name = "igraph",
     func.args = NULL)
 test
 
 
+
+
 ## Testing Latent space bootstrap ---------------------
 Z <- ASE(paul.igraph, 2)
-test<-
-  bootstrap_latent_space(paul.igraph, d=2, B=10,
-                         output.type = "sparsematrix")
+
 test
 
+
+test<-
+  bootstrap_latent_space(paul.igraph, d=2, B=10,
+                         output.type = "matrix")
+test[[1]]
+input.type <- detect_type(test)
+make_network_type(test, input.type, "igraph")
+
+
 get_bootstrap_centrality(test,
-                         "sparsematrix",
                          "degree",
                          package.name = NULL,
                          func.args = NULL)
+
+
+
 
 
 
@@ -60,15 +71,42 @@ get_bootstrap_centrality(test,
 library(igraphdata)
 data(karate)
 karate
-graph <- karate
+network <- karate
+B=5
 num.seed = 2
 num.wave = 2
 seeds = NULL
 
-bootstrap_snowboot(
-  karate, B = 10,
-  num.seed = 1, num.wave = 3,
-  seeds = NULL,
-  output.type = "edgelist")
+test <- bootstrap_snowboot(
+  karate, B = 1000,
+  num.seed = 1, num.wave = 2,
+  output.type = "matrix")
+lapply(test,dim)
+
+boot_result <- test
+
+test[[1]]
+JaB:::detect_type(boot_result)
+
+make_network_type(test, JaB:::detect_type(test), "igraph")
 
 
+test <- bootstrap_vertex(karate, output.type = "edgelist")
+test[[1]]
+
+###
+test <- bootstrap_snowboot(
+  karate, B = 100,
+  num.seed = 1, num.wave = 1,
+  output.type = "matrix")
+
+network <- karate
+boot.result <- test
+quants <- c(0, 0.9)
+func.name = "degree"
+package.name = NULL
+func.args = NULL
+
+central_result <- get_bootstrap_centrality(boot_result, "igraph", "degree")
+
+get_jackknife_after(karate, test, c(0, 0.9), "closeness")

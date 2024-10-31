@@ -38,7 +38,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>Calculate give centrality statistic on a network</h1>
-      <small class="dont-index">Source: <a href="https://github.com/olbeck/JaB/blob/HEAD/R/get_centrality.R" class="external-link"><code>R/get_centrality.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/olbeck/JaB/blob/HEAD/R/get-centrality.R" class="external-link"><code>R/get-centrality.R</code></a></small>
       <div class="d-none name"><code>get_centrality.Rd</code></div>
     </div>
 
@@ -48,17 +48,17 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_centrality</span><span class="op">(</span><span class="va">func.name</span>, <span class="va">graph</span>, package.name <span class="op">=</span> <span class="cn">NULL</span>, func.args <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_centrality</span><span class="op">(</span><span class="va">network</span>, <span class="va">func.name</span>, package.name <span class="op">=</span> <span class="cn">NULL</span>, func.args <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
-    <dl><dt>func.name</dt>
+    <dl><dt>network</dt>
+<dd><p>The network object. This should be the appropriate object type needed for the `func.name` specified.</p></dd>
+
+
+<dt>func.name</dt>
 <dd><p>A character string of the function name used to calculate the desired centrality statistic.</p></dd>
-
-
-<dt>graph</dt>
-<dd><p>The graph object. This should be the appropriate object type needed for the `func.name` specified.</p></dd>
 
 
 <dt>package.name</dt>
@@ -66,7 +66,7 @@
 
 
 <dt>func.args</dt>
-<dd><p>A list of additional arguments the `func.name` function may need beyond the `graph` object.</p></dd>
+<dd><p>A list of additional arguments the `func.name` function may need beyond the `network` object.</p></dd>
 
 </dl></div>
     <div class="section level2">

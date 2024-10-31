@@ -4,10 +4,10 @@
 \alias{bootstrap_latent_space}
 \title{Latent Space Bootstrap}
 \usage{
-bootstrap_latent_space(graph, d = 2, B = 1000, output.type = "igraph")
+bootstrap_latent_space(network, d = 2, B = 1000, output.type = "igraph")
 }
 \arguments{
-\item{graph}{An igraph object with $n$ nodes.}
+\item{network}{An igraph object with \eqn{n} nodes.}
 
 \item{d}{Dimension of latent space. Recommended only 2 or 3 to maintain interpretability.}
 
@@ -16,7 +16,7 @@ bootstrap_latent_space(graph, d = 2, B = 1000, output.type = "igraph")
 \item{output.type}{The class of object the resulting bootstrap networks should be.
 The default is `igraph` which will make bootstrap samples of class "igraph". Note that for large \eqn{B}, this may not be an efficient use of storage space.
 Other options include `matrix` which will return bootstrap samples as an \eqn{n}-by-\eqn{n} adjacency matrix,
-`sparsematrix` which will return scarce matrices (package `Matrix` must be loaded).}
+`dgCMatrix` which will return scarce matrices (package `Matrix` must be loaded).}
 }
 \value{
 A list of length \eqn{B} where each element is an bootstrap sample.

@@ -5,16 +5,15 @@
 \title{Snowball Sampling (Labeled Snowball with multiple inclusions)}
 \usage{
 bootstrap_snowboot(
-  graph,
+  network,
   B,
   num.seed = NA,
   num.wave = NA,
-  seeds = NULL,
   output.type = "igraph"
 )
 }
 \arguments{
-\item{graph}{An igraph object with \eqn{n} nodes.}
+\item{network}{An igraph object with \eqn{n} nodes.}
 
 \item{B}{Number of bootstrap samples}
 
@@ -22,13 +21,11 @@ bootstrap_snowboot(
 
 \item{num.wave}{Number of waves to be included each the snowball sample}
 
-\item{seeds}{A vector of numeric IDs of pre-specified seeds. If specified, LSMIs are constructed around each such seed and `n.seed` is ignored.}
-
 \item{output.type}{The class of object the resulting bootstrap networks should be.
 The default is `igraph` which will make bootstrap samples of class "igraph". Note that for large \eqn{B}, this may not be an efficient use of storage space.
 Other options include `edgelist` which returns an edge list for each bootstrap sample,
  `matrix` which returns bootstrap samples as an \eqn{n}-by-\eqn{n} adjacency matrix,
-`sparsematrix` which returns sparse matrices (package `Matrix` must be loaded).}
+`dgCMatrix` which returns sparse matrices (package `Matrix` must be loaded).}
 }
 \value{
 A list of length \eqn{B} where each element is an bootstrap sample.

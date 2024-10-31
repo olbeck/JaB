@@ -48,12 +48,12 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ASE</span><span class="op">(</span><span class="va">graph</span>, <span class="va">d</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ASE</span><span class="op">(</span><span class="va">network</span>, <span class="va">d</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
-    <dl><dt>graph</dt>
+    <dl><dt>network</dt>
 <dd><p>An igraph object with \(n\) nodes.</p></dd>
 
 
@@ -66,7 +66,7 @@
     
 
 <p>An \(n\)-by-\(d\) matrix where the \(i^{th}\) row of the matrix corresponds to node \(i\)'s position in the \(d\)-dimensional latent space.
-Bootstrap samples will retain vertex names of the input `graph` but will loose all other vertex and edge attributes.</p>
+Bootstrap samples will retain vertex names of the input `network` but will loose all other vertex and edge attributes.</p>
     </div>
 
     <div class="section level2">

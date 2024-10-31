@@ -6,22 +6,22 @@
 \usage{
 get_bootstrap_centrality(
   boot.result,
-  obj.type,
   func.name,
   package.name = NULL,
-  func.args = NULL
+  func.args = NULL,
+  obj.type = NULL
 )
 }
 \arguments{
 \item{boot.result}{A list of bootstrap samples, where each sample represents a graph in a specified format (e.g., adjacency matrix, edgelist). This is output from the `bootstrap_` function.}
-
-\item{obj.type}{A character string specifying the type of `obj` in each bootstrap sample. Options include `"igraph"`, `"matrix"`, `"sparsematrix"`, or `"edgelist"`. This is the `output.type` of the `bootstrap_` function.}
 
 \item{func.name}{A character string specifying the centrality function to apply (e.g., `"degree"`, `"betweenness"`). See \code{\link{get_centrality}} for details.}
 
 \item{package.name}{An optional character string indicating the package name containing the centrality function. Defaults to `NULL` (assuming `func.name` is available). See \code{\link{get_centrality}} for details.}
 
 \item{func.args}{An optional list of additional arguments to pass to the centrality function. Defaults to `NULL`. See \code{\link{get_centrality}} for details.}
+
+\item{obj.type}{A character string specifying the type of `obj` in each bootstrap sample. Options include `"igraph"`, `"matrix"`, `"dgCMatrix"`, or `"edgelist"`. This is the `output.type` of the `bootstrap_` function.}
 }
 \value{
 A list of length `B`, where each element is the bootstrap centrality statistic result from applying the specified centrality statistic function.
@@ -38,5 +38,5 @@ Calculates bootstrap centrality statistics from give bootstrap samples and a spe
 
 }
 \seealso{
-\code{\link{make_igraph}}, \code{\link{get_centrality}}
+\code{\link{make_network_type}}, \code{\link{get_centrality}}
 }

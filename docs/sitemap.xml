@@ -22,10 +22,22 @@
     <loc>/reference/bootstrap_snowboot.html</loc>
   </url>
   <url>
+    <loc>/reference/bootstrap_vertex.html</loc>
+  </url>
+  <url>
+    <loc>/reference/detect_type.html</loc>
+  </url>
+  <url>
     <loc>/reference/get_bootstrap_centrality.html</loc>
   </url>
   <url>
     <loc>/reference/get_centrality.html</loc>
+  </url>
+  <url>
+    <loc>/reference/get_jackknife_after.html</loc>
+  </url>
+  <url>
+    <loc>/reference/get_nodes.html</loc>
   </url>
   <url>
     <loc>/reference/hello.html</loc>
@@ -35,6 +47,9 @@
   </url>
   <url>
     <loc>/reference/make_igraph.html</loc>
+  </url>
+  <url>
+    <loc>/reference/make_network_type.html</loc>
   </url>
   <url>
     <loc>/reference/pipe.html</loc>

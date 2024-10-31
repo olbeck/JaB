@@ -50,10 +50,10 @@
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_bootstrap_centrality</span><span class="op">(</span></span>
 <span>  <span class="va">boot.result</span>,</span>
-<span>  <span class="va">obj.type</span>,</span>
 <span>  <span class="va">func.name</span>,</span>
 <span>  package.name <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  func.args <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  func.args <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  obj.type <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -61,10 +61,6 @@
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>boot.result</dt>
 <dd><p>A list of bootstrap samples, where each sample represents a graph in a specified format (e.g., adjacency matrix, edgelist). This is output from the `bootstrap_` function.</p></dd>
-
-
-<dt>obj.type</dt>
-<dd><p>A character string specifying the type of `obj` in each bootstrap sample. Options include `"igraph"`, `"matrix"`, `"sparsematrix"`, or `"edgelist"`. This is the `output.type` of the `bootstrap_` function.</p></dd>
 
 
 <dt>func.name</dt>
@@ -77,6 +73,10 @@
 
 <dt>func.args</dt>
 <dd><p>An optional list of additional arguments to pass to the centrality function. Defaults to `NULL`. See <code><a href="get_centrality.html">get_centrality</a></code> for details.</p></dd>
+
+
+<dt>obj.type</dt>
+<dd><p>A character string specifying the type of `obj` in each bootstrap sample. Options include `"igraph"`, `"matrix"`, `"dgCMatrix"`, or `"edgelist"`. This is the `output.type` of the `bootstrap_` function.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -91,7 +91,7 @@
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="make_igraph.html">make_igraph</a></code>, <code><a href="get_centrality.html">get_centrality</a></code></p></div>
+    <div class="dont-index"><p><code><a href="make_network_type.html">make_network_type</a></code>, <code><a href="get_centrality.html">get_centrality</a></code></p></div>
     </div>
 
     <div class="section level2">

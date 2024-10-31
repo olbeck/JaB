@@ -15,8 +15,8 @@ Imports:
     dplyr,
     igraph,
     magrittr,
+    Matrix,
     snowboot
 Suggests: 
-    Matrix,
     spelling
 Language: en-US
