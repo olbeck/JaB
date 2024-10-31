@@ -25,9 +25,8 @@ sample_about_one_seed_modified <- function (net, seed, n.wave = 1) {
     tmp <- is.element(effEdges, nodes.waves[[wave]])
     if (any(tmp)) {
       tmp <- which(matrix(tmp, dim(effEdges)[1], 2), arr.ind = TRUE)
-      nodes.waves[[wave + 1]] <- sort(effEdges[cbind(tmp[,
-                                                         1], sapply(tmp[, 2], FUN = switch, 2, 1))])
-      keepEdges[[wave]] <- as.data.frame(effEdges[tmp[,1],])
+      nodes.waves[[wave + 1]] <- sort(effEdges[cbind(tmp[,1], sapply(tmp[, 2], FUN = switch, 2, 1))])
+      keepEdges[[wave]] <- matrix(effEdges[tmp[,1],], ncol = 2)
       effEdges <- effEdges[-tmp[, 1], ]
       if (is.vector(effEdges)) {
         effEdges <- t(effEdges)
@@ -35,7 +34,8 @@ sample_about_one_seed_modified <- function (net, seed, n.wave = 1) {
     }
     wave <- wave + 1
   }
-  return(keepEdges)
+
+  return( lapply(keepEdges, as.data.frame))
 }
 
 
@@ -48,71 +48,41 @@ sample_about_one_seed_modified <- function (net, seed, n.wave = 1) {
 #' This function uses the node names, not node IDs,
 #' and it returns the edge list of the bootstrap sample, not the nodes included
 #'
-#' @param graph An igraph object with \eqn{n} nodes.
+#' @param network An igraph object with \eqn{n} nodes.
 #' @param num.seed Number of seeds to be included each the snowball sample
 #' @param num.wave Number of waves to be included each the snowball sample
 #' @param B Number of bootstrap samples
-#' @param seeds A vector of numeric IDs of pre-specified seeds. If specified, LSMIs are constructed around each such seed and `n.seed` is ignored.
 #' @param output.type The class of object the resulting bootstrap networks should be.
 #' The default is `igraph` which will make bootstrap samples of class "igraph". Note that for large \eqn{B}, this may not be an efficient use of storage space.
 #' Other options include `edgelist` which returns an edge list for each bootstrap sample,
 #'  `matrix` which returns bootstrap samples as an \eqn{n}-by-\eqn{n} adjacency matrix,
-#' `sparsematrix` which returns sparse matrices (package `Matrix` must be loaded).
+#' `dgCMatrix` which returns sparse matrices (package `Matrix` must be loaded).
 #' @returns A list of length \eqn{B} where each element is an bootstrap sample.
 #' Each element is of class `output.type`.
 #' @examples
 #' #ADD EXAMPLE ONCE DATA IS ADDED
+#' @export
 
-bootstrap_snowboot <- function(graph, B,
+bootstrap_snowboot <- function(network, B,
                                num.seed = NA, num.wave = NA,
-                               seeds = NULL,
                                output.type = "igraph"){
 
-  net <- snowboot::igraph_to_network(graph)
+  net <- snowboot::igraph_to_network(network)
 
-  names <- igraph::V(graph)$name
-  if(is.null(names)){
-    net[["name"]] <- 1:net$n
-  }else{
-    net[["name"]]<- igraph::V(graph)$name
-    }
-
-
+  net[["names"]] <- get_nodes(network)
   ### modified code from snoboot::lsmi and snowboot::sample_about_one_seed
   ### Added use of names in network object and new output types
 
   boot_edge_lists <- vector(mode = "list", length = B)
   for(b in 1:B){
     #get sample (using node names)
-    if (is.null(seeds)) {
-      seeds <- net$name[sort(sample(1:net$n, num.seed, replace = FALSE))]
-    }else {
-      seeds <- sort(unique(seeds))
-    }
+    sample_seeds <- net$name[sort(sample(1:net$n, num.seed, replace = FALSE))]
     #get resulting lsmi sample as an edge list
-    edge_list <- lapply(seeds, function(x) sample_about_one_seed_modified(net, x, num.wave))
+    edge_list <- lapply(sample_seeds, function(x) JaB:::sample_about_one_seed_modified(net, x, num.wave))
     #combine into one edge list
-    boot_edge_lists[[b]] <- dplyr::distinct(dplyr::bind_rows(lapply(edge_list, dplyr::bind_rows)))
+    boot_edge_lists[[b]] <- as.matrix(dplyr::distinct(dplyr::bind_rows(lapply(edge_list, dplyr::bind_rows))))
   }
 
-
-  if(output.type == "edgelist"){
-    return(boot_edge_lists)
-  }else if(output.type %in% c("igraph", "matrix", "sparsematrix")){
-    ret_graphs <- lapply(boot_edge_lists, function(x){igraph::graph_from_edgelist(as.matrix(x), directed = FALSE)})
-    if(output.type == "igraph"){
-      return(ret_graphs)
-    }else if(output.type == "matrix"){
-      return(
-        lapply(ret_graphs,
-               function(x){igraph::as_adjacency_matrix(x, type = "both", sparse = F)}))
-    }else if(output.type == "sparsematrix"){
-      return(
-        lapply(ret_graphs,
-               function(x){igraph::as_adjacency_matrix(x, type = "both", sparse = T)}))
-    }
-
-  }
-
-
+  ret <- try(make_network_type(boot_edge_lists, "edgelist", output.type))
+  return(ret)
 }
