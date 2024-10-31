@@ -43,8 +43,16 @@ test
 
 ## Testing Latent space bootstrap ---------------------
 Z <- ASE(paul.igraph, 2)
-test<-bootstrap_latent_space(paul.igraph, d=2, B=10, output.type = "matrix")
+test<-
+  bootstrap_latent_space(paul.igraph, d=2, B=10,
+                         output.type = "sparsematrix")
 test
+
+get_bootstrap_centrality(test,
+                         "sparsematrix",
+                         "degree",
+                         package.name = NULL,
+                         func.args = NULL)
 
 
 
