@@ -57,20 +57,111 @@ This is for internal use for network types in the JaB package</p>
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>network</dt>
-<dd><p>A network object with \(n\), which may be of types <code>matrix</code>, <code>dgCMatrix</code> <code>edgelist</code>, or <code>igraph</code>).</p></dd>
+<dd><p>A network object with \(n\) nodes. Network can be represented as a <code>matrix</code>, <code>dgCMatrix</code> <code>edgelist</code>, or <code>igraph</code>). See <code><a href="make_network_type.html">make_network_type</a></code> for details.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>A vector of node names. If node names are not assigned, it returns a sequence of integers from 1 to the number of nodes.</p>
+<p>A vector of node names. If node names are not assigned, it returns a sequence of integers from 1 to \(n\).</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="detect_type.html">detect_type</a></code>, <code><a href="make_network_type.html">make_network_type</a></code></p></div>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">paul.revere</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">get_nodes</span><span class="op">(</span><span class="va">paul.revere</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [1] "Adams.John"            "Adams.Samuel"          "Allen.Dr"             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [4] "Appleton.Nathaniel"    "Ash.Gilbert"           "Austin.Benjamin"      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [7] "Austin.Samuel"         "Avery.John"            "Baldwin.Cyrus"        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [10] "Ballard.John"          "Barber.Nathaniel"      "Barnard.Samuel"       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [13] "Barrett.Samuel"        "Bass.Henry"            "Bell.William"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [16] "Blake.Increase"        "Boit.John"             "Bolter.Thomas"        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [19] "Boyer.Peter"           "Boynton.Richard"       "Brackett.Jos"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [22] "Bradford.John"         "Bradlee.David"         "Bradlee.Josiah"       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [25] "Bradlee.Nathaniel"     "Bradlee.Thomas"        "Bray.George"          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [28] "Breck.William"         "Bewer.James"           "Brimmer.Herman"       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [31] "Brimmer.Martin"        "Broomfield.Henry"      "Brown.Hugh"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [34] "Brown.Enoch"           "Brown.John"            "Bruce.Stephen"        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [37] "Burbeck.Edward"        "Burbeck.William"       "Burt.Benjamin"        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [40] "Burton.Benjamin"       "Cailleteau.Edward"     "Callendar.Elisha"     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [43] "Campbell.Nicholas"     "Cazneau.Capt"          "Chadwell.Mr"          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [46] "Champney.Caleb"        "Chase.Thomas"          "Cheever.Ezekiel"      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [49] "Chipman.Seth"          "Chrysty.Thomas"        "Church.Benjamin"      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [52] "Clarke.Benjamin"       "Cleverly.Stephen"      "Cochran.John"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [55] "Colesworthy.Gilbert"   "Collier.Gershom"       "Collins.Ezra"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [58] "Collson.Adam"          "Condy.JamesFoster"     "Cooper.Samuel"        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [61] "Cooper.William"        "Crafts.Thomas"         "Crane.John"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [64] "Davis.Caleb"           "Davis.Edward"          "Davis.Robert"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [67] "Davis.William"         "Dawes.Thomas"          "Dennie.William"       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [70] "Deshon.Moses"          "Dexter.Samuel"         "Dolbear.Edward"       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [73] "Doyle.Peter"           "Eaton.Joseph"          "Eayres.Joseph"        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [76] "Eckley.Unknown"        "Edes.Benjamin"         "Emmes.Samuel"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [79] "Etheridge.William"     "Fenno.Samuel"          "Ferrell.Ambrose"      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [82] "Field.Joseph"          "Flagg.Josiah"          "Fleet.Thomas"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [85] "Foster.Bos"            "Foster.Samuel"         "Frothingham.Nathaniel"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [88] "Gammell.John"          "Gill.Moses"            "Gore.Samuel"          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [91] "Gould.William"         "Graham.James"          "Grant.Moses"          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [94] "Gray.Wait"             "Greene.Nathaniel"      "Greenleaf.Joseph"     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [97] "Greenleaf.William"     "Greenough.Newn"        "Ham.William"          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [100] "Hammond.Samuel"        "Hancock.Eben"          "Hancock.John"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [103] "Hendley.William"       "Hewes.George"          "Hickling.William"     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [106] "Hicks.John"            "Hill.Alexander"        "Hitchborn.Nathaniel"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [109] "Hitchborn.Thomas"      "Hobbs.Samuel"          "Hoffins.John"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [112] "Holmes.Nathaniel"      "Hooton.John"           "Hopkins.Caleb"        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [115] "Hoskins.William"       "Howard.Samuel"         "Howe.Edward"          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [118] "Hunnewell.Jonathan"    "Hunnewell.Richard"     "Hunstable.Thomas"     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [121] "Hunt.Abraham"          "Ingersoll.Daniel"      "Inglish.Alexander"    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [124] "Isaac.Pierce"          "Ivers.James"           "Jarvis.Edward"        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [127] "Jarvis.Charles"        "Jefferds.Unknown"      "Jenkins.John"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [130] "Johnston.Eben"         "Johonnott.Gabriel"     "Kent.Benjamin"        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [133] "Kerr.Walter"           "Kimball.Thomas"        "Kinnison.David"       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [136] "Lambert.John"          "Lee.Joseph"            "Lewis.Phillip"        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [139] "Lincoln.Amos"          "Loring.Matthew"        "Lowell.John"          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [142] "Machin.Thomas"         "Mackay.William"        "MacKintosh.Capt"      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [145] "MacNeil.Archibald"     "Marett.Phillip"        "Marlton.John"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [148] "Marshall.Thomas"       "Marson.John"           "Mason.Jonathan"       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [151] "Matchett.John"         "May.John"              "McAlpine.William"     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [154] "Melville.Thomas"       "Merrit.John"           "Milliken.Thomas"      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [157] "Molineux.William"      "Moody.Samuel"          "Moore.Thomas"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [160] "Morse.Anthony"         "Morton.Perez"          "Mountford.Joseph"     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [163] "Newell.Eliphelet"      "Nicholls.Unknown"      "Noyces.Nat"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [166] "Obear.Israel"          "Otis.James"            "Palfrey.William"      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [169] "Palmer.Joseph"         "Palms.Richard"         "Parker.Jonathan"      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [172] "Parkman.Elias"         "Partridge.Sam"         "Payson.Joseph"        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [175] "Pearce.IsaacJun"       "Pearce.Isaac"          "Peck.Samuel"          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [178] "Peck.Thomas"           "Peters.John"           "Phillips.John"        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [181] "Phillips.Samuel"       "Phillips.William"      "Pierce.William"       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [184] "Pierpont.Robert"       "Pitts.John"            "Pitts.Lendall"        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [187] "Pitts.Samuel"          "Porter.Thomas"         "Potter.Edward"        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [190] "Powell.William"        "Prentiss.Henry"        "Prince.John"          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [193] "Prince.Job"            "Proctor.Edward"        "Pulling.John"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [196] "Pulling.Richard"       "Purkitt.Henry"         "Quincy.Josiah"        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [199] "Randall.John"          "Revere.Paul"           "Roby.Joseph"          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [202] "Roylson.Thomas"        "Ruddock.Abiel"         "Russell.John"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [205] "Russell.William"       "Sessions.Robert"       "Seward.James"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [208] "Sharp.Gibbens"         "Shed.Joseph"           "Sigourney.John"       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [211] "Simpson.Benjamin"      "Slater.Peter"          "Sloper.Ambrose"       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [214] "Smith.John"            "Spear.Thomas"          "Sprague.Samuel"       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [217] "Spurr.John"            "Stanbridge.Henry"      "Starr.James"          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [220] "Stearns.Phineas"       "Stevens.Ebenezer"      "Stoddard.Asa"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [223] "Stoddard.Jonathan"     "Story.Elisha"          "Swan.James"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [226] "Sweetser.John"         "Symmes.Eben"           "Symmes.John"          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [229] "Tabor.Philip"          "Tileston.Thomas"       "Trott.George"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [232] "Tyler.Royall"          "Urann.Thomas"          "Vernon.Fortesque"     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [235] "Waldo.Benjamin"        "Warren.Joseph"         "Webb.Joseph"          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [238] "Webster.Thomas"        "Welles.Henry"          "Wendell.Oliver"       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [241] "Wheeler.Josiah"        "White.Samuel"          "Whitten.John"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [244] "Whitwell.Samuel"       "Whitwell.William"      "Williams.Jeremiah"    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [247] "Williams.Jonathan"     "Williams.Thomas"       "Willis.Nathaniel"     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [250] "Wingfield.William"     "Winslow.John"          "Winthrop.John"        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [253] "Wyeth.Joshua"          "Young.Thomas"         </span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 

@@ -28,15 +28,31 @@ The function converts each network in \code{obj} to the specified \code{output.t
 \item Conversions from igraph objects to adjacency matrices are handled with \code{igraph::as_adjacency_matrix}.
 }
 
+Networks with \eqn{n} nodes can be represented as,
+\itemize{
+\item{"igraph": }{an igraph object}
+\item{"matrix": }{an \eqn{n}-by-\eqn{n} adjacency matrix, class \code{"matrix"}}
+\item{"dgCMatrix": }{an \eqn{n}-by-\eqn{n} adjacency matrix as a sparse matrix, class \code{{dgCMatrix}}, see \link[Matrix]{Matrix} package for details}
+\item{"edgelist": }{an \eqn{\binom{n}{2}}-by-2 matrix where each row is the pair of nodes an edge is attached to}
+}
 To use \code{"dgCMatrix"} for \code{input.type} or \code{output.type}, the package \code{Matrix} must be installed.
 }
 \examples{
 # Convert list of adjacency matrices to igraph objects
-adj_matrices <- replicate(3, matrix(c(0, 1, 1, 0), nrow = 2), simplify = FALSE)
-make_network_type(adj_matrices, input.type = "matrix", output.type = "igraph")
+one_matrix <- matrix(c(0, 1, 1, 1, 0, 0, 1, 0, 0), nrow = 3, byrow = TRUE)
+matrix_list <- replicate(3, one_matrix, simplify = FALSE)
+igraph_list <- make_network_type(matrix_list, input.type = "matrix", output.type = "igraph")
 
-# Convert list of igraph objects to sparse adjacency matrices
-igraph_list <- lapply(adj_matrices, igraph::graph_from_adjacency_matrix)
-make_network_type(igraph_list, input.type = "igraph", output.type = "dgCMatrix")
+# Same thing now using detect type
+type <- detect_type(matrix_list)
+type
+igraph_list <- make_network_type(matrix_list, input.type = type, output.type = "igraph")
 
+# Convert list of igraph objects to sparse matrix
+sparsematrix_list <- make_network_type(igraph_list, input.type = "igraph", output.type = "dgCMatrix")
+detect_type(sparsematrix_list)
+
+}
+\seealso{
+\code{\link[=detect_type]{detect_type()}}
 }

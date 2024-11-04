@@ -7,20 +7,44 @@
 detect_type(obj)
 }
 \arguments{
-\item{obj}{A list of objects to be analyzed. All objects in the list must belong to the same class.}
+\item{obj}{A list of networks. All networks in the list must have the same representation. e.g. all networks in the list must be an edge list.}
 }
 \value{
-A character string indicating the type of objects in the list. Possible return values are:
+A character string indicating the representation of the networks in the list. Possible return values are:
 \itemize{
-\item \code{"igraph"}: If the objects are igraph objects.
-\item \code{"dgCMatrix"}: If the objects are sparse matrices of class \code{dgCMatrix}.
-\item \code{"edgelist"}: If the objects are matrices with two columns, representing an edge list.
-\item \code{"matrix"}: If the objects are square matrices, typically representing adjacency matrices.
+\item \code{"igraph"}: If the networks are igraph objects.
+\item \code{"dgCMatrix"}: If the networks are sparse matrices of class \code{dgCMatrix}.
+\item \code{"edgelist"}: If the networks are matrices with two columns, representing an edge list.
+\item \code{"matrix"}: If the networks are square matrices, typically representing adjacency matrices.
 }
 }
 \description{
-Attempts to detect the type of objects in a list based on their class and dimensions, as used in the JaB package. This function checks if all elements in the list are of the same class and determines their type, such as \code{"igraph"}, \code{"dgCMatrix"}, \code{"edgelist"}, or \code{"matrix"}.
+Attempts to detect the type of network representation in a list.  Networks can be represented as \code{"igraph"}, \code{"dgCMatrix"}, \code{"edgelist"}, or \code{"matrix"}.
 }
 \details{
-The function first verifies that all objects in the list are of the same class. It then checks if the class matches known types (\code{"igraph"} or \code{"dgCMatrix"}). If the class is not one of these, it further examines the dimensions of each object to determine if they represent an edge list (two-column matrix) or an adjacency matrix (square matrix).
+The function detects if the input list of networks are represented as
+\code{"igraph"}, \code{"dgCMatrix"}, \code{"edgelist"} or \code{"matrix"}. This function is primarily
+used internally for verifying the networks are in the correct format for the
+intended operation being used.
+
+2-by-2 matrices default to \code{"matrix"}.
+}
+\examples{
+# Convert list of adjacency matrices to igraph objects
+one_matrix <- matrix(c(0, 1, 1, 1, 0, 0, 1, 0, 0), nrow = 3, byrow = TRUE)
+matrix_list <- replicate(3, one_matrix, simplify = FALSE)
+igraph_list <- make_network_type(matrix_list, input.type = "matrix", output.type = "igraph")
+
+# Same thing now using detect type
+type <- detect_type(matrix_list)
+type
+igraph_list <- make_network_type(matrix_list, input.type = type, output.type = "igraph")
+
+# Convert list of igraph objects to sparse matrix
+sparsematrix_list <- make_network_type(igraph_list, input.type = "igraph", output.type = "dgCMatrix")
+detect_type(sparsematrix_list)
+
+}
+\seealso{
+\code{\link[=make_network_type]{make_network_type()}}
 }

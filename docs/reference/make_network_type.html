@@ -77,51 +77,34 @@
 <li><p>Conversions from adjacency matrices to igraph objects are handled via <code><a href="https://r.igraph.org/reference/graph_from_adjacency_matrix.html" class="external-link">igraph::graph_from_adjacency_matrix</a></code>.</p></li>
 <li><p>Conversions from igraph objects to edge lists are handled with <code><a href="https://r.igraph.org/reference/as_edgelist.html" class="external-link">igraph::as_edgelist</a></code>.</p></li>
 <li><p>Conversions from igraph objects to adjacency matrices are handled with <code><a href="https://r.igraph.org/reference/as_adjacency_matrix.html" class="external-link">igraph::as_adjacency_matrix</a></code>.</p></li>
+</ul><p>Networks with \(n\) nodes can be represented as,</p><ul><li><p>"igraph": an igraph object</p></li>
+<li><p>"matrix": an \(n\)-by-\(n\) adjacency matrix, class <code>"matrix"</code></p></li>
+<li><p>"dgCMatrix": an \(n\)-by-\(n\) adjacency matrix as a sparse matrix, class <code>{dgCMatrix}</code>, see <a href="https://rdrr.io/pkg/Matrix/man/Matrix.html" class="external-link">Matrix</a> package for details</p></li>
+<li><p>"edgelist": an \(\binom{n}{2}\)-by-2 matrix where each row is the pair of nodes an edge is attached to</p></li>
 </ul><p>To use <code>"dgCMatrix"</code> for <code>input.type</code> or <code>output.type</code>, the package <code>Matrix</code> must be installed.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
+    <div class="dont-index"><p><code><a href="detect_type.html">detect_type()</a></code></p></div>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Convert list of adjacency matrices to igraph objects</span></span></span>
-<span class="r-in"><span><span class="va">adj_matrices</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">replicate</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>, simplify <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">make_network_type</span><span class="op">(</span><span class="va">adj_matrices</span>, input.type <span class="op">=</span> <span class="st">"matrix"</span>, output.type <span class="op">=</span> <span class="st">"igraph"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> IGRAPH c63f30d U--- 2 1 -- </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> + edge from c63f30d:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1--2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> IGRAPH d90875a U--- 2 1 -- </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> + edge from d90875a:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1--2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[3]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> IGRAPH e59cb64 U--- 2 1 -- </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> + edge from e59cb64:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1--2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"><span><span class="va">one_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">3</span>, byrow <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">matrix_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">replicate</a></span><span class="op">(</span><span class="fl">3</span>, <span class="va">one_matrix</span>, simplify <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">igraph_list</span> <span class="op">&lt;-</span> <span class="fu">make_network_type</span><span class="op">(</span><span class="va">matrix_list</span>, input.type <span class="op">=</span> <span class="st">"matrix"</span>, output.type <span class="op">=</span> <span class="st">"igraph"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Convert list of igraph objects to sparse adjacency matrices</span></span></span>
-<span class="r-in"><span><span class="va">igraph_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">adj_matrices</span>, <span class="fu">igraph</span><span class="fu">::</span><span class="va"><a href="https://r.igraph.org/reference/graph_from_adjacency_matrix.html" class="external-link">graph_from_adjacency_matrix</a></span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">make_network_type</span><span class="op">(</span><span class="va">igraph_list</span>, input.type <span class="op">=</span> <span class="st">"igraph"</span>, output.type <span class="op">=</span> <span class="st">"dgCMatrix"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 x 2 sparse Matrix of class "dgCMatrix"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] . 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 1 .</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 x 2 sparse Matrix of class "dgCMatrix"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] . 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 1 .</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[3]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 x 2 sparse Matrix of class "dgCMatrix"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] . 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 1 .</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"><span><span class="co"># Same thing now using detect type</span></span></span>
+<span class="r-in"><span><span class="va">type</span> <span class="op">&lt;-</span> <span class="fu"><a href="detect_type.html">detect_type</a></span><span class="op">(</span><span class="va">matrix_list</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">type</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "matrix"</span>
+<span class="r-in"><span><span class="va">igraph_list</span> <span class="op">&lt;-</span> <span class="fu">make_network_type</span><span class="op">(</span><span class="va">matrix_list</span>, input.type <span class="op">=</span> <span class="va">type</span>, output.type <span class="op">=</span> <span class="st">"igraph"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Convert list of igraph objects to sparse matrix</span></span></span>
+<span class="r-in"><span><span class="va">sparsematrix_list</span> <span class="op">&lt;-</span> <span class="fu">make_network_type</span><span class="op">(</span><span class="va">igraph_list</span>, input.type <span class="op">=</span> <span class="st">"igraph"</span>, output.type <span class="op">=</span> <span class="st">"dgCMatrix"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="detect_type.html">detect_type</a></span><span class="op">(</span><span class="va">sparsematrix_list</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "dgCMatrix"</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

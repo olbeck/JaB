@@ -7,14 +7,18 @@
 get_nodes(network)
 }
 \arguments{
-\item{network}{A network object with \eqn{n}, which may be of types \code{matrix}, \code{dgCMatrix} \code{edgelist}, or \code{igraph}).}
+\item{network}{A network object with \eqn{n} nodes. Network can be represented as a \code{matrix}, \code{dgCMatrix} \code{edgelist}, or \code{igraph}). See \code{\link{make_network_type}} for details.}
 }
 \value{
-A vector of node names. If node names are not assigned, it returns a sequence of integers from 1 to the number of nodes.
+A vector of node names. If node names are not assigned, it returns a sequence of integers from 1 to \eqn{n}.
 }
 \description{
 Extracts the names of nodes (vertices) from a network object.
 This is for internal use for network types in the JaB package
+}
+\examples{
+data(paul.revere)
+get_nodes(paul.revere)
 }
 \seealso{
 \code{\link{detect_type}}, \code{\link{make_network_type}}
