@@ -1,11 +1,19 @@
-#' Calculate the Adjacency Spectral Embedding of a Matrix
+#' Adjacency Spectral Embedding
 #'
-#' CITE Sussman et al. (2012) paper
+#' Calculate the adjacency spectral embedding of a network.
 #'
 #' @param network An igraph object with \eqn{n} nodes.
 #' @param d number of latent dimensions to embed the node positions in.
 #' @returns An \eqn{n}-by-\eqn{d} matrix where the \eqn{i^{th}} row of the matrix corresponds to node \eqn{i}'s position in the \eqn{d}-dimensional latent space.
 #' Bootstrap samples will retain vertex names of the input `network` but will loose all other vertex and edge attributes.
+#' @references \insertRef{sussman-et-al-2012}{JaB}
+#'
+#' @details
+#' This calculates the latent positions of the nodes of a network in \eqn{\mathbb{R}^d}.
+#'
+#' ADD ALGORITHM
+#'
+#'
 #' @examples
 #' #ADD EXAMPLE ONCE DATA IS ADDED
 #' @export
@@ -25,8 +33,15 @@ ASE <- function(network, d){
 
 #' Latent Space Bootstrap
 #'
-#' Add explanation of how latent space bootstrap works
+#' Generates bootstrap samples of a network with the latent space bootstrap method described in \insertCite{levin-levina-2019;textual}{JaB}.
 #'
+#' @details
+#' Generates bootstrap samples of a network with the latent space bootstrap method described in \insertCite{levin-levina-2019;textual}{JaB}.
+#'
+#' Latent positions of the nodes in the network are first calculated in \eqn{\mathbb{R}^d} using adjacency spectral with \link[JaB:ASE]{ASE}.
+#' Then for each pair of nodes, an edge is present with probability equal to the dot product of their positions in the latent space.
+#'
+#' OUTLINE ALGORITHM
 #' Cite Sussman et al. (2012) paper for ASE
 #' CITE Levin and Levina (2022) paper for bootstrap procedure.
 #' Link to Matrix package
@@ -38,6 +53,7 @@ ASE <- function(network, d){
 #' The default is `igraph` which will make bootstrap samples of class "igraph". Note that for large \eqn{B}, this may not be an efficient use of storage space.
 #' Other options include `matrix` which will return bootstrap samples as an \eqn{n}-by-\eqn{n} adjacency matrix,
 #' `dgCMatrix` which will return scarce matrices (package `Matrix` must be loaded).
+#' See \link[JaB:make_network_type]{make_network_type} for details.
 #' @returns A list of length \eqn{B} where each element is an bootstrap sample.
 #' Each element is of class `output.type`.
 #' @examples

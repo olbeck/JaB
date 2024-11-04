@@ -16,16 +16,23 @@ bootstrap_latent_space(network, d = 2, B = 1000, output.type = "igraph")
 \item{output.type}{The class of object the resulting bootstrap networks should be.
 The default is \code{igraph} which will make bootstrap samples of class "igraph". Note that for large \eqn{B}, this may not be an efficient use of storage space.
 Other options include \code{matrix} which will return bootstrap samples as an \eqn{n}-by-\eqn{n} adjacency matrix,
-\code{dgCMatrix} which will return scarce matrices (package \code{Matrix} must be loaded).}
+\code{dgCMatrix} which will return scarce matrices (package \code{Matrix} must be loaded).
+See \link[JaB:make_network_type]{make_network_type} for details.}
 }
 \value{
 A list of length \eqn{B} where each element is an bootstrap sample.
 Each element is of class \code{output.type}.
 }
 \description{
-Add explanation of how latent space bootstrap works
+Generates bootstrap samples of a network with the latent space bootstrap method described in \insertCite{levin-levina-2019;textual}{JaB}.
 }
 \details{
+Generates bootstrap samples of a network with the latent space bootstrap method described in \insertCite{levin-levina-2019;textual}{JaB}.
+
+Latent positions of the nodes in the network are first calculated in \eqn{\mathbb{R}^d} using adjacency spectral with \link[JaB:ASE]{ASE}.
+Then for each pair of nodes, an edge is present with probability equal to the dot product of their positions in the latent space.
+
+OUTLINE ALGORITHM
 Cite Sussman et al. (2012) paper for ASE
 CITE Levin and Levina (2022) paper for bootstrap procedure.
 Link to Matrix package

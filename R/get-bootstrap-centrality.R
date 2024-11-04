@@ -30,7 +30,7 @@ get_bootstrap_centrality <- function(boot.result,
   for(b in 1:B){
     obj <- boot.result[[b]]
     g <- make_network_type(list(obj), obj.type, output.type = "igraph" )
-    ret[[b]] <- get_centrality(g[[1]], func.name, package.name = NULL, func.args = NULL)
+    ret[[b]] <- get_centrality(g[[1]], func.name, package.name = NULL, func.args = func.args)
   }
 
   return(ret)

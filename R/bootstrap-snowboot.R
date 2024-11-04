@@ -1,15 +1,19 @@
 #' Sample about one seed from `snowboot` package
 #'
-#' CITE snowboot package
+#' This is a slightly modified version of the \link[snowboot:sample_about_one_seed]{sample_about_one_seed} from the \pkg{snowboot} package.
 #'
-#' This is a slightly modified version of the sample_about_one_seed function from the snowboot package.
-#' This function uses the node names, not node IDs,
-#' and it returns the edge list of the bootstrap sample, not the nodes included
+#' @details
+#' This is a slightly modified version of the \link[snowboot:sample_about_one_seed]{sample_about_one_seed} from the \pkg{snowboot} package.
+#' This function uses the node names (not node IDs),
+#' and it returns the edge list of the bootstrap sample (not the nodes included in the sample).
 #'
-#' @param net A network object as described in the snowboot package
-#' @param seed Selected seed to start the LSMI (name of the node)
+#'
+#' @param net A network object as described in the \link[snowboot:sample_about_one_seed]{snowboot} package. package
+#' @param seed Character string of the selected seed to start the LSMI (name of the node).
 #' @param n.wave Number of waves to be included each the snowball sample
 #' @returns A list of length `n.wave` where each element is the edge list of edges included on the corresponding wave of sampling.
+#' @seealso \link[snowboot:lsmi]{lsmi} \link[snowboot:sample_about_one_seed]{sample_about_one_seed}
+#' @references \insertRef{snowboot}{JaB}
 #' @examples
 #' #ADD EXAMPLE ONCE DATA IS ADDED
 
@@ -41,24 +45,28 @@ sample_about_one_seed_modified <- function (net, seed, n.wave = 1) {
 
 #' Snowball Sampling (Labeled Snowball with multiple inclusions)
 #'
-#' CITE snowboot package
-#' CITE Gel et al paper + Thompson et al paper
+#' This is a slightly modified version of the \link[snowboot:lsmi]{lsmi} from the \pkg{snowboot} package.
 #'
-#' This is a modified version of the lsmi function in the snowboot package.
-#' This function uses the node names, not node IDs,
-#' and it returns the edge list of the bootstrap sample, not the nodes included
+#' @details
+#'
+#' This is a slightly modified version of the \link[snowboot:lsmi]{lsmi} from the \pkg{snowboot} package.
+#' This function inputs a `igraph` object, it uses the node names (not node IDs),
+#' and it returns the edge list of the bootstrap sample (not the nodes included in the sample).
 #'
 #' @param network An igraph object with \eqn{n} nodes.
 #' @param num.seed Number of seeds to be included each the snowball sample
 #' @param num.wave Number of waves to be included each the snowball sample
 #' @param B Number of bootstrap samples
-#' @param output.type The class of object the resulting bootstrap networks should be.
+#' @param output.type The type of object the resulting bootstrap networks should be.
 #' The default is `igraph` which will make bootstrap samples of class "igraph". Note that for large \eqn{B}, this may not be an efficient use of storage space.
 #' Other options include `edgelist` which returns an edge list for each bootstrap sample,
 #'  `matrix` which returns bootstrap samples as an \eqn{n}-by-\eqn{n} adjacency matrix,
 #' `dgCMatrix` which returns sparse matrices (package `Matrix` must be loaded).
+#' See \link[JaB:make_network_type]{make_network_type} for details.
 #' @returns A list of length \eqn{B} where each element is an bootstrap sample.
 #' Each element is of class `output.type`.
+#' @seealso  \link[snowboot:lsmi]{lsmi}
+#' @references \insertRef{snowboot}{JaB}
 #' @examples
 #' #ADD EXAMPLE ONCE DATA IS ADDED
 #' @export

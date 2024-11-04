@@ -10,7 +10,8 @@ get_jackknife_after(
   quant,
   func.name,
   package.name = NULL,
-  func.args = NULL
+  func.args = NULL,
+  nodes = NULL
 )
 }
 \arguments{
@@ -20,11 +21,13 @@ get_jackknife_after(
 
 \item{quant}{A numeric value of length 2 specifying the upper quantile used to flag influential nodes (e.g., \code{ 0.95}).}
 
-\item{func.name}{A character string specifying the centrality function to be applied (e.g., \code{"degree"}, \code{"betweenness"}). See \code{\link{get_centrality}} for details}
+\item{func.name}{A character string specifying the centrality function to be applied (e.g., \code{"degree"}, \code{"betweenness"}). See \code{\link{get_centrality}} for details.}
 
-\item{package.name}{(Optional) A character string specifying the package containing \code{func.name}. See \code{\link{get_centrality}} for details}
+\item{package.name}{(Optional) A character string specifying the package containing \code{func.name}. See \code{\link{get_centrality}} for details.}
 
-\item{func.args}{(Optional) A list of additional arguments for \code{func.name}.See \code{\link{get_centrality}} for details}
+\item{func.args}{(Optional) A list of additional arguments for \code{func.name}.See \code{\link{get_centrality}} for details.}
+
+\item{nodes}{(Optional) A vector of node names to run JaB algorithm for. If \code{NULL}, algorithm will be run on all \eqn{n} nodes.}
 }
 \value{
 A data frame containing:
@@ -34,13 +37,24 @@ A data frame containing:
 \item \code{Orig_Stat}: The original centrality statistic of each node.
 \item \code{Upper_Quantile}: Upper quantile of the jackknife-after-bootstrap distribution of centrality statistic for each node.
 \item \code{Influential}: Logical indicating if each node is influential, i.e. is \code{Orig_Stat} greater than \code{Upper_Quantile}?
+\item \code{Influential}: Logical indicating if there were bootstrap samples that
+\emph{did not} include that node, meaning there \emph{are} jackknife-after sample to generate
+the distribution of centrality statistics in networks that do not contain that node.
+If \code{FALSE}, then all bootstrap samples contained that node and the \code{Upper_Quantile} column will generally be \code{NA}.
+If many nodes are \code{FALSE} it
+could mean that the bootstrap method is poorly tuned and is sampling more nodes that is appropriate
+for this data set. If only a few nodes are \code{FALSE} it could mean the bootstrap method is
+poorly tuned for this data set, or it could mean that the node is extremely influential as
+it is highly improbable to generate a bootstrap sample that does not contain that node.
+Which explanation is appropriate depends on the data set and the bootstrap method used.
 }
 }
 \description{
 Detects influential nodes in a network with the jackknife-after-bootstrap algorithm.
 }
 \details{
-This function performs a jackknife after-bootstrap procedure for each node in the network. It calculates the original centrality statistic for each node, then examines the bootstrap samples, excluding each node to generate a null distribution for that node’s centrality. Based on this distribution, it computes specified quantiles (default typically 0.025 and 0.975) to create confidence intervals.
+This function performs a jackknife after-bootstrap procedure for each node in the network.
+OUTLINE ALGORITHM
 }
 \examples{
 #add example later

@@ -54,7 +54,8 @@
 <span>  <span class="va">quant</span>,</span>
 <span>  <span class="va">func.name</span>,</span>
 <span>  package.name <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  func.args <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  func.args <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  nodes <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -73,15 +74,19 @@
 
 
 <dt>func.name</dt>
-<dd><p>A character string specifying the centrality function to be applied (e.g., <code>"degree"</code>, <code>"betweenness"</code>). See <code><a href="get_centrality.html">get_centrality</a></code> for details</p></dd>
+<dd><p>A character string specifying the centrality function to be applied (e.g., <code>"degree"</code>, <code>"betweenness"</code>). See <code><a href="get_centrality.html">get_centrality</a></code> for details.</p></dd>
 
 
 <dt>package.name</dt>
-<dd><p>(Optional) A character string specifying the package containing <code>func.name</code>. See <code><a href="get_centrality.html">get_centrality</a></code> for details</p></dd>
+<dd><p>(Optional) A character string specifying the package containing <code>func.name</code>. See <code><a href="get_centrality.html">get_centrality</a></code> for details.</p></dd>
 
 
 <dt>func.args</dt>
-<dd><p>(Optional) A list of additional arguments for <code>func.name</code>.See <code><a href="get_centrality.html">get_centrality</a></code> for details</p></dd>
+<dd><p>(Optional) A list of additional arguments for <code>func.name</code>.See <code><a href="get_centrality.html">get_centrality</a></code> for details.</p></dd>
+
+
+<dt>nodes</dt>
+<dd><p>(Optional) A vector of node names to run JaB algorithm for. If <code>NULL</code>, algorithm will be run on all \(n\) nodes.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -93,10 +98,21 @@
 <li><p><code>Orig_Stat</code>: The original centrality statistic of each node.</p></li>
 <li><p><code>Upper_Quantile</code>: Upper quantile of the jackknife-after-bootstrap distribution of centrality statistic for each node.</p></li>
 <li><p><code>Influential</code>: Logical indicating if each node is influential, i.e. is <code>Orig_Stat</code> greater than <code>Upper_Quantile</code>?</p></li>
+<li><p><code>Influential</code>: Logical indicating if there were bootstrap samples that
+<em>did not</em> include that node, meaning there <em>are</em> jackknife-after sample to generate
+the distribution of centrality statistics in networks that do not contain that node.
+If <code>FALSE</code>, then all bootstrap samples contained that node and the <code>Upper_Quantile</code> column will generally be <code>NA</code>.
+If many nodes are <code>FALSE</code> it
+could mean that the bootstrap method is poorly tuned and is sampling more nodes that is appropriate
+for this data set. If only a few nodes are <code>FALSE</code> it could mean the bootstrap method is
+poorly tuned for this data set, or it could mean that the node is extremely influential as
+it is highly improbable to generate a bootstrap sample that does not contain that node.
+Which explanation is appropriate depends on the data set and the bootstrap method used.</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>This function performs a jackknife after-bootstrap procedure for each node in the network. It calculates the original centrality statistic for each node, then examines the bootstrap samples, excluding each node to generate a null distribution for that node’s centrality. Based on this distribution, it computes specified quantiles (default typically 0.025 and 0.975) to create confidence intervals.</p>
+    <p>This function performs a jackknife after-bootstrap procedure for each node in the network.
+OUTLINE ALGORITHM</p>
     </div>
 
     <div class="section level2">

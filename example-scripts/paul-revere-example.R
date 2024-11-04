@@ -110,3 +110,25 @@ func.args = NULL
 central_result <- get_bootstrap_centrality(boot_result, "igraph", "degree")
 
 get_jackknife_after(karate, test, c(0, 0.9), "closeness")
+
+
+data(karate)
+boot.result <- bootstrap_snowboot(
+  karate, B = 100,
+  num.seed = 2, num.wave = 2,
+  output.type = "matrix")
+
+
+View(temp)
+
+
+data("paul.revere")
+
+boot.result <- bootstrap_snowboot(
+  paul.revere, B = 1000,
+  num.seed = 1, num.wave = 2,
+  output.type = "matrix")
+temp <-get_jackknife_after(paul.revere, boot.result, 0.95,
+                           "betweenness",
+                           func.args = list(normalized = TRUE))
+temp %>% View

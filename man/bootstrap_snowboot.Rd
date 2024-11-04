@@ -21,25 +21,31 @@ bootstrap_snowboot(
 
 \item{num.wave}{Number of waves to be included each the snowball sample}
 
-\item{output.type}{The class of object the resulting bootstrap networks should be.
+\item{output.type}{The type of object the resulting bootstrap networks should be.
 The default is \code{igraph} which will make bootstrap samples of class "igraph". Note that for large \eqn{B}, this may not be an efficient use of storage space.
 Other options include \code{edgelist} which returns an edge list for each bootstrap sample,
 \code{matrix} which returns bootstrap samples as an \eqn{n}-by-\eqn{n} adjacency matrix,
-\code{dgCMatrix} which returns sparse matrices (package \code{Matrix} must be loaded).}
+\code{dgCMatrix} which returns sparse matrices (package \code{Matrix} must be loaded).
+See \link[JaB:make_network_type]{make_network_type} for details.}
 }
 \value{
 A list of length \eqn{B} where each element is an bootstrap sample.
 Each element is of class \code{output.type}.
 }
 \description{
-CITE snowboot package
-CITE Gel et al paper + Thompson et al paper
+This is a slightly modified version of the \link[snowboot:lsmi]{lsmi} from the \pkg{snowboot} package.
 }
 \details{
-This is a modified version of the lsmi function in the snowboot package.
-This function uses the node names, not node IDs,
-and it returns the edge list of the bootstrap sample, not the nodes included
+This is a slightly modified version of the \link[snowboot:lsmi]{lsmi} from the \pkg{snowboot} package.
+This function inputs a \code{igraph} object, it uses the node names (not node IDs),
+and it returns the edge list of the bootstrap sample (not the nodes included in the sample).
 }
 \examples{
 #ADD EXAMPLE ONCE DATA IS ADDED
+}
+\references{
+\insertRef{snowboot}{JaB}
+}
+\seealso{
+\link[snowboot:lsmi]{lsmi}
 }

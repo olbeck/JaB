@@ -2,7 +2,7 @@
 % Please edit documentation in R/boostrap-latent-space.R
 \name{ASE}
 \alias{ASE}
-\title{Calculate the Adjacency Spectral Embedding of a Matrix}
+\title{Adjacency Spectral Embedding}
 \usage{
 ASE(network, d)
 }
@@ -16,8 +16,16 @@ An \eqn{n}-by-\eqn{d} matrix where the \eqn{i^{th}} row of the matrix correspond
 Bootstrap samples will retain vertex names of the input \code{network} but will loose all other vertex and edge attributes.
 }
 \description{
-CITE Sussman et al. (2012) paper
+Calculate the adjacency spectral embedding of a network.
+}
+\details{
+This calculates the latent positions of the nodes of a network in \eqn{\mathbb{R}^d}.
+
+ADD ALGORITHM
 }
 \examples{
 #ADD EXAMPLE ONCE DATA IS ADDED
+}
+\references{
+\insertRef{sussman-et-al-2012}{JaB}
 }

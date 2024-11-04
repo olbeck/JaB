@@ -7,9 +7,9 @@
 sample_about_one_seed_modified(net, seed, n.wave = 1)
 }
 \arguments{
-\item{net}{A network object as described in the snowboot package}
+\item{net}{A network object as described in the \link[snowboot:sample_about_one_seed]{snowboot} package. package}
 
-\item{seed}{Selected seed to start the LSMI (name of the node)}
+\item{seed}{Character string of the selected seed to start the LSMI (name of the node).}
 
 \item{n.wave}{Number of waves to be included each the snowball sample}
 }
@@ -17,13 +17,19 @@ sample_about_one_seed_modified(net, seed, n.wave = 1)
 A list of length \code{n.wave} where each element is the edge list of edges included on the corresponding wave of sampling.
 }
 \description{
-CITE snowboot package
+This is a slightly modified version of the \link[snowboot:sample_about_one_seed]{sample_about_one_seed} from the \pkg{snowboot} package.
 }
 \details{
-This is a slightly modified version of the sample_about_one_seed function from the snowboot package.
-This function uses the node names, not node IDs,
-and it returns the edge list of the bootstrap sample, not the nodes included
+This is a slightly modified version of the \link[snowboot:sample_about_one_seed]{sample_about_one_seed} from the \pkg{snowboot} package.
+This function uses the node names (not node IDs),
+and it returns the edge list of the bootstrap sample (not the nodes included in the sample).
 }
 \examples{
 #ADD EXAMPLE ONCE DATA IS ADDED
+}
+\references{
+\insertRef{snowboot}{JaB}
+}
+\seealso{
+\link[snowboot:lsmi]{lsmi} \link[snowboot:sample_about_one_seed]{sample_about_one_seed}
 }
