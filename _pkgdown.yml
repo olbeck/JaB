@@ -2,4 +2,31 @@ url: ~
 destination: docs
 template:
   bootstrap: 5
+  bootswatch: simplex
 
+navbar:
+  structure:
+    left:  [intro, reference]
+
+reference:
+  - title: Network Bootstrap
+    contents:
+    - bootstrap_latent_space
+    - bootstrap_snowboot
+    - bootstrap_vertex
+  - title: Jackknife-after-Bootstrap
+    contents:
+    - get_bootstrap_centrality
+    - get_centrality
+    - get_jackknife_after
+  - title: Data
+    contents:
+    - karate
+    - paul.revere
+  - title: Miscellaneous
+    contents:
+    - ASE
+    - detect_type
+    - get_nodes
+    - make_network_type
+    - sample_about_one_seed_modified
