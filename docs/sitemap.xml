@@ -46,10 +46,16 @@
     <loc>/reference/index.html</loc>
   </url>
   <url>
+    <loc>/reference/karate.html</loc>
+  </url>
+  <url>
     <loc>/reference/make_igraph.html</loc>
   </url>
   <url>
     <loc>/reference/make_network_type.html</loc>
+  </url>
+  <url>
+    <loc>/reference/paul.revere.html</loc>
   </url>
   <url>
     <loc>/reference/pipe.html</loc>

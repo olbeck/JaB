@@ -22,14 +22,14 @@ bootstrap_snowboot(
 \item{num.wave}{Number of waves to be included each the snowball sample}
 
 \item{output.type}{The class of object the resulting bootstrap networks should be.
-The default is `igraph` which will make bootstrap samples of class "igraph". Note that for large \eqn{B}, this may not be an efficient use of storage space.
-Other options include `edgelist` which returns an edge list for each bootstrap sample,
- `matrix` which returns bootstrap samples as an \eqn{n}-by-\eqn{n} adjacency matrix,
-`dgCMatrix` which returns sparse matrices (package `Matrix` must be loaded).}
+The default is \code{igraph} which will make bootstrap samples of class "igraph". Note that for large \eqn{B}, this may not be an efficient use of storage space.
+Other options include \code{edgelist} which returns an edge list for each bootstrap sample,
+\code{matrix} which returns bootstrap samples as an \eqn{n}-by-\eqn{n} adjacency matrix,
+\code{dgCMatrix} which returns sparse matrices (package \code{Matrix} must be loaded).}
 }
 \value{
 A list of length \eqn{B} where each element is an bootstrap sample.
-Each element is of class `output.type`.
+Each element is of class \code{output.type}.
 }
 \description{
 CITE snowboot package

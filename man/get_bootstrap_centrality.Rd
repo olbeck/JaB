@@ -13,21 +13,21 @@ get_bootstrap_centrality(
 )
 }
 \arguments{
-\item{boot.result}{A list of bootstrap samples, where each sample represents a graph in a specified format (e.g., adjacency matrix, edgelist). This is output from the `bootstrap_` function.}
+\item{boot.result}{A list of bootstrap samples, where each sample represents a graph in a specified format (e.g., adjacency matrix, edgelist). This is output from the \code{bootstrap_} function.}
 
-\item{func.name}{A character string specifying the centrality function to apply (e.g., `"degree"`, `"betweenness"`). See \code{\link{get_centrality}} for details.}
+\item{func.name}{A character string specifying the centrality function to apply (e.g., \code{"degree"}, \code{"betweenness"}). See \code{\link{get_centrality}} for details.}
 
-\item{package.name}{An optional character string indicating the package name containing the centrality function. Defaults to `NULL` (assuming `func.name` is available). See \code{\link{get_centrality}} for details.}
+\item{package.name}{An optional character string indicating the package name containing the centrality function. Defaults to \code{NULL} (assuming \code{func.name} is available). See \code{\link{get_centrality}} for details.}
 
-\item{func.args}{An optional list of additional arguments to pass to the centrality function. Defaults to `NULL`. See \code{\link{get_centrality}} for details.}
+\item{func.args}{An optional list of additional arguments to pass to the centrality function. Defaults to \code{NULL}. See \code{\link{get_centrality}} for details.}
 
-\item{obj.type}{A character string specifying the type of `obj` in each bootstrap sample. Options include `"igraph"`, `"matrix"`, `"dgCMatrix"`, or `"edgelist"`. This is the `output.type` of the `bootstrap_` function.}
+\item{obj.type}{A character string specifying the type of \code{obj} in each bootstrap sample. Options include \code{"igraph"}, \code{"matrix"}, \code{"dgCMatrix"}, or \code{"edgelist"}. This is the \code{output.type} of the \code{bootstrap_} function.}
 }
 \value{
-A list of length `B`, where each element is the bootstrap centrality statistic result from applying the specified centrality statistic function.
+A list of length \code{B}, where each element is the bootstrap centrality statistic result from applying the specified centrality statistic function.
 }
 \description{
-This function takes bootstrap samples of graph data from `bootstrap_` functions and computes specified centrality statistics for each sample.
+This function takes bootstrap samples of graph data from \code{bootstrap_} functions and computes specified centrality statistics for each sample.
 }
 \details{
 Calculates bootstrap centrality statistics from give bootstrap samples and a specified centrality statistic.

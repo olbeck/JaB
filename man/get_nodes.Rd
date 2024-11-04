@@ -7,7 +7,7 @@
 get_nodes(network)
 }
 \arguments{
-\item{network}{A network object with \eqn{n}, which may be of types `matrix`, `dgCMatrix` `edgelist`, or `igraph`).}
+\item{network}{A network object with \eqn{n}, which may be of types \code{matrix}, \code{dgCMatrix} \code{edgelist}, or \code{igraph}).}
 }
 \value{
 A vector of node names. If node names are not assigned, it returns a sequence of integers from 1 to the number of nodes.

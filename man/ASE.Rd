@@ -13,7 +13,7 @@ ASE(network, d)
 }
 \value{
 An \eqn{n}-by-\eqn{d} matrix where the \eqn{i^{th}} row of the matrix corresponds to node \eqn{i}'s position in the \eqn{d}-dimensional latent space.
-Bootstrap samples will retain vertex names of the input `network` but will loose all other vertex and edge attributes.
+Bootstrap samples will retain vertex names of the input \code{network} but will loose all other vertex and edge attributes.
 }
 \description{
 CITE Sussman et al. (2012) paper

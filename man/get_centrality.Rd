@@ -7,16 +7,16 @@
 get_centrality(network, func.name, package.name = NULL, func.args = NULL)
 }
 \arguments{
-\item{network}{The network object. This should be the appropriate object type needed for the `func.name` specified.}
+\item{network}{The network object. This should be the appropriate object type needed for the \code{func.name} specified.}
 
 \item{func.name}{A character string of the function name used to calculate the desired centrality statistic.}
 
-\item{package.name}{A character string of the name of the package the `func.name` function is in. If left as `NULL` if the function will be called as loaded in the users environment.}
+\item{package.name}{A character string of the name of the package the \code{func.name} function is in. If left as \code{NULL} if the function will be called as loaded in the users environment.}
 
-\item{func.args}{A list of additional arguments the `func.name` function may need beyond the `network` object.}
+\item{func.args}{A list of additional arguments the \code{func.name} function may need beyond the \code{network} object.}
 }
 \value{
-A numeric vector of the centrality statistic as calculated by `func.name`.
+A numeric vector of the centrality statistic as calculated by \code{func.name}.
 }
 \description{
 Calculate give centrality statistic on a network

@@ -9,6 +9,8 @@ License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.2.3
+Roxygen: list(markdown = TRUE)
+RdMacros: Rdpack
 BugReports: https://github.com/olbeck/JaB/issues
 URL: https://olbeck.github.io/JaB/, https://github.com/olbeck/JaB
 Imports:
@@ -16,7 +18,10 @@ Imports:
     igraph,
     magrittr,
     Matrix,
+    Rdpack,
     snowboot
 Suggests: 
     spelling
 Language: en-US
+Depends: 
+    R (>= 2.10)

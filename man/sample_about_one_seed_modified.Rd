@@ -2,7 +2,7 @@
 % Please edit documentation in R/bootstrap-snowboot.R
 \name{sample_about_one_seed_modified}
 \alias{sample_about_one_seed_modified}
-\title{Sample about one seed from `snowboot` package}
+\title{Sample about one seed from \code{snowboot} package}
 \usage{
 sample_about_one_seed_modified(net, seed, n.wave = 1)
 }
@@ -14,7 +14,7 @@ sample_about_one_seed_modified(net, seed, n.wave = 1)
 \item{n.wave}{Number of waves to be included each the snowball sample}
 }
 \value{
-A list of length `n.wave` where each element is the edge list of edges included on the corresponding wave of sampling.
+A list of length \code{n.wave} where each element is the edge list of edges included on the corresponding wave of sampling.
 }
 \description{
 CITE snowboot package

@@ -1,3 +1,4 @@
+
 devtools::document()
 usethis::use_spell_check()
 

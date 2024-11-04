@@ -7,26 +7,28 @@
 make_network_type(obj, input.type, output.type)
 }
 \arguments{
-\item{obj}{A list of network objects, which must match the `input.type` specified.}
+\item{obj}{A list of network objects, which must match the \code{input.type} specified.}
 
-\item{input.type}{A character string specifying the input type of `obj`. Options include `"igraph"`, `"matrix"`, `"dgCMatrix"`, or `"edgelist"`.}
+\item{input.type}{A character string specifying the input type of \code{obj}. Options include \code{"igraph"}, \code{"matrix"}, \code{"dgCMatrix"}, or \code{"edgelist"}.}
 
-\item{output.type}{A character string specifying the desired output type. Options are `"igraph"`, `"matrix"`, `"dgCMatrix"`, or `"edgelist"`.}
+\item{output.type}{A character string specifying the desired output type. Options are \code{"igraph"}, \code{"matrix"}, \code{"dgCMatrix"}, or \code{"edgelist"}.}
 }
 \value{
-A converted list of network objects in the specified `output.type` format.
+A converted list of network objects in the specified \code{output.type} format.
 }
 \description{
-Converts an input list of networks between various representations: `matrix`, `dgCMatrix`, `edgelist`, and `igraph`.
+Converts an input list of networks between various representations: \code{matrix}, \code{dgCMatrix}, \code{edgelist}, and \code{igraph}.
 }
 \details{
-The function converts each network in `obj` to the specified `output.type`. Conversion logic is applied based on `input.type` and `output.type`.
-- If `input.type` and `output.type` are the same, `obj` is returned as is.
-- Conversions from adjacency matrices to igraph objects are handled via `igraph::graph_from_adjacency_matrix`.
-- Conversions from igraph objects to edge lists are handled with `igraph::as_edgelist`.
-- Conversions from igraph objects to adjacency matrices are handled with `igraph::as_adjacency_matrix`.
+The function converts each network in \code{obj} to the specified \code{output.type}. Conversion logic is applied based on \code{input.type} and \code{output.type}.
+\itemize{
+\item If \code{input.type} and \code{output.type} are the same, \code{obj} is returned as is.
+\item Conversions from adjacency matrices to igraph objects are handled via \code{igraph::graph_from_adjacency_matrix}.
+\item Conversions from igraph objects to edge lists are handled with \code{igraph::as_edgelist}.
+\item Conversions from igraph objects to adjacency matrices are handled with \code{igraph::as_adjacency_matrix}.
+}
 
-To use `"dgCMatrix"` for `input.type` or `output.type`, the package `Matrix` must be installed.
+To use \code{"dgCMatrix"} for \code{input.type} or \code{output.type}, the package \code{Matrix} must be installed.
 }
 \examples{
 # Convert list of adjacency matrices to igraph objects

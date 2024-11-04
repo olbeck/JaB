@@ -11,16 +11,16 @@ bootstrap_vertex(network, B = 1000, output.type = "igraph")
 
 \item{B}{An integer specifying the number of bootstrap samples to generate. Defaults to 1000.}
 
-\item{output.type}{A character string specifying the format of the output networks. Options include `"igraph"`, `"matrix"`, `"dgCMatrix"`, or `"edgelist"`. Defaults to `"igraph"`.}
+\item{output.type}{A character string specifying the format of the output networks. Options include \code{"igraph"}, \code{"matrix"}, \code{"dgCMatrix"}, or \code{"edgelist"}. Defaults to \code{"igraph"}.}
 }
 \value{
-A list of bootstrap sample networks, each in the specified `output.type` format.
+A list of bootstrap sample networks, each in the specified \code{output.type} format.
 }
 \description{
-Generates bootstrap samples of a network by resampling vertices. This function uses a modified version of the `vertboot` function from the `snowboot` package to allow flexible input and output network types.
+Generates bootstrap samples of a network by resampling vertices. This function uses a modified version of the \code{vertboot} function from the \code{snowboot} package to allow flexible input and output network types.
 }
 \details{
-The function performs vertex bootstrapping on the adjacency matrix of the input `network`, generating `B` bootstrap samples. Each sampled adjacency matrix is assigned row and column names based on the original vertex names. The function then converts the sampled matrices to the specified `output.type`.
+The function performs vertex bootstrapping on the adjacency matrix of the input \code{network}, generating \code{B} bootstrap samples. Each sampled adjacency matrix is assigned row and column names based on the original vertex names. The function then converts the sampled matrices to the specified \code{output.type}.
 CITE VERTEXT BOOTSTRAP PAPER, CITE THOMPSON ET AL, CITE SNOWBOOT
 }
 \examples{

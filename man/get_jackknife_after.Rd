@@ -16,11 +16,11 @@ get_jackknife_after(
 \arguments{
 \item{network}{An igraph object representing the original network.}
 
-\item{boot.result}{A list of bootstrap network samples, as produced by a `bootstrap_` function.}
+\item{boot.result}{A list of bootstrap network samples, as produced by a \code{bootstrap_} function.}
 
 \item{quant}{A numeric value of length 2 specifying the upper quantile used to flag influential nodes (e.g., \code{ 0.95}).}
 
-\item{func.name}{A character string specifying the centrality function to be applied (e.g., `"degree"`, `"betweenness"`). See \code{\link{get_centrality}} for details}
+\item{func.name}{A character string specifying the centrality function to be applied (e.g., \code{"degree"}, \code{"betweenness"}). See \code{\link{get_centrality}} for details}
 
 \item{package.name}{(Optional) A character string specifying the package containing \code{func.name}. See \code{\link{get_centrality}} for details}
 
@@ -29,11 +29,11 @@ get_jackknife_after(
 \value{
 A data frame containing:
 \itemize{
-  \item \code{Node_Number}: Numeric IDs of nodes.
-  \item \code{Node_Name}: Name of nodes.
-  \item \code{Orig_Stat}: The original centrality statistic of each node.
-  \item \code{Upper_Quantile}: Upper quantile of the jackknife-after-bootstrap distribution of centrality statistic for each node.
-  \item \code{Influential}: Logical indicating if each node is influential, i.e. is `Orig_Stat` greater than `Upper_Quantile`?
+\item \code{Node_Number}: Numeric IDs of nodes.
+\item \code{Node_Name}: Name of nodes.
+\item \code{Orig_Stat}: The original centrality statistic of each node.
+\item \code{Upper_Quantile}: Upper quantile of the jackknife-after-bootstrap distribution of centrality statistic for each node.
+\item \code{Influential}: Logical indicating if each node is influential, i.e. is \code{Orig_Stat} greater than \code{Upper_Quantile}?
 }
 }
 \description{
