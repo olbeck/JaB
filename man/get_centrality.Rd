@@ -22,7 +22,24 @@ A numeric vector of the centrality statistic as calculated by \code{func.name}.
 Calculate give centrality statistic on a network
 }
 \examples{
-#COME BACK TO THESE EXAMPLES ONCE DATA IS WRITTEN
-#get_centrality("closeness", paul.igraph, package.name = "igraph, func.args = list(normalized = T))
-#get_centrality("degree", paul.igraph, package.name = "igraph, func.args = list(normalized = T))
+library(igraph)
+data("karate")
+
+#Degree Centrality
+get_centrality(karate, "degree")
+get_centrality(karate, "degree", package.name = "igraph")
+
+#Degree Centrality normalized
+get_centrality(karate, "degree", package.name = "igraph",
+               func.args = list(normalized = TRUE))
+
+
+#Closeness centrality
+get_centrality(karate, "closeness")
+get_centrality(karate, "closeness", package.name = "igraph",
+               func.args = list(normalized = TRUE))
+
+#Eigen centrality
+get_centrality(karate, "eigen_centrality")
+
 }

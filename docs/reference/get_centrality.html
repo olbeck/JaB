@@ -78,10 +78,88 @@
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">#COME BACK TO THESE EXAMPLES ONCE DATA IS WRITTEN</span></span></span>
-<span class="r-in"><span><span class="co">#get_centrality("closeness", paul.igraph, package.name = "igraph, func.args = list(normalized = T))</span></span></span>
-<span class="r-in"><span><span class="co">#get_centrality("degree", paul.igraph, package.name = "igraph, func.args = list(normalized = T))</span></span></span>
-<span class="r-in"></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r.igraph.org/" class="external-link">igraph</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"karate"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">#Degree Centrality</span></span></span>
+<span class="r-in"><span><span class="fu">get_centrality</span><span class="op">(</span><span class="va">karate</span>, <span class="st">"degree"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    Mr Hi  Actor 2  Actor 3  Actor 4  Actor 5  Actor 6  Actor 7  Actor 8 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       16        9       10        6        3        4        4        4 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Actor 9 Actor 10 Actor 11 Actor 12 Actor 13 Actor 14 Actor 15 Actor 16 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        5        2        3        1        2        5        2        2 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Actor 17 Actor 18 Actor 19 Actor 20 Actor 21 Actor 22 Actor 23 Actor 24 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        2        2        2        3        2        2        2        5 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Actor 25 Actor 26 Actor 27 Actor 28 Actor 29 Actor 30 Actor 31 Actor 32 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        3        3        2        4        3        4        4        6 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Actor 33   John A </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       12       17 </span>
+<span class="r-in"><span><span class="fu">get_centrality</span><span class="op">(</span><span class="va">karate</span>, <span class="st">"degree"</span>, package.name <span class="op">=</span> <span class="st">"igraph"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    Mr Hi  Actor 2  Actor 3  Actor 4  Actor 5  Actor 6  Actor 7  Actor 8 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       16        9       10        6        3        4        4        4 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Actor 9 Actor 10 Actor 11 Actor 12 Actor 13 Actor 14 Actor 15 Actor 16 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        5        2        3        1        2        5        2        2 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Actor 17 Actor 18 Actor 19 Actor 20 Actor 21 Actor 22 Actor 23 Actor 24 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        2        2        2        3        2        2        2        5 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Actor 25 Actor 26 Actor 27 Actor 28 Actor 29 Actor 30 Actor 31 Actor 32 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        3        3        2        4        3        4        4        6 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Actor 33   John A </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       12       17 </span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">#Degree Centrality normalized</span></span></span>
+<span class="r-in"><span><span class="fu">get_centrality</span><span class="op">(</span><span class="va">karate</span>, <span class="st">"degree"</span>, package.name <span class="op">=</span> <span class="st">"igraph"</span>,</span></span>
+<span class="r-in"><span>               func.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>normalized <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      Mr Hi    Actor 2    Actor 3    Actor 4    Actor 5    Actor 6    Actor 7 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.48484848 0.27272727 0.30303030 0.18181818 0.09090909 0.12121212 0.12121212 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    Actor 8    Actor 9   Actor 10   Actor 11   Actor 12   Actor 13   Actor 14 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.12121212 0.15151515 0.06060606 0.09090909 0.03030303 0.06060606 0.15151515 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Actor 15   Actor 16   Actor 17   Actor 18   Actor 19   Actor 20   Actor 21 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.06060606 0.06060606 0.06060606 0.06060606 0.06060606 0.09090909 0.06060606 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Actor 22   Actor 23   Actor 24   Actor 25   Actor 26   Actor 27   Actor 28 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.06060606 0.06060606 0.15151515 0.09090909 0.09090909 0.06060606 0.12121212 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Actor 29   Actor 30   Actor 31   Actor 32   Actor 33     John A </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.09090909 0.12121212 0.12121212 0.18181818 0.36363636 0.51515152 </span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">#Closeness centrality</span></span></span>
+<span class="r-in"><span><span class="fu">get_centrality</span><span class="op">(</span><span class="va">karate</span>, <span class="st">"closeness"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       Mr Hi     Actor 2     Actor 3     Actor 4     Actor 5     Actor 6 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.007692308 0.006060606 0.005952381 0.005347594 0.004629630 0.004608295 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     Actor 7     Actor 8     Actor 9    Actor 10    Actor 11    Actor 12 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.004651163 0.005524862 0.006024096 0.005780347 0.005319149 0.004424779 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    Actor 13    Actor 14    Actor 15    Actor 16    Actor 17    Actor 18 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.006211180 0.005780347 0.005181347 0.004166667 0.003289474 0.005847953 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    Actor 19    Actor 20    Actor 21    Actor 22    Actor 23    Actor 24 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.005681818 0.007518797 0.006172840 0.005347594 0.004807692 0.004201681 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    Actor 25    Actor 26    Actor 27    Actor 28    Actor 29    Actor 30 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.004784689 0.003745318 0.005128205 0.004739336 0.006134969 0.005291005 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    Actor 31    Actor 32    Actor 33      John A </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.005263158 0.006329114 0.006060606 0.007633588 </span>
+<span class="r-in"><span><span class="fu">get_centrality</span><span class="op">(</span><span class="va">karate</span>, <span class="st">"closeness"</span>, package.name <span class="op">=</span> <span class="st">"igraph"</span>,</span></span>
+<span class="r-in"><span>               func.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>normalized <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     Mr Hi   Actor 2   Actor 3   Actor 4   Actor 5   Actor 6   Actor 7   Actor 8 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.2538462 0.2000000 0.1964286 0.1764706 0.1527778 0.1520737 0.1534884 0.1823204 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Actor 9  Actor 10  Actor 11  Actor 12  Actor 13  Actor 14  Actor 15  Actor 16 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.1987952 0.1907514 0.1755319 0.1460177 0.2049689 0.1907514 0.1709845 0.1375000 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Actor 17  Actor 18  Actor 19  Actor 20  Actor 21  Actor 22  Actor 23  Actor 24 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.1085526 0.1929825 0.1875000 0.2481203 0.2037037 0.1764706 0.1586538 0.1386555 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Actor 25  Actor 26  Actor 27  Actor 28  Actor 29  Actor 30  Actor 31  Actor 32 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.1578947 0.1235955 0.1692308 0.1563981 0.2024540 0.1746032 0.1736842 0.2088608 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Actor 33    John A </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.2000000 0.2519084 </span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">#Eigen centrality</span></span></span>
+<span class="r-in"><span><span class="fu">get_centrality</span><span class="op">(</span><span class="va">karate</span>, <span class="st">"eigen_centrality"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      Mr Hi    Actor 2    Actor 3    Actor 4    Actor 5    Actor 6    Actor 7 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.85787944 0.82876616 0.99036448 0.54536909 0.15291191 0.18519270 0.18250148 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    Actor 8    Actor 9   Actor 10   Actor 11   Actor 12   Actor 13   Actor 14 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.49006831 0.67825515 0.13788382 0.12588193 0.11866884 0.11499616 0.66050150 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Actor 15   Actor 16   Actor 17   Actor 18   Actor 19   Actor 20   Actor 21 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.21845188 0.31067062 0.05086244 0.11732645 0.13429645 0.20164970 0.17234251 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Actor 22   Actor 23   Actor 24   Actor 25   Actor 26   Actor 27   Actor 28 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.15554033 0.22248354 0.59886179 0.14020695 0.33667492 0.16102652 0.40561477 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Actor 29   Actor 30   Actor 31   Actor 32   Actor 33     John A </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.23660019 0.37306834 0.43481077 0.57527665 0.91256318 1.00000000 </span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
