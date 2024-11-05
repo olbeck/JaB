@@ -11,28 +11,51 @@ bootstrap_vertex(network, B = 1000, output.type = "igraph")
 
 \item{B}{An integer specifying the number of bootstrap samples to generate. Defaults to 1000.}
 
-\item{output.type}{A character string specifying the format of the output networks. Options include \code{"igraph"}, \code{"matrix"}, \code{"dgCMatrix"}, or \code{"edgelist"}. Defaults to \code{"igraph"}.}
+\item{output.type}{A character string specifying the format of the output networks. Options include \code{"igraph"}, \code{"matrix"}, \code{"dgCMatrix"}, or \code{"edgelist"}. Defaults to \code{"igraph"}. See \link[JaB:make_network_type]{make_network_type} for details.}
 }
 \value{
 A list of bootstrap sample networks, each in the specified \code{output.type} format.
 }
 \description{
-Generates bootstrap samples of a network by resampling vertices. This function uses a modified version of the \code{vertboot} function from the \code{snowboot} package to allow flexible input and output network types.
+Generate bootstrap samples of a network by resampling vertices.
+This function uses a modified version of the \link[snowboot:vertboot]{vertboot} from the \pkg{snowboot} package to allow flexible input and output network types.
 }
 \details{
-The function performs vertex bootstrapping on the adjacency matrix of the input \code{network}, generating \code{B} bootstrap samples. Each sampled adjacency matrix is assigned row and column names based on the original vertex names. The function then converts the sampled matrices to the specified \code{output.type}.
-CITE VERTEXT BOOTSTRAP PAPER, CITE THOMPSON ET AL, CITE SNOWBOOT
+Generates bootstrap samples of a network by resampling vertices.
+This function uses a modified version of the \link[snowboot:vertboot]{vertboot} from the \pkg{snowboot} \insertCite{snowboot}{JaB} package to allow flexible input and output network types.
+
+This procedure is first described in \insertCite{snijders-borgatti-1999;textual}{JaB}
+and is outlined explicitly in \insertCite{chen-et-al-2018;textual}{JaB}.
 }
 \examples{
-# Create a sample igraph network
-network <- igraph::make_ring(10)
+library(igraph)
+data(karate)
+set.seed(12)
+boot.samp <- bootstrap_vertex(karate, B=1)
 
-# Generate bootstrap samples as igraph objects
-boot_samples <- bootstrap_vertex(network, B = 100, output.type = "igraph")
+#plot comparison of original data and bootstrap sample
+par(mfrow = c(1, 2))
+#get the same positions in the original data and bootstrap samples
+l <- igraph::layout_nicely(karate)
+which.index <- NA
+for(i in 1:gorder(boot.samp[[1]])){
+  which.index[i] <- which(V(boot.samp[[1]])$name[i] == V(karate)$name)
+}
 
-# Generate bootstrap samples as adjacency matrices
-boot_samples_matrices <- bootstrap_vertex(network, B = 100, output.type = "matrix")
+plot(karate,
+     layout = l,
+     main = "Karate Data",
+     vertex.label = NA)
+plot(boot.samp[[1]],
+     layout = l[which.index, ],
+     main = "Karate Bootstrap Sample",
+     vertex.label = NA,
+     vertex.color = V(karate)$Faction[which.index ])
 
+
+}
+\references{
+\insertAllCited{}
 }
 \seealso{
 \code{\link{make_network_type}}, \code{\link[snowboot]{vertboot}}
