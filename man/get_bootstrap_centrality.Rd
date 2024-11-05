@@ -47,7 +47,7 @@ central.result <- get_bootstrap_centrality(boot.result,
 central.result[[1]]
 
 #plot bootstrap centralities vs original centrality
-hist(unlist(central.result), freq = F,
+hist(unlist(central.result), freq = FALSE,
      xlab = "degree centrality", main = "Bootstrap Degree Centralities")
 lines(density(igraph::degree(karate, normalized = TRUE)), col = "red")
 

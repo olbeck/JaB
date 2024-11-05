@@ -19,6 +19,10 @@ reference:
     - get_bootstrap_centrality
     - get_centrality
     - get_jackknife_after
+  - title: Mallows' Ditance
+    contents:
+    - mallows_distance
+    - mallows_distance_trimmed
   - title: Data
     contents:
     - karate
