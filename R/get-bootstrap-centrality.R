@@ -12,8 +12,24 @@
 #' @details Calculates bootstrap centrality statistics from give bootstrap samples and a specified centrality statistic.
 #'
 #' @examples
-#' # Assuming `boot_samples` is a list of adjacency matrices from bootstrap samples
-#' #get_bootstrap_centrality(boot_samples, obj.type = "matrix", func.name = "degree")
+#' library(igraph)
+#' data("karate")
+#' set.seed(89)
+#' boot.result <- bootstrap_latent_space(
+#'   karate, d = 2, B = 10)
+#'
+#' #Calculate degree centrality (from igraph)
+#' central.result <- get_bootstrap_centrality(boot.result,
+#'                                            func.name = "degree",
+#'                                            package.name = "igraph",
+#'                                            func.args = list(normalized = TRUE))
+#' central.result[[1]]
+#'
+#' #plot bootstrap centralities vs original centrality
+#' hist(unlist(central.result), freq = F,
+#'      xlab = "degree centrality", main = "Bootstrap Degree Centralities")
+#' lines(density(igraph::degree(karate, normalized = TRUE)), col = "red")
+#'
 #'
 #' @seealso \code{\link{make_network_type}}, \code{\link{get_centrality}}
 #' @export

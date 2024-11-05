@@ -95,7 +95,7 @@ test <- bootstrap_vertex(karate, output.type = "edgelist")
 test[[1]]
 
 ###
-test <- bootstrap_snowboot(
+boot_result <- bootstrap_snowboot(
   karate, B = 100,
   num.seed = 1, num.wave = 1,
   output.type = "matrix")
@@ -107,7 +107,10 @@ func.name = "degree"
 package.name = NULL
 func.args = NULL
 
-central_result <- get_bootstrap_centrality(boot_result, "igraph", "degree")
+central_result <- get_bootstrap_centrality(boot_result,
+                                           func.name = "degree",
+                                           package.name = "igraph",
+                                           func.args = list(normalized = TRUE))
 
 get_jackknife_after(karate, test, c(0, 0.9), "closeness")
 
