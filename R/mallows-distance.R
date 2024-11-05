@@ -94,7 +94,7 @@ mallows_distance <- function(vec1, vec2,p=2 ){
 #' mallows_distance_trimmed(orig.degree, boot.degree, alpha = 1/34)
 #' mallows_distance_trimmed(orig.degree, boot.degree, alpha = 2/34)
 #'
-#' @seealso [mallows_distance_trimmed()]
+#' @seealso [mallows_distance()]
 #'
 #' @references
 #'

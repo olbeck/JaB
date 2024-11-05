@@ -54,5 +54,5 @@ mallows_distance_trimmed(orig.degree, boot.degree, alpha = 2/34)
 \insertRef{munk-czado-1998}{JaB}
 }
 \seealso{
-\code{\link[=mallows_distance_trimmed]{mallows_distance_trimmed()}}
+\code{\link[=mallows_distance]{mallows_distance()}}
 }
