@@ -41,10 +41,35 @@ This function inputs a \code{igraph} object, it uses the node names (not node ID
 and it returns the edge list of the bootstrap sample (not the nodes included in the sample).
 }
 \examples{
-#ADD EXAMPLE ONCE DATA IS ADDED
+library(igraph)
+data("karate")
+# Snowboot Bootstrap
+set.seed(1)
+boot.sample <- bootstrap_snowboot(karate, B = 1, num.seed = 1, num.wave = 2)
+
+#plot comparison of original data and bootstrap sample
+par(mfrow = c(1, 2))
+#get the same positions in the original data and bootstrap samples
+l <- igraph::layout_nicely(karate)
+which.index <- NA
+for(i in 1:gorder(boot.sample[[1]])){
+  which.index[i] <- which(V(boot.sample[[1]])$name[i] == V(karate)$name)
+}
+
+plot(karate,
+     layout = l,
+     main = "Karate Data",
+     vertex.label = NA)
+plot(boot.sample[[1]],
+     layout = l[which.index, ],
+     main = "Karate Bootstrap Sample",
+     vertex.label = NA,
+     vertex.color = V(karate)$Faction[which.index ])
 }
 \references{
 \insertRef{snowboot}{JaB}
+
+\insertRef{gel-lyubchich-ramirez-2017}{JaB}
 }
 \seealso{
 \link[snowboot:lsmi]{lsmi}

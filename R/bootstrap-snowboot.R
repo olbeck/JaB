@@ -7,16 +7,20 @@
 #' This function uses the node names (not node IDs),
 #' and it returns the edge list of the bootstrap sample (not the nodes included in the sample).
 #'
+#' This is primarily used as an internal function for \link[JaB:bootstrap_snowboot]{bootstrap_snowboot}.
+#'
 #'
 #' @param net A network object as described in the \link[snowboot:sample_about_one_seed]{snowboot} package. package
 #' @param seed Character string of the selected seed to start the LSMI (name of the node).
 #' @param n.wave Number of waves to be included each the snowball sample
 #' @returns A list of length `n.wave` where each element is the edge list of edges included on the corresponding wave of sampling.
 #' @seealso \link[snowboot:lsmi]{lsmi} \link[snowboot:sample_about_one_seed]{sample_about_one_seed}
-#' @references \insertRef{snowboot}{JaB}
-#' @examples
-#' #ADD EXAMPLE ONCE DATA IS ADDED
-
+#' @references
+#'
+#' \insertRef{snowboot}{JaB}
+#'
+#' \insertRef{gel-lyubchich-ramirez-2017}{JaB}
+#'
 sample_about_one_seed_modified <- function (net, seed, n.wave = 1) {
   if (n.wave < 1) {
     stop("Number of waves, n.wave, should be >= 1.")
@@ -66,11 +70,38 @@ sample_about_one_seed_modified <- function (net, seed, n.wave = 1) {
 #' @returns A list of length \eqn{B} where each element is an bootstrap sample.
 #' Each element is of class `output.type`.
 #' @seealso  \link[snowboot:lsmi]{lsmi}
-#' @references \insertRef{snowboot}{JaB}
+#' @references
+#'
+#' \insertRef{snowboot}{JaB}
+#'
+#' \insertRef{gel-lyubchich-ramirez-2017}{JaB}
+#'
 #' @examples
-#' #ADD EXAMPLE ONCE DATA IS ADDED
+#' library(igraph)
+#' data("karate")
+#' # Snowboot Bootstrap
+#' set.seed(1)
+#' boot.sample <- bootstrap_snowboot(karate, B = 1, num.seed = 1, num.wave = 2)
+#'
+#' #plot comparison of original data and bootstrap sample
+#' par(mfrow = c(1, 2))
+#' #get the same positions in the original data and bootstrap samples
+#' l <- igraph::layout_nicely(karate)
+#' which.index <- NA
+#' for(i in 1:gorder(boot.sample[[1]])){
+#'   which.index[i] <- which(V(boot.sample[[1]])$name[i] == V(karate)$name)
+#' }
+#'
+#' plot(karate,
+#'      layout = l,
+#'      main = "Karate Data",
+#'      vertex.label = NA)
+#' plot(boot.sample[[1]],
+#'      layout = l[which.index, ],
+#'      main = "Karate Bootstrap Sample",
+#'      vertex.label = NA,
+#'      vertex.color = V(karate)$Faction[which.index ])
 #' @export
-
 bootstrap_snowboot <- function(network, B,
                                num.seed = NA, num.wave = NA,
                                output.type = "igraph"){
@@ -86,7 +117,7 @@ bootstrap_snowboot <- function(network, B,
     #get sample (using node names)
     sample_seeds <- net$name[sort(sample(1:net$n, num.seed, replace = FALSE))]
     #get resulting lsmi sample as an edge list
-    edge_list <- lapply(sample_seeds, function(x) JaB:::sample_about_one_seed_modified(net, x, num.wave))
+    edge_list <- lapply(sample_seeds, function(x) sample_about_one_seed_modified(net, x, num.wave))
     #combine into one edge list
     boot_edge_lists[[b]] <- as.matrix(dplyr::distinct(dplyr::bind_rows(lapply(edge_list, dplyr::bind_rows))))
   }

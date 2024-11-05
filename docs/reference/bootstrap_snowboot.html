@@ -102,6 +102,11 @@ and it returns the edge list of the bootstrap sample (not the nodes included in 
     <p>Ramirez-Ramirez L, Nezafati K, Chen Y, Lyubchich Y, Gel YR (2022).
 <em>snowboot: Bootstrap Methods for Network Inference</em>.
 R package version 1.0.2, <a href="https://cran.r-project.org/web/packages/snowboot" class="external-link">https://cran.r-project.org/web/packages/snowboot</a>.</p>
+<p>Gel YR, Lyubchich V, Ramirez LR (2017).
+“Bootstrap quantification of estimation uncertainties in network degree distributions.”
+<em>Scientific Reports</em>, <b>7</b>(1).
+<a href="https://doi.org/10.1038/s41598-017-05885-x" class="external-link">doi:10.1038/s41598-017-05885-x</a>
+.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -110,8 +115,31 @@ R package version 1.0.2, <a href="https://cran.r-project.org/web/packages/snowbo
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">#ADD EXAMPLE ONCE DATA IS ADDED</span></span></span>
-<span class="r-in"></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r.igraph.org/" class="external-link">igraph</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"karate"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># Snowboot Bootstrap</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">boot.sample</span> <span class="op">&lt;-</span> <span class="fu">bootstrap_snowboot</span><span class="op">(</span><span class="va">karate</span>, B <span class="op">=</span> <span class="fl">1</span>, num.seed <span class="op">=</span> <span class="fl">1</span>, num.wave <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">#plot comparison of original data and bootstrap sample</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co">#get the same positions in the original data and bootstrap samples</span></span></span>
+<span class="r-in"><span><span class="va">l</span> <span class="op">&lt;-</span> <span class="fu">igraph</span><span class="fu">::</span><span class="fu"><a href="https://r.igraph.org/reference/layout_nicely.html" class="external-link">layout_nicely</a></span><span class="op">(</span><span class="va">karate</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">which.index</span> <span class="op">&lt;-</span> <span class="cn">NA</span></span></span>
+<span class="r-in"><span><span class="kw">for</span><span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://r.igraph.org/reference/gorder.html" class="external-link">gorder</a></span><span class="op">(</span><span class="va">boot.sample</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="va">which.index</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="fu"><a href="https://r.igraph.org/reference/V.html" class="external-link">V</a></span><span class="op">(</span><span class="va">boot.sample</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">$</span><span class="va">name</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">==</span> <span class="fu"><a href="https://r.igraph.org/reference/V.html" class="external-link">V</a></span><span class="op">(</span><span class="va">karate</span><span class="op">)</span><span class="op">$</span><span class="va">name</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">karate</span>,</span></span>
+<span class="r-in"><span>     layout <span class="op">=</span> <span class="va">l</span>,</span></span>
+<span class="r-in"><span>     main <span class="op">=</span> <span class="st">"Karate Data"</span>,</span></span>
+<span class="r-in"><span>     vertex.label <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">boot.sample</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>,</span></span>
+<span class="r-in"><span>     layout <span class="op">=</span> <span class="va">l</span><span class="op">[</span><span class="va">which.index</span>, <span class="op">]</span>,</span></span>
+<span class="r-in"><span>     main <span class="op">=</span> <span class="st">"Karate Bootstrap Sample"</span>,</span></span>
+<span class="r-in"><span>     vertex.label <span class="op">=</span> <span class="cn">NA</span>,</span></span>
+<span class="r-in"><span>     vertex.color <span class="op">=</span> <span class="fu"><a href="https://r.igraph.org/reference/V.html" class="external-link">V</a></span><span class="op">(</span><span class="va">karate</span><span class="op">)</span><span class="op">$</span><span class="va">Faction</span><span class="op">[</span><span class="va">which.index</span> <span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="bootstrap_snowboot-1.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

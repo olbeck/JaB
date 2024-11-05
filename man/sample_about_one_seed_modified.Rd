@@ -23,12 +23,13 @@ This is a slightly modified version of the \link[snowboot:sample_about_one_seed]
 This is a slightly modified version of the \link[snowboot:sample_about_one_seed]{sample_about_one_seed} from the \pkg{snowboot} package.
 This function uses the node names (not node IDs),
 and it returns the edge list of the bootstrap sample (not the nodes included in the sample).
-}
-\examples{
-#ADD EXAMPLE ONCE DATA IS ADDED
+
+This is primarily used as an internal function for \link[JaB:bootstrap_snowboot]{bootstrap_snowboot}.
 }
 \references{
 \insertRef{snowboot}{JaB}
+
+\insertRef{gel-lyubchich-ramirez-2017}{JaB}
 }
 \seealso{
 \link[snowboot:lsmi]{lsmi} \link[snowboot:sample_about_one_seed]{sample_about_one_seed}
