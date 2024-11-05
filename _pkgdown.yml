@@ -23,6 +23,7 @@ reference:
     contents:
     - karate
     - paul.revere
+    - paul.revere.groups
   - title: Miscellaneous
     contents:
     - ASE

@@ -65,20 +65,35 @@ all(unlist(lapply(edge.list.membership, length)) == E(paul.revere)$weight)
 
 paul.revere <- set_edge_attr(paul.revere, 'membership', value=edge.list.membership)
 
-
-
-
-
-
-
-
-
 usethis::use_data(paul.revere, overwrite = TRUE)
 
+
+# Groups Network
 paul.revere.groups <-
   igraph::graph_from_adjacency_matrix(
     group.net, weighted=TRUE,
     mode="undirected", diag=FALSE)
+
+
+V(paul.revere.groups)$name == names(group_membership)
+
+paul.revere.groups <- set_vertex_attr(paul.revere.groups, 'members', value=group_membership)
+
+group.el <- as_edgelist(paul.revere.groups)
+shared.members <- vector(mode = "list", length = dim(group.el)[1])
+for(i in 1:length(shared.members)){
+
+  id1 <- which(V(paul.revere.groups)$name == group.el[i, 1])
+  mem1 <- V(paul.revere.groups)$members[[id1]]
+
+  id2 <- which(V(paul.revere.groups)$name == group.el[i, 2])
+  mem2 <- V(paul.revere.groups)$members[[id2]]
+
+  shared.members[[i]] <- dplyr::intersect(mem1, mem2)
+}
+paul.revere.groups <- set_edge_attr(paul.revere.groups, 'shared.members', value=shared.members)
+
+
 
 usethis::use_data(paul.revere.groups, overwrite = TRUE)
 

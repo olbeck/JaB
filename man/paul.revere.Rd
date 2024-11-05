@@ -37,8 +37,6 @@ paul.revere
 Association network of Paul Revere and other leaders from the American Revolution in the Boston area.
 }
 \details{
-Association network of Paul Revere and other leaders from the American Revolution in the Boston area.
-
 This network includes a total of 254 men involved in Boston's revolutionary movement.
 Each man was a member of one (or several) of the following seven groups: the Masonic
 lodge that met at the Green Dragon Tavern; the Loyal Nine, which was the
@@ -52,6 +50,13 @@ were both members of the same group. The edge weight is the number of groups the
 were both members of. (e.g. John Adams and Dr. Allen were both part of the North Caucus so
 there is an edge between them with weight one. John Bradford and William Powell were both members
 of the Boston Committee and the London Enemies so there is an edge between them with weight two.)
+}
+\examples{
+data("paul.revere")
+set.seed(400)
+plot(paul.revere, vertex.label = NA)
+
+
 }
 \references{
 \insertAllCited{}
