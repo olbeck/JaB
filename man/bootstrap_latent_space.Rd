@@ -16,28 +16,67 @@ bootstrap_latent_space(network, d = 2, B = 1000, output.type = "igraph")
 \item{output.type}{The class of object the resulting bootstrap networks should be.
 The default is \code{igraph} which will make bootstrap samples of class "igraph". Note that for large \eqn{B}, this may not be an efficient use of storage space.
 Other options include \code{matrix} which will return bootstrap samples as an \eqn{n}-by-\eqn{n} adjacency matrix,
-\code{dgCMatrix} which will return scarce matrices (package \code{Matrix} must be loaded).
+\code{dgCMatrix} which will return scarce matrices (package \code{Matrix} must be loaded), or
+\code{edgelist} which will return a \eqn{n}-by-\eqn{2} matrix of the list of edges in the network.
 See \link[JaB:make_network_type]{make_network_type} for details.}
 }
 \value{
 A list of length \eqn{B} where each element is an bootstrap sample.
-Each element is of class \code{output.type}.
+Each element is of type \code{output.type}.
 }
 \description{
-Generates bootstrap samples of a network with the latent space bootstrap method described in \insertCite{levin-levina-2019;textual}{JaB}.
+Generate bootstrap samples of a network with the latent space bootstrap method described in \insertCite{levin-levina-2019;textual}{JaB}.
 }
 \details{
-Generates bootstrap samples of a network with the latent space bootstrap method described in \insertCite{levin-levina-2019;textual}{JaB}.
+Generate bootstrap samples of a network with the latent space bootstrap method described in \insertCite{levin-levina-2019;textual}{JaB}.
 
-Latent positions of the nodes in the network are first calculated in \eqn{\mathbb{R}^d} using adjacency spectral with \link[JaB:ASE]{ASE}.
+Latent positions of the nodes in the network are first calculated in \eqn{\mathbb{R}^d} using adjacency spectral with \link[JaB:ASE]{ASE} \insertCite{sussman-et-al-2012}{JaB}.
 Then for each pair of nodes, an edge is present with probability equal to the dot product of their positions in the latent space.
 
-OUTLINE ALGORITHM
-Cite Sussman et al. (2012) paper for ASE
-CITE Levin and Levina (2022) paper for bootstrap procedure.
-Link to Matrix package
+Let \eqn{\boldsymbol{A}} be the adjacency matrix of \code{network} with \eqn{n} nodes.
+Additionally, let \eqn{\hat{\boldsymbol{\Lambda}} \in \mathbb{R}^{d \times d}}
+be the diagonal matrix formed by the top \code{d} largest-magnitude eigenvalues
+of the adjacency matrix and \eqn{\hat{\boldsymbol{U}} \in \mathbb{R}^{n \times d}}
+be the matrix with the corresponding eigenvectors as its columns.
+The adjacency spectral embedding of \eqn{\boldsymbol{A}} is
+\eqn{\hat{\boldsymbol{X}} = \hat{\boldsymbol{U}}\hat{\boldsymbol{\Lambda}}^{1/2} \in \mathbb{R}^{n \times d}}.
+
+Let \eqn{X_i} be the \eqn{\text{i}^{\text{th}}} row of \eqn{\hat{\boldsymbol{X}}},
+which corresponds to the
+location of the \eqn{\text{i}^{\text{th}}} node in the \code{d} dimensional latent space.
+
+To generate a bootstrap adjacency matrix \eqn{\boldsymbol{A}^{(b)}}, for
+\eqn{1 \leq i < j \leq n} independently draw \eqn{A_{ij}^{(b)} \sim \text{Bernoulli}(X_i^T X_j)}.
+
+There may be cases in which \eqn{X_i^T X_j \not\in [0,1]}. In these cases, replace
+\eqn{X_i^T X_j} with \eqn{\max(\min(X_i^T X_j, 1), 0)}.
 }
 \examples{
-# bootstrap_latent_space(paul.igraph, d=2, B=10, output.type = "matrix")
+library(igraph)
+data("karate")
+#Find the latent positions in 2D
+X <- ASE(karate, 2)
+plot(X)
 
+# Color According to faction
+plot(X, col = ifelse(V(karate)$Faction == 1, "red", "blue"))
+
+# Latent Space Bootstrap
+set.seed(1)
+boot.sample <- bootstrap_latent_space(karate, d = 2, B = 1)
+
+#plot comparison of original data and bootstrap sample
+par(mfrow = c(1, 2))
+l <- igraph::layout_nicely(karate)
+plot(karate,
+     layout = l,
+     main = "Karate Data")
+plot(boot.sample[[1]],
+     layout = l,
+     main = "Karate Bootstrap Sample",
+     vertex.label = 1:gorder(karate),
+     vertex.color = V(karate)$color)
+}
+\references{
+\insertAllCited{}
 }

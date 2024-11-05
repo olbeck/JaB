@@ -12,19 +12,52 @@ ASE(network, d)
 \item{d}{number of latent dimensions to embed the node positions in.}
 }
 \value{
-An \eqn{n}-by-\eqn{d} matrix where the \eqn{i^{th}} row of the matrix corresponds to node \eqn{i}'s position in the \eqn{d}-dimensional latent space.
+An \eqn{n}-by-\eqn{d} matrix where the \eqn{i^{th}} row of the matrix corresponds to node \eqn{i}'s position in the \code{d}-dimensional latent space.
 Bootstrap samples will retain vertex names of the input \code{network} but will loose all other vertex and edge attributes.
 }
 \description{
 Calculate the adjacency spectral embedding of a network.
 }
 \details{
-This calculates the latent positions of the nodes of a network in \eqn{\mathbb{R}^d}.
+This calculates the latent positions of the nodes of a network in \eqn{\mathbb{R}^d}
+using adjacency spectral embedding \insertCite{sussman-et-al-2012}{JaB}.
 
-ADD ALGORITHM
+Let \eqn{\boldsymbol{A}} be the adjacency matrix of \code{network} with \eqn{n} nodes.
+Additionally, let \eqn{\hat{\boldsymbol{\Lambda}} \in \mathbb{R}^{d \times d}}
+be the diagonal matrix formed by the top \code{d} largest-magnitude eigenvalues
+of the adjacency matrix and \eqn{\hat{\boldsymbol{U}} \in \mathbb{R}^{n \times d}}
+be the matrix with the corresponding eigenvectors as its columns.
+The adjacency spectral embedding of \eqn{\boldsymbol{A}} is
+\eqn{\hat{\boldsymbol{X}} = \hat{\boldsymbol{U}}\hat{\boldsymbol{\Lambda}}^{1/2} \in \mathbb{R}^{n \times d}}.
+
+The \eqn{\text{i}^{\text{th}}} row of \eqn{\hat{\boldsymbol{X}}} corresponds to the
+location of the \eqn{\text{i}^{\text{th}}} node in the \code{d} dimensional latent space.
 }
 \examples{
-#ADD EXAMPLE ONCE DATA IS ADDED
+library(igraph)
+data("karate")
+#Find the latent positions in 2D
+X <- ASE(karate, 2)
+plot(X)
+
+# Color According to faction
+plot(X, col = ifelse(V(karate)$Faction == 1, "red", "blue"))
+
+# Latent Space Bootstrap
+set.seed(1)
+boot.sample <- bootstrap_latent_space(karate, d = 2, B = 1)
+
+#plot comparison of original data and bootstrap sample
+par(mfrow = c(1, 2))
+l <- igraph::layout_nicely(karate)
+plot(karate,
+     layout = l,
+     main = "Karate Data")
+plot(boot.sample[[1]],
+     layout = l,
+     main = "Karate Bootstrap Sample",
+     vertex.label = 1:gorder(karate),
+     vertex.color = V(karate)$color)
 }
 \references{
 \insertRef{sussman-et-al-2012}{JaB}
