@@ -36,6 +36,7 @@ Then the trimmed \eqn{p^{\text{th}}} Mallows distance between \eqn{\hat{F}(x)} a
 \eqn{\Psi_{\alpha, p}(\hat{F}, \hat{G}) = \left( \frac{1}{1-2\alpha}\int_{\alpha}^{1-\alpha} |\hat{F}^{-1}(t) - \hat{G}^{-1}(t) |^p dt \right)^{1/p}}
 }
 \examples{
+library(igraph)
 data("karate")
 set.seed(1)
 boot.sample <- bootstrap_latent_space(karate, d = 2, B = 1)

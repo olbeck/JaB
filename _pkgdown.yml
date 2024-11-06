@@ -25,6 +25,7 @@ reference:
     - mallows_distance_trimmed
   - title: Data
     contents:
+    - hamster
     - karate
     - paul.revere
     - paul.revere.groups

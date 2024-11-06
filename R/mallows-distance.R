@@ -22,6 +22,7 @@
 #' \eqn{\Psi_{p} (\hat{F}, \hat{G}) = \left(\int_{0}^{1} |\hat{F}^{-1}(t) - \hat{G}^{-1}(t) |^p dt \right)^{1/p}}
 #'
 #' @examples
+#' library(igraph)
 #' data("karate")
 #  # Latent Space Bootstrap
 #' set.seed(1)
@@ -82,6 +83,7 @@ mallows_distance <- function(vec1, vec2,p=2 ){
 #' \eqn{\Psi_{\alpha, p}(\hat{F}, \hat{G}) = \left( \frac{1}{1-2\alpha}\int_{\alpha}^{1-\alpha} |\hat{F}^{-1}(t) - \hat{G}^{-1}(t) |^p dt \right)^{1/p}}
 #'
 #' @examples
+#' library(igraph)
 #' data("karate")
 #  # Latent Space Bootstrap
 #' set.seed(1)

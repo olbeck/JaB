@@ -134,3 +134,27 @@ NULL
 #'
 #' \insertAllCited{}
 NULL
+
+#' Pester Hamster Network
+#'
+#' Friendship network among users of hamsterster.com from \insertCite{rossi-ahmed-2015;textual}{JaB}
+#'
+#' @name hamster
+#' @docType data
+#' @usage
+#' hamster
+#' @format
+#' An undirected `igraph` graph object. Nodes are individual accounts from hamsterster.com
+#' and an edge is present between two nodes if the respective accounts are friends.
+#'
+#' @source \url{https://networkrepository.com/petster-hamster.php}
+#' @references
+#'
+#' \insertAllCited{}
+#'
+#' @examples
+#' data("hamster")
+#' set.seed(600)
+#' plot(hamster, vertex.label = NA, vertex.size = 3)
+#'
+NULL
