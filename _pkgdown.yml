@@ -33,6 +33,7 @@ reference:
     contents:
     - ASE
     - detect_type
+    - get_largest_component
     - get_nodes
     - make_network_type
     - sample_about_one_seed_modified
