@@ -6,7 +6,7 @@ template:
 
 navbar:
   structure:
-    left:  [intro, reference]
+    left:  [intro, reference, articles]
 
 reference:
   - title: Network Bootstrap
@@ -14,7 +14,11 @@ reference:
     - bootstrap_latent_space
     - bootstrap_snowboot
     - bootstrap_vertex
-  - title: Jackknife-after-Bootstrap
+  - title: Jackknife-after-Bootstrap for Linear Regression
+    contents:
+    - get_infl
+    - jab_lm
+  - title: Jackknife-after-Bootstrap for Networks
     contents:
     - get_bootstrap_centrality
     - get_centrality
@@ -23,12 +27,14 @@ reference:
     contents:
     - mallows_distance
     - mallows_distance_trimmed
+    - mallow_equiv_test
   - title: Data
     contents:
     - hamster
     - karate
     - paul.revere
     - paul.revere.groups
+    - trump.world
   - title: Miscellaneous
     contents:
     - ASE

@@ -7,6 +7,12 @@
     <loc>/LICENSE.html</loc>
   </url>
   <url>
+    <loc>/articles/index.html</loc>
+  </url>
+  <url>
+    <loc>/articles/jab-regression.html</loc>
+  </url>
+  <url>
     <loc>/authors.html</loc>
   </url>
   <url>
@@ -34,6 +40,9 @@
     <loc>/reference/get_centrality.html</loc>
   </url>
   <url>
+    <loc>/reference/get_infl.html</loc>
+  </url>
+  <url>
     <loc>/reference/get_jackknife_after.html</loc>
   </url>
   <url>
@@ -52,6 +61,9 @@
     <loc>/reference/index.html</loc>
   </url>
   <url>
+    <loc>/reference/jab_lm.html</loc>
+  </url>
+  <url>
     <loc>/reference/karate.html</loc>
   </url>
   <url>
@@ -59,6 +71,9 @@
   </url>
   <url>
     <loc>/reference/make_network_type.html</loc>
+  </url>
+  <url>
+    <loc>/reference/mallow_equiv_test.html</loc>
   </url>
   <url>
     <loc>/reference/mallows_distance.html</loc>
@@ -77,5 +92,8 @@
   </url>
   <url>
     <loc>/reference/sample_about_one_seed_modified.html</loc>
+  </url>
+  <url>
+    <loc>/reference/trump.world.html</loc>
   </url>
 </urlset>

@@ -28,5 +28,4 @@ get_largest_component(hamster)
 data("karate")
 is.connected(karate)
 get_largest_component(karate)
-
 }

@@ -158,3 +158,63 @@ NULL
 #' plot(hamster, vertex.label = NA, vertex.size = 3)
 #'
 NULL
+
+#' Trump World Network
+#'
+#' Association network of Donald Trump and associates pre-2020 inauguration
+#' compiled by Buzz Feed News \insertCite{trump-world}{JaB}.
+#'
+#' @details
+#' In January 2017 just before Donald Trump's inauguration, Buzz Feed News published
+#' and article asking to "Help Us Map TrumpWorld". They documented over 2,000 people
+#' and organizations connected to the incoming Trump administration. They released a
+#' public call asking for analysis of this data to help learn more about Trump's business
+#' connections and how they may impact his administration.
+#'
+#' Nodes in this network are entities such as people, organizations, or federal agencies.
+#' And edge is present between two nodes if there is a documented connection between
+#' these two entities (e.g. ownership, committee member, familial relationship,
+#' employee, business relationship, etc. )
+#'
+#'
+#' @name trump.world
+#' @docType data
+#' @usage
+#' trump.world
+#' @format
+#' An undirected `igraph` graph object.
+#'
+#' Vertex Attributes:
+#'   \itemize{
+#'    \item{"name": }{Names of entity.}
+#'    \item{"EntityType": }{Type of entity.
+#'      \itemize{
+#'      \item{Person: }{Entity is a person.}
+#'      \item{Federal Agency: }{Entity is a federal agency.}
+#'      \item{Organization: }{Entity is a business (CORP, LLC, INC, LP, etc.), political organization (advocacy, PAC), religious organization (church, etc.)}
+#'    }
+#'  }
+#' }
+#'
+#' Edge Attributes:
+#'   \itemize{
+#'    \item{"Connection": }{relationship type between the two entities}
+#'    \item{"Source": }{url to source of connection.}
+#'  }
+#'
+#'
+#' @source Data originally published by Buzz Feed News at
+#' \url{https://github.com/BuzzFeedNews/trumpworld} and
+#' \url{https://docs.google.com/spreadsheets/d/1Z5Vo5pbvxKJ5XpfALZXvCzW26Cl4we3OaN73K9Ae5Ss/edit?gid=1996904412#gid=1996904412}.
+#'
+#' @examples
+#' data("trump.world")
+#' set.seed(39082)
+#' plot(trump.world, vertex.label = NA)
+#'
+#'
+#' @references
+#'
+#' \insertAllCited{}
+#'
+NULL

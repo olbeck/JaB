@@ -17,7 +17,7 @@
 #' data("karate")
 #' is.connected(karate)
 #' get_largest_component(karate)
-#'
+#' @export
 get_largest_component <- function(network){
 
   cl <- class(network)

@@ -29,15 +29,24 @@
 #' # Convert list of adjacency matrices to igraph objects
 #' one_matrix <- matrix(c(0, 1, 1, 1, 0, 0, 1, 0, 0), nrow = 3, byrow = TRUE)
 #' matrix_list <- replicate(3, one_matrix, simplify = FALSE)
-#' igraph_list <- make_network_type(matrix_list, input.type = "matrix", output.type = "igraph")
+#' igraph_list <-
+#'   make_network_type(matrix_list,
+#'                    input.type = "matrix",
+#'                    output.type = "igraph")
 #'
 #' # Same thing now using detect type
 #' type <- detect_type(matrix_list)
 #' type
-#' igraph_list <- make_network_type(matrix_list, input.type = type, output.type = "igraph")
+#' igraph_list <-
+#'   make_network_type(matrix_list,
+#'                    input.type = type,
+#'                    output.type = "igraph")
 #'
 #' # Convert list of igraph objects to sparse matrix
-#' sparsematrix_list <- make_network_type(igraph_list, input.type = "igraph", output.type = "dgCMatrix")
+#' sparsematrix_list <-
+#'   make_network_type(igraph_list,
+#'                     input.type = "igraph",
+#'                     output.type = "dgCMatrix")
 #' detect_type(sparsematrix_list)
 #'
 #' @importFrom igraph graph_from_adjacency_matrix as_adjacency_matrix as_edgelist

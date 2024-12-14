@@ -39,8 +39,6 @@
 #' @importFrom igraph V gorder
 #' @importFrom dplyr group_by arrange ungroup mutate select
 #' @export
-
-
 get_jackknife_after <- function(network,
                           boot.result,
                           quant,

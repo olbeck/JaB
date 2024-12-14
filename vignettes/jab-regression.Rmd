@@ -1,0 +1,84 @@
+---
+title: "Jackknife-after-Bootstrap for Linear Regression"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{jab-regression}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: "REFERENCES.bib"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(JaB)
+```
+
+In this vignette, we discuss the Jackknife-after-Bootstrap (JaB) algorithm for detecting outliers and influential points in linear regression proposed by @martin-roberts-2013 and replicate some of the findings in @beyaztas-alin-2013.
+
+## Detecting Outliers and Influential Points in Linear Regression
+
+In this vignette, we use the linear regression model with $n$ observations and $p$ predictors:
+
+$$\boldsymbol{Y} = \boldsymbol{X}\beta + \boldsymbol{\epsilon}$$
+
+where $\boldsymbol{Y} \in \mathbb{R}^{n \times 1}$ is a vector of responses, $\boldsymbol{X} \in \mathbb{R}^{n\times p}$ is a full rank design matrix with $p$ predictors, $\beta \in \mathbb{R}^{p\times 1}$ is a vector of parameters, and $\boldsymbol{\epsilon}\in\mathbb{R}^{n\times 1}$ is a vector of Normal, i.i.d. errors.
+
+We define several useful values (from @belsley-2005 and @beyaztas-alin-2013),
+
++-----------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Value                                                                                         | Formula                                                                                                                                                          |
++===============================================================================================+==================================================================================================================================================================+
+| Least squares estimate for $\beta$                                                            | $\hat{\beta} = (\boldsymbol{X}^T\boldsymbol{X})^{-1}\boldsymbol{X}^T\boldsymbol{Y}$                                                                              |
++-----------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Residual                                                                                      | $e_i = y_i - \hat{y_i}$                                                                                                                                          |
++-----------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Hat Matrix                                                                                    | $\boldsymbol{H} = \boldsymbol{X}(\boldsymbol{X}^T\boldsymbol{X})^{-1}\boldsymbol{X}^T$                                                                           |
++-----------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Hat Values, the $i^{\text{th}}$ diagonal element of the Hat matrix.                           | $h_{ii} = \boldsymbol{H}_{ii}$                                                                                                                                   |
++-----------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Mean squared error                                                                            | $\hat{\sigma}^2 = \frac{\sum_i e_i^2}{n-2}$                                                                                                                      |
++-----------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Delete one residual                                                                           | $d_i = \frac{e_i}{1-h_{ii}}$                                                                                                                                     |
++-----------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Delete one beta, solution to the regression equation with $i^{\text{th}}$ data point deleted  | $\hat{\beta}_{(i)} = (\boldsymbol{X}^T_{(i)}\boldsymbol{X}_{(i)})^{-1}\boldsymbol{X}^T_{(i)}\boldsymbol{Y}_{(i)}$                                                |
++-----------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Delete one variance                                                                           | $\hat{\sigma}^2_{(i)} = \frac{1}{n-p-1}\sum_{k\neq i} (y_k - x_k\hat{\beta}_{(i)})^2 = \frac{1}{n-p-1}\left((n-p)\hat{\sigma}^2 - \frac{e_i^2}{1-h_{ii}}\right)$ |
++-----------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Standardized Residuals                                                                        | $t_i = \frac{e_i}{\hat{\sigma}\sqrt{1 - h_{ii}}}$                                                                                                                |
++-----------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+We next define some influence statistics and their traditional cut off values (from @belsley-2005 and @beyaztas-alin-2013),
+
++-------------------------+---------------------------------------------------------------------------------------------+----------------------------------------------------------------------------+
+| Influence Value         | Forumla                                                                                     | Cut off Point                                                              |
++=========================+=============================================================================================+============================================================================+
+| Studentized Residuals:  | $t_i^* = \frac{e_i}{\hat{\sigma}_{(i)}\sqrt{1-h_{ii}}} = t_i\sqrt{\frac{n-p-1}{n-p-t_i^2}}$ | $\pm t_{q, n-p-1}$ where $q$ is an appropriate quantile value, say 0.975.  |
++-------------------------+---------------------------------------------------------------------------------------------+----------------------------------------------------------------------------+
+| Difference in Fits      | $DFFITS_i = t_i^* \sqrt{\frac{h_{ii}}{1-h_{ii}}}$                                           | $2\sqrt{p/n}$                                                              |
++-------------------------+---------------------------------------------------------------------------------------------+----------------------------------------------------------------------------+
+| Welsch's Distance       | $W_i = DFFITS_i \sqrt{\frac{n-1}{1-h_{ii}}}$                                                | $\pm 3\sqrt{p}$                                                            |
++-------------------------+---------------------------------------------------------------------------------------------+----------------------------------------------------------------------------+
+
+## Jackknife-after-Bootstrap
+
+The JaB algorithm proposed by @martin-roberts-2013
+
+Step 1: Let $\gamma_i$ be the diagnostic statistic of interest. Fit the model $M$ and calculate $\gamma_i$ for $i=1,…,n$.
+
+Step 2: Construct $B$ bootstrap samples, with replacement, from the original data set.
+
+Step 3: For $i = 1,…,n$ ,
+
+-   Let $B_{(i)}$ be the set of all bootstrap samples that *did not* contain data point $i$.
+
+-   For each sample in $B_{(i)}$, calculate the $n$ values of $\gamma_{i, (b)}$. Aggregate them into one vector $\Gamma_i$ .
+
+-   Calculate the quantiles of $\Gamma_i$. If $\gamma_i$ is outside of this range, flag point $i$ as influential.
+
+## References

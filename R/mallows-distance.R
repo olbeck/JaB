@@ -107,7 +107,7 @@ mallows_distance <- function(vec1, vec2,p=2 ){
 mallows_distance_trimmed <- function(vec1, vec2,p=2, alpha=0 ){
 
   Xsort <- sort(vec1)
-  Ysorted <- sort(vec2)
+  Ysort <- sort(vec2)
 
   # Calculate the number of elements to trim
   n <- length(Xsort)
@@ -117,9 +117,10 @@ mallows_distance_trimmed <- function(vec1, vec2,p=2, alpha=0 ){
   # Trim both vectors by keeping the middle (1 - 2a) proportion
   i <- (trim_count + 1):(n - trim_count)
   Xtrim <- Xsort[i]
-  Ytrim <- Ysorted[i]
+  Ytrim <- Ysort[i]
 
-  ret <- (sum(abs(Xtrim-Ytrim)^p)/(n) / (1-2*alpha.corrected))^(1/p)
+  ret <- (sum(abs(Xtrim-Ytrim)^p)/(n) )^(1/p) / (1-2*alpha.corrected)
   return(ret)
 
 }
+

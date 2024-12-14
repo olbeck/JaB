@@ -2,7 +2,7 @@
 % Please edit documentation in R/get-centrality.R
 \name{get_centrality}
 \alias{get_centrality}
-\title{Calculate give centrality statistic on a network}
+\title{Calculate given centrality statistic on a network}
 \usage{
 get_centrality(network, func.name, package.name = NULL, func.args = NULL)
 }
@@ -11,7 +11,7 @@ get_centrality(network, func.name, package.name = NULL, func.args = NULL)
 
 \item{func.name}{A character string of the function name used to calculate the desired centrality statistic.}
 
-\item{package.name}{A character string of the name of the package the \code{func.name} function is in. If left as \code{NULL} if the function will be called as loaded in the users environment.}
+\item{package.name}{A character string of the name of the package that \code{func.name} function is in. If left as \code{NULL} if the function will be called as loaded in the users environment.}
 
 \item{func.args}{A list of additional arguments the \code{func.name} function may need beyond the \code{network} object.}
 }
@@ -19,7 +19,7 @@ get_centrality(network, func.name, package.name = NULL, func.args = NULL)
 A numeric vector of the centrality statistic as calculated by \code{func.name}.
 }
 \description{
-Calculate give centrality statistic on a network
+Calculate given centrality statistic on a network
 }
 \examples{
 library(igraph)

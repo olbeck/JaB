@@ -19,9 +19,14 @@ Imports:
     magrittr,
     Matrix,
     Rdpack,
-    snowboot
+    snowboot,
+    methods,
+    stats
 Suggests: 
+    knitr,
+    rmarkdown,
     spelling
 Language: en-US
 Depends: 
     R (>= 2.10)
+VignetteBuilder: knitr
