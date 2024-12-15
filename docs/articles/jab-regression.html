@@ -65,7 +65,7 @@
 
 
 
-
+<script src="jab-regression_files/kePrint-0.0.1/kePrint.js"></script><link href="jab-regression_files/lightable-0.0.1/lightable.css" rel="stylesheet">
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>Jackknife-after-Bootstrap for Linear Regression</h1>
@@ -78,7 +78,11 @@
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://olbeck.github.io/JaB/" class="external-link">JaB</a></span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://olbeck.github.io/JaB/" class="external-link">JaB</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">datasets</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://haozhu233.github.io/kableExtra/" class="external-link">kableExtra</a></span><span class="op">)</span></span></code></pre></div>
 <p>In this vignette, we discuss the Jackknife-after-Bootstrap (JaB)
 algorithm for detecting outliers and influential points in linear
 regression proposed by <span class="citation">Martin and Roberts
@@ -86,7 +90,7 @@ regression proposed by <span class="citation">Martin and Roberts
 <div class="section level2">
 <h2 id="detecting-outliers-and-influential-points-in-linear-regression">Detecting Outliers and Influential Points in Linear Regression<a class="anchor" aria-label="anchor" href="#detecting-outliers-and-influential-points-in-linear-regression"></a>
 </h2>
-<p>In this vignette, we use the linear regression model,</p>
+<p>In this vignette, we use the linear regression model with <span class="math inline">\(n\)</span> observations and <span class="math inline">\(p\)</span> predictors:</p>
 <p><span class="math display">\[\boldsymbol{Y} = \boldsymbol{X}\beta +
 \boldsymbol{\epsilon}\]</span></p>
 <p>where <span class="math inline">\(\boldsymbol{Y} \in \mathbb{R}^{n
@@ -95,13 +99,13 @@ is a full rank design matrix with <span class="math inline">\(p\)</span>
 predictors, <span class="math inline">\(\beta \in \mathbb{R}^{p\times
 1}\)</span> is a vector of parameters, and <span class="math inline">\(\boldsymbol{\epsilon}\in\mathbb{R}^{n\times
 1}\)</span> is a vector of Normal, i.i.d. errors.</p>
-<p>We define several useful values (from <span class="citation">Belsley,
+<p>We define several useful values from <span class="citation">Belsley,
 Kuh, and Welsch (2005)</span> and <span class="citation">Beyaztas and
-Alin (2013)</span>),</p>
+Alin (2013)</span>,</p>
 <table class="table">
 <colgroup>
-<col width="37%">
-<col width="62%">
+<col width="36%">
+<col width="63%">
 </colgroup>
 <thead><tr class="header">
 <th>Value</th>
@@ -135,22 +139,18 @@ diagonal element of the Hat matrix.</td>
 e_i^2}{n-2}\)</span></td>
 </tr>
 <tr class="even">
-<td>Delete one residual</td>
-<td><span class="math inline">\(d_i = \frac{e_i}{1-h_{ii}}\)</span></td>
-</tr>
-<tr class="odd">
 <td>Delete one beta, solution to the regression equation with <span class="math inline">\(i^{\text{th}}\)</span> data point deleted</td>
 <td><span class="math inline">\(\hat{\beta}_{(i)} =
 (\boldsymbol{X}^T_{(i)}\boldsymbol{X}_{(i)})^{-1}\boldsymbol{X}^T_{(i)}\boldsymbol{Y}_{(i)}\)</span></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Delete one variance</td>
 <td><span class="math inline">\(\hat{\sigma}^2_{(i)} =
 \frac{1}{n-p-1}\sum_{k\neq i} (y_k - x_k\hat{\beta}_{(i)})^2 =
 \frac{1}{n-p-1}\left((n-p)\hat{\sigma}^2 -
 \frac{e_i^2}{1-h_{ii}}\right)\)</span></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Standardized Residuals</td>
 <td><span class="math inline">\(t_i = \frac{e_i}{\hat{\sigma}\sqrt{1 -
 h_{ii}}}\)</span></td>
@@ -158,18 +158,18 @@ h_{ii}}}\)</span></td>
 </tbody>
 </table>
 <p>We next define some influence statistics and their traditional cut
-off values (from <span class="citation">Belsley, Kuh, and Welsch
+off values from <span class="citation">Belsley, Kuh, and Welsch
 (2005)</span> and <span class="citation">Beyaztas and Alin
-(2013)</span>),</p>
-<table style="width:99%;" class="table">
+(2013)</span>,</p>
+<table style="width:100%;" class="table">
 <colgroup>
-<col width="13%">
-<col width="47%">
-<col width="38%">
+<col width="12%">
+<col width="50%">
+<col width="37%">
 </colgroup>
 <thead><tr class="header">
 <th>Influence Value</th>
-<th>Forumla</th>
+<th>Formula</th>
 <th>Cut off Point</th>
 </tr></thead>
 <tbody>
@@ -186,13 +186,25 @@ t_i\sqrt{\frac{n-p-1}{n-p-t_i^2}}\)</span></td>
 <td>Difference in Fits</td>
 <td><span class="math inline">\(DFFITS_i = t_i^*
 \sqrt{\frac{h_{ii}}{1-h_{ii}}}\)</span></td>
-<td><span class="math inline">\(2\sqrt{p/n}\)</span></td>
+<td><span class="math inline">\(\pm 2\sqrt{p/n}\)</span></td>
 </tr>
 <tr class="odd">
-<td>Welsch’s Distance</td>
-<td><span class="math inline">\(W_i = DFFITS_i
-\sqrt{\frac{n-1}{1-h_{ii}}}\)</span></td>
-<td><span class="math inline">\(\pm 3\sqrt{p}\)</span></td>
+<td>Likelihood Distance</td>
+<td>
+<p><span class="math display">\[
+\begin{align*}
+LD_i &amp;= 2[\ell(\hat{\beta}) - \ell(\hat{\beta}_{(i)}) ]\\
+&amp; = n \log\left[\left(\frac{n}{n-1}\right)\left(
+\frac{n-p-1}{t_i^{*2} + n -p - 1}\right)\right] \\
+&amp; \;\;\;\;+ \frac{t_i^{*2}(n-1)}{(1-h_{ii})(n-p-1)}-1
+\end{align*}
+\]</span></p>
+<p>where <span class="math inline">\(\ell\)</span> is the log-likelihood
+function.</p>
+</td>
+<td>
+<span class="math inline">\(\chi^2_{q, p}\)</span> where <span class="math inline">\(q\)</span> is an appropriate quantile value, say
+0.95.</td>
 </tr>
 </tbody>
 </table>
@@ -200,8 +212,20 @@ t_i\sqrt{\frac{n-p-1}{n-p-t_i^2}}\)</span></td>
 <div class="section level2">
 <h2 id="jackknife-after-bootstrap">Jackknife-after-Bootstrap<a class="anchor" aria-label="anchor" href="#jackknife-after-bootstrap"></a>
 </h2>
-<p>The JaB algorithm proposed by <span class="citation">Martin and
-Roberts (2010)</span></p>
+<p>Our goal is to determine if the <span class="math inline">\(i^{\text{th}}\)</span> observation is influential
+given some influence statistic. The JaB algorithm generates a “null
+distribution” of influence statistics under the assumption that the
+observation under consideration <em>is not</em> influential. The idea is
+that if the original influence statistic of observation <span class="math inline">\(i\)</span> is an extreme value on this “null
+distribution”, then it is flagged as influential. One way of generating
+such a distribution is by considering bootstrap samples where
+observation <span class="math inline">\(i\)</span> is not present. If
+observation <span class="math inline">\(i\)</span> is not in a bootstrap
+sample, then it cannot be influential in the model estimated from this
+bootstrap sample.</p>
+<p>The JaB algorithm for detecting influential observations in linear
+regression proposed by <span class="citation">Martin and Roberts
+(2010)</span> is as follows:</p>
 <p>Step 1: Let <span class="math inline">\(\gamma_i\)</span> be the
 diagnostic statistic of interest. Fit the model <span class="math inline">\(M\)</span> and calculate <span class="math inline">\(\gamma_i\)</span> for <span class="math inline">\(i=1,…,n\)</span>.</p>
 <p>Step 2: Construct <span class="math inline">\(B\)</span> bootstrap
@@ -211,11 +235,574 @@ samples, with replacement, from the original data set.</p>
 <li><p>Let <span class="math inline">\(B_{(i)}\)</span> be the set of
 all bootstrap samples that <em>did not</em> contain data point <span class="math inline">\(i\)</span>.</p></li>
 <li><p>For each sample in <span class="math inline">\(B_{(i)}\)</span>,
-calculate the <span class="math inline">\(n\)</span> values of <span class="math inline">\(\gamma_{i, (b)}\)</span>. Aggregate them into one
+fit the regression model then calculate the <span class="math inline">\(n\)</span> values of <span class="math inline">\(\gamma_{i, (b)}\)</span>. Aggregate them into one
 vector <span class="math inline">\(\Gamma_i\)</span> .</p></li>
-<li><p>Calculate the quantiles of <span class="math inline">\(\Gamma_i\)</span>. If <span class="math inline">\(\gamma_i\)</span> is outside of this range, flag
+<li><p>Calculate suitable quantiles of <span class="math inline">\(\Gamma_i\)</span> (say 0.025 and 0.975). If <span class="math inline">\(\gamma_i\)</span> is outside of this range, flag
 point <span class="math inline">\(i\)</span> as influential.</p></li>
 </ul>
+</div>
+<div class="section level2">
+<h2 id="toy-example">Toy Example<a class="anchor" aria-label="anchor" href="#toy-example"></a>
+</h2>
+<p>Let’s look at an example of how the JaB algorithm works with simple
+linear regression originally included in <span class="citation">Martin
+and Roberts (2010)</span>. We have a base model</p>
+<p><span class="math display">\[
+Y = 1 + 2X + \epsilon
+\]</span></p>
+<p>where <span class="math inline">\(p=2\)</span> and <span class="math inline">\(n=20\)</span> . We generate <span class="math inline">\(X_i \overset{iid}{\sim} \text{N}(2,1)\)</span> and
+<span class="math inline">\(\epsilon_i \overset{iid}{\sim} N(0,
+0.5625)\)</span> then estimate the linear regression model. The plot
+below has these 20 points and the fitted line in blue.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">540</span><span class="op">)</span></span>
+<span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">20</span></span>
+<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fl">2</span></span>
+<span></span>
+<span><span class="co">#Y = 1 + 2X + e</span></span>
+<span><span class="va">beta_0</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
+<span><span class="va">beta_1</span> <span class="op">&lt;-</span> <span class="fl">2</span></span>
+<span></span>
+<span><span class="va">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span>, <span class="fl">2</span>, <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="va">e_norm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span>, <span class="fl">0</span>, sd <span class="op">=</span> <span class="fl">0.5625</span><span class="op">^</span><span class="op">(</span><span class="fl">1</span><span class="op">/</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">Y</span> <span class="op">&lt;-</span> <span class="va">beta_0</span> <span class="op">+</span> <span class="va">beta_1</span><span class="op">*</span><span class="va">X</span> <span class="op">+</span> <span class="va">e_norm</span></span>
+<span></span>
+<span><span class="va">dat_orig</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="va">X</span>, <span class="va">Y</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">plot.orig</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">dat_orig</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">X</span>,y<span class="op">=</span><span class="va">Y</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"blue"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html" class="external-link">geom_smooth</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">dat_orig</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">X</span>,y<span class="op">=</span><span class="va">Y</span><span class="op">)</span>, method<span class="op">=</span><span class="st">'lm'</span>, formula<span class="op">=</span> <span class="va">y</span><span class="op">~</span><span class="va">x</span>, se <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span>
+<span><span class="va">plot.orig</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p><img src="jab-regression_files/figure-html/unnamed-chunk-2-1.png" width="700"></p>
+<p>Next, we deliberately add an influential point at (5, 2) to check if
+the JaB algorithm can detect it. This point is added in red below and
+the red line is the fitted line for the <span class="math inline">\(n=21\)</span> linear model.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">#add Influential Point</span></span>
+<span><span class="va">n</span> <span class="op">&lt;-</span> <span class="va">n</span><span class="op">+</span><span class="fl">1</span></span>
+<span><span class="va">Y1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">Y</span>, <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="va">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">X</span>, <span class="fl">5</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">dat_new</span> <span class="op">&lt;-</span>  <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="va">X</span>,<span class="va">Y1</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">plot.orig</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>x<span class="op">=</span><span class="fl">5</span>, y<span class="op">=</span><span class="fl">2</span><span class="op">)</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">x</span>,y<span class="op">=</span><span class="va">y</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span>  <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html" class="external-link">geom_smooth</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">dat_new</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">X</span>,y<span class="op">=</span><span class="va">Y1</span><span class="op">)</span>, method<span class="op">=</span><span class="st">'lm'</span>, formula<span class="op">=</span> <span class="va">y</span><span class="op">~</span><span class="va">x</span>, se <span class="op">=</span> <span class="cn">F</span>, color <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"Y"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="jab-regression_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
+<p>We fit the regression model with the 21 points the use the
+<code>jab_lm</code> function to run the JaB algorithm with DFFITS, 3100
+bootstrap sample, and quantile cutoffs of 0.025 and 0.975.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">mod1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">Y1</span> <span class="op">~</span> <span class="va">X</span>, data <span class="op">=</span> <span class="va">dat_new</span><span class="op">)</span></span>
+<span><span class="va">result1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/jab_lm.html">jab_lm</a></span><span class="op">(</span><span class="va">mod1</span>, </span>
+<span>                  stat <span class="op">=</span> <span class="st">"dffits"</span>, </span>
+<span>                  quant.lower <span class="op">=</span> <span class="fl">0.025</span>, </span>
+<span>                  quant.upper <span class="op">=</span> <span class="fl">0.975</span>,</span>
+<span>                  B<span class="op">=</span><span class="fl">3100</span><span class="op">)</span></span></code></pre></div>
+<p>Finally, we look at which points the JaB algorithm flagged as
+influential. The <code>jab_lm</code> function outputs a table with the
+row index of the observation, lower and upper cutoff values, the
+original statistic, and an indicator if the observation was flagged as
+influential. We can see from the output below that only our inserted
+point was flagged as the original DFFITS value is -7.7 and the lower
+cutoff is -0.68.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">result1</span><span class="op">[</span><span class="va">result1</span><span class="op">$</span><span class="va">influential</span>, <span class="op">]</span> </span>
+<span><span class="co">#&gt;    row.ID      lower     upper      orig influential</span></span>
+<span><span class="co">#&gt; 21     21 -0.6799764 0.7851924 -7.704647        TRUE</span></span></code></pre></div>
+<p>We can also look at the average cutoff values of the original 20
+points to see how different they are from the cutoff value of the
+21<span class="math inline">\(^{\text{st}}\)</span> point. These
+averages are quite different from the cutoff of the 21<span class="math inline">\(^{\text{st}}\)</span> point, further suggesting
+that point 21 is influential.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">result1</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">row.ID</span> <span class="op">!=</span> <span class="fl">21</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>lower.avg <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">lower</span><span class="op">)</span>,</span>
+<span>            upper.avg <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">upper</span><span class="op">)</span>,</span>
+<span>            mean.dffits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">orig</span><span class="op">)</span><span class="op">)</span> </span>
+<span><span class="co">#&gt;   lower.avg upper.avg mean.dffits</span></span>
+<span><span class="co">#&gt; 1 -1.637976 0.6117787  0.04061036</span></span></code></pre></div>
+<p>We can also directly visualize the cutoff values from the JaB
+algorithm for each point. In the plot below, for each point in the data
+set we plot its original DFFITS value and the line from its lower to
+upper cutoff values. If the point is within this line, it is not flagged
+as influential (colored red), and if the point is outside of this line
+it is flagged as influential (colored blue). We can see from this plot
+that point 21 is the only one that is flagged as influential. We can
+also see that the cutoff values for point 21 are quite different than
+those for the first 20 points.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">result1</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_segment.html" class="external-link">geom_segment</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">row.ID</span>, y <span class="op">=</span> <span class="va">lower</span>, yend <span class="op">=</span> <span class="va">upper</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"darkgray"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">row.ID</span>, y <span class="op">=</span> <span class="va">orig</span>, color <span class="op">=</span> <span class="va">influential</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Result of JaB Algorithm"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">xlab</a></span><span class="op">(</span><span class="st">"Observation ID"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"DFFITS"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_colour_discrete.html" class="external-link">scale_color_discrete</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"Flagged as Influential"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="jab-regression_files/figure-html/unnamed-chunk-7-1.png" width="700"></p>
+</div>
+<div class="section level2">
+<h2 id="life-cycle-savings-data">Life Cycle Savings Data<a class="anchor" aria-label="anchor" href="#life-cycle-savings-data"></a>
+</h2>
+<p>We next look at an example with the Life Cycle Savings data from the
+<a href="https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/LifeCycleSavings.html" class="external-link">datasets</a>
+package. This data set contains the 1960 to 1970 average of personal
+savings, percent of population under 15, percent of population over 75,
+per-capita disposal income and percentage growth rage of disposable
+income for 50 countries. We model average personal savings as a function
+of the four other covariates. We investigate which countries are flagged
+as influential with the studentized residuals, DFFITS, and likelihood
+distance. The studentized residuals have built in functions in the <a href="https://stat.ethz.ch/R-manual/R-devel/library/stats/html/influence.measures.html" class="external-link">stats</a>
+package, but the likelihood distance does not.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"LifeCycleSavings"</span>, package <span class="op">=</span> <span class="st">"datasets"</span><span class="op">)</span></span>
+<span><span class="va">mod2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">sr</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">LifeCycleSavings</span><span class="op">)</span></span></code></pre></div>
+<div class="section level3">
+<h3 id="studentized-residuals">Studentized residuals<a class="anchor" aria-label="anchor" href="#studentized-residuals"></a>
+</h3>
+<p>Let’s first consider the studentized residuals with quantile cutoffs
+of 0.025 and 0.975. The traditional cutoff for studentized residuals is
+<span class="math inline">\(\pm t_{0.975, n-p-1} = \pm 2.10\)</span>
+which flags Chile and Zambia. The JaB algorithm also only flags Chile
+and Zambia as influential.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># JaB with studentized residuals</span></span>
+<span><span class="va">result2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/jab_lm.html">jab_lm</a></span><span class="op">(</span><span class="va">mod2</span>,</span>
+<span>                  stat <span class="op">=</span> <span class="st">"rstudent"</span>,</span>
+<span>                  quant.lower <span class="op">=</span> <span class="fl">0.025</span>,</span>
+<span>                  quant.upper <span class="op">=</span> <span class="fl">0.975</span>,</span>
+<span>                  B <span class="op">=</span> <span class="fl">3100</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">result2</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>traditional.cuttoff <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">qt</a></span><span class="op">(</span><span class="fl">0.975</span>, df <span class="op">=</span> <span class="va">n</span><span class="op">-</span><span class="va">p</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>traditioanl.flag <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">orig</span><span class="op">)</span> <span class="op">&gt;</span> <span class="va">traditional.cuttoff</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rowwise.html" class="external-link">rowwise</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>country <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">LifeCycleSavings</span><span class="op">)</span><span class="op">[</span><span class="va">row.ID</span><span class="op">]</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">country</span>, <span class="va">orig</span>,<span class="va">traditioanl.flag</span>,  <span class="va">lower</span>, <span class="va">upper</span>, <span class="va">influential</span>, <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">traditioanl.flag</span> <span class="op">|</span> <span class="va">influential</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html" class="external-link">across</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">lower</span>, <span class="va">upper</span>, <span class="va">orig</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">x</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span>col.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Country"</span>, <span class="st">"Studentized Residual"</span>, <span class="st">"Traditional Flag"</span>, <span class="st">"Lower Cutoff"</span>, <span class="st">"Upper Cutoff"</span>, <span class="st">"JaB Flag"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/kableExtra/man/kable_styling.html" class="external-link">kable_styling</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/kableExtra/man/add_header_above.html" class="external-link">add_header_above</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">" "</span> <span class="op">=</span> <span class="fl">3</span>, <span class="st">"JaB Results"</span> <span class="op">=</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<table class="table table" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="empty-cells: hide;border-bottom:hidden;" colspan="3">
+</th>
+<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="3">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+JaB Results
+</div>
+</th>
+</tr>
+<tr>
+<th style="text-align:left;">
+Country
+</th>
+<th style="text-align:right;">
+Studentized Residual
+</th>
+<th style="text-align:left;">
+Traditional Flag
+</th>
+<th style="text-align:right;">
+Lower Cutoff
+</th>
+<th style="text-align:right;">
+Upper Cutoff
+</th>
+<th style="text-align:left;">
+JaB Flag
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Chile
+</td>
+<td style="text-align:right;">
+-2.31
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:right;">
+-1.90
+</td>
+<td style="text-align:right;">
+2.23
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Zambia
+</td>
+<td style="text-align:right;">
+2.85
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:right;">
+-2.07
+</td>
+<td style="text-align:right;">
+2.06
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+</tr>
+</tbody>
+</table>
+<p>We can also visualize the JaB results by plotting the lower and upper
+quantile values. The plot below includes six countries, two are
+influential with studentized residuals (Chile and Zambia), and four are
+not (Japan, Libya, Spain, and Italy). From this plot we can see that
+Chile was flagged as influential because it is below its lower cutoff
+value and Zambia is flagged because it is above its upper cutoff
+value.</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">result2</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rowwise.html" class="external-link">rowwise</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>country <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">LifeCycleSavings</span><span class="op">)</span><span class="op">[</span><span class="va">row.ID</span><span class="op">]</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">country</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Chile"</span>, <span class="st">"Zambia"</span>, <span class="st">"Japan"</span>, <span class="st">"Libya"</span>, <span class="st">"Spain"</span>, <span class="st">"Italy"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_segment.html" class="external-link">geom_segment</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">country</span>, y <span class="op">=</span> <span class="va">lower</span>, yend <span class="op">=</span> <span class="va">upper</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"darkgray"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">country</span>, y <span class="op">=</span> <span class="va">orig</span>, color <span class="op">=</span> <span class="va">influential</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Result of JaB Algorithm"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">xlab</a></span><span class="op">(</span><span class="st">"Country"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"Studentized Residuals"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_colour_discrete.html" class="external-link">scale_color_discrete</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"Flagged as Influential"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="jab-regression_files/figure-html/unnamed-chunk-10-1.png" width="700"></p>
+</div>
+<div class="section level3">
+<h3 id="dffits">DFFITS<a class="anchor" aria-label="anchor" href="#dffits"></a>
+</h3>
+<p>Next, we consider JaB with DFFITS and quantile cutoffs of 0.025 and
+0.975. The traditional cutoff value for DFFITS is <span class="math inline">\(\pm 2\sqrt{p/n} = \pm 2\sqrt{5/50} = 0.63\)</span>
+which flags Japan, Zambia, and Libya. JaB with DFFITS also only flags
+these three countries.</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">result3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/jab_lm.html">jab_lm</a></span><span class="op">(</span><span class="va">mod2</span>,</span>
+<span>                  stat <span class="op">=</span> <span class="st">"dffits"</span>,</span>
+<span>                  quant.lower <span class="op">=</span> <span class="fl">0.025</span>,</span>
+<span>                  quant.upper <span class="op">=</span> <span class="fl">0.975</span>,</span>
+<span>                  B <span class="op">=</span> <span class="fl">3100</span><span class="op">)</span></span>
+<span><span class="va">result3</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>traditional.cuttoff <span class="op">=</span> <span class="fl">2</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fl">5</span><span class="op">/</span><span class="fl">50</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>traditioanl.flag <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">orig</span><span class="op">)</span> <span class="op">&gt;</span> <span class="va">traditional.cuttoff</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rowwise.html" class="external-link">rowwise</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>country <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">LifeCycleSavings</span><span class="op">)</span><span class="op">[</span><span class="va">row.ID</span><span class="op">]</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">country</span>, <span class="va">orig</span>,<span class="va">traditioanl.flag</span>,  <span class="va">lower</span>, <span class="va">upper</span>, <span class="va">influential</span>, <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">traditioanl.flag</span> <span class="op">|</span> <span class="va">influential</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html" class="external-link">across</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">lower</span>, <span class="va">upper</span>, <span class="va">orig</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">x</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span>col.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Country"</span>, <span class="st">"DFFITS"</span>, <span class="st">"Traditional Flag"</span>, <span class="st">"Lower Cutoff"</span>, <span class="st">"Upper Cutoff"</span>, <span class="st">"JaB Flag"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/kableExtra/man/kable_styling.html" class="external-link">kable_styling</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/kableExtra/man/add_header_above.html" class="external-link">add_header_above</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">" "</span> <span class="op">=</span> <span class="fl">3</span>, <span class="st">"JaB Results"</span> <span class="op">=</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<table class="table table" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="empty-cells: hide;border-bottom:hidden;" colspan="3">
+</th>
+<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="3">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+JaB Results
+</div>
+</th>
+</tr>
+<tr>
+<th style="text-align:left;">
+Country
+</th>
+<th style="text-align:right;">
+DFFITS
+</th>
+<th style="text-align:left;">
+Traditional Flag
+</th>
+<th style="text-align:right;">
+Lower Cutoff
+</th>
+<th style="text-align:right;">
+Upper Cutoff
+</th>
+<th style="text-align:left;">
+JaB Flag
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Japan
+</td>
+<td style="text-align:right;">
+0.86
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:right;">
+-0.59
+</td>
+<td style="text-align:right;">
+0.63
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Zambia
+</td>
+<td style="text-align:right;">
+0.75
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:right;">
+-0.61
+</td>
+<td style="text-align:right;">
+0.67
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Libya
+</td>
+<td style="text-align:right;">
+-1.16
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:right;">
+-0.60
+</td>
+<td style="text-align:right;">
+0.68
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+</tr>
+</tbody>
+</table>
+<p>Again we visualize the JaB results of the six countries previously
+mentioned. From the plot below we can see that Libya is flagged because
+it is below it’s lower cutoff value and Japan and Zambia are flagged
+because they are above their respective cutoff values. Unlike the
+results of JaB with the studentized residuals, Chile is not flagged as
+influential because it is between its lower and upper cutoff values.</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">result3</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rowwise.html" class="external-link">rowwise</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>country <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">LifeCycleSavings</span><span class="op">)</span><span class="op">[</span><span class="va">row.ID</span><span class="op">]</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">country</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Chile"</span>, <span class="st">"Zambia"</span>, <span class="st">"Japan"</span>, <span class="st">"Libya"</span>, <span class="st">"Spain"</span>, <span class="st">"Italy"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_segment.html" class="external-link">geom_segment</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">country</span>, y <span class="op">=</span> <span class="va">lower</span>, yend <span class="op">=</span> <span class="va">upper</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"darkgray"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">country</span>, y <span class="op">=</span> <span class="va">orig</span>, color <span class="op">=</span> <span class="va">influential</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Result of JaB Algorithm"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">xlab</a></span><span class="op">(</span><span class="st">"Country"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"DFFITS"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_colour_discrete.html" class="external-link">scale_color_discrete</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"Flagged as Influential"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="jab-regression_files/figure-html/unnamed-chunk-12-1.png" width="700"></p>
+</div>
+<div class="section level3">
+<h3 id="likelihood-distance">Likelihood Distance<a class="anchor" aria-label="anchor" href="#likelihood-distance"></a>
+</h3>
+<p>Lastly, we use JaB with the likelihood distance. Because the
+likelihood distance always positive, we do not consider the lower cutoff
+(set <code>quant.lower</code>=0), and only consider the upper cutoff. In
+this example we will consider the upper 0.03 quantile (set
+<code>quant.upper</code> =0.97). Additionally, the likelihood distance
+does not have a built-in function in the stats package, so we can define
+our own.</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">infl_like</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">mod</span><span class="op">)</span><span class="op">{</span></span>
+<span>  </span>
+<span>  <span class="co"># input lm model object</span></span>
+<span>  <span class="co"># output n statistics, one for each observation</span></span>
+<span></span>
+<span>  <span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">mod</span><span class="op">$</span><span class="va">fitted.values</span><span class="op">)</span></span>
+<span>  <span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">mod</span><span class="op">$</span><span class="va">coefficients</span><span class="op">)</span></span>
+<span></span>
+<span>  <span class="va">ti</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/influence.measures.html" class="external-link">rstudent</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></span>
+<span>  <span class="va">h</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/influence.measures.html" class="external-link">hatvalues</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></span>
+<span></span>
+<span>  <span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span> <span class="op">(</span><span class="va">n</span><span class="op">/</span><span class="op">(</span><span class="va">n</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="op">(</span><span class="va">n</span><span class="op">-</span><span class="va">p</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="va">ti</span><span class="op">^</span><span class="fl">2</span> <span class="op">+</span><span class="va">n</span><span class="op">-</span><span class="va">p</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">)</span></span>
+<span>  <span class="va">p2</span> <span class="op">&lt;-</span> <span class="va">ti</span><span class="op">^</span><span class="fl">2</span> <span class="op">*</span> <span class="op">(</span><span class="va">n</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="fl">1</span><span class="op">-</span><span class="va">h</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="va">n</span><span class="op">-</span><span class="va">p</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span></span>
+<span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">n</span><span class="op">*</span><span class="va">p1</span> <span class="op">+</span> <span class="va">p2</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="co">## JaB with Likelihood Distance</span></span>
+<span><span class="va">result4</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/jab_lm.html">jab_lm</a></span><span class="op">(</span><span class="va">mod2</span>,</span>
+<span>                  stat <span class="op">=</span> <span class="st">"infl_like"</span>,</span>
+<span>                  quant.lower <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>                  quant.upper <span class="op">=</span> <span class="fl">0.97</span>,</span>
+<span>                  B <span class="op">=</span> <span class="fl">3100</span><span class="op">)</span></span></code></pre></div>
+<p>The traditional cutoff value for the likelihood distance is <span class="math inline">\(\chi^2_{0.97, p} = 7.01\)</span> which does not
+flag any countries as influential. The JaB algorithm flags Japan,
+Zambia, and Libya.</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">result4</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>traditional.cuttoff <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Chisquare.html" class="external-link">qchisq</a></span><span class="op">(</span><span class="fl">0.97</span>, df <span class="op">=</span> <span class="va">p</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>traditioanl.flag <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">orig</span><span class="op">)</span> <span class="op">&gt;</span> <span class="va">traditional.cuttoff</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rowwise.html" class="external-link">rowwise</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>country <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">LifeCycleSavings</span><span class="op">)</span><span class="op">[</span><span class="va">row.ID</span><span class="op">]</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">country</span>, <span class="va">orig</span>,<span class="va">traditioanl.flag</span>,  <span class="va">lower</span>, <span class="va">upper</span>, <span class="va">influential</span>, <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">traditioanl.flag</span> <span class="op">|</span> <span class="va">influential</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html" class="external-link">across</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">lower</span>, <span class="va">upper</span>, <span class="va">orig</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">x</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span>col.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Country"</span>, <span class="st">"Likelihood Distance"</span>, <span class="st">"Traditional Flag"</span>, <span class="st">"Lower Cutoff"</span>, <span class="st">"Upper Cutoff"</span>, <span class="st">"JaB Flag"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/kableExtra/man/kable_styling.html" class="external-link">kable_styling</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/kableExtra/man/add_header_above.html" class="external-link">add_header_above</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">" "</span> <span class="op">=</span> <span class="fl">3</span>, <span class="st">"JaB Results"</span> <span class="op">=</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<table class="table table" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="empty-cells: hide;border-bottom:hidden;" colspan="3">
+</th>
+<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="3">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+JaB Results
+</div>
+</th>
+</tr>
+<tr>
+<th style="text-align:left;">
+Country
+</th>
+<th style="text-align:right;">
+Likelihood Distance
+</th>
+<th style="text-align:left;">
+Traditional Flag
+</th>
+<th style="text-align:right;">
+Lower Cutoff
+</th>
+<th style="text-align:right;">
+Upper Cutoff
+</th>
+<th style="text-align:left;">
+JaB Flag
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Japan
+</td>
+<td style="text-align:right;">
+0.86
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+0.01
+</td>
+<td style="text-align:right;">
+0.82
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Zambia
+</td>
+<td style="text-align:right;">
+1.21
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+0.01
+</td>
+<td style="text-align:right;">
+0.81
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Libya
+</td>
+<td style="text-align:right;">
+1.50
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+0.01
+</td>
+<td style="text-align:right;">
+0.85
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+</tr>
+</tbody>
+</table>
+<p>From the histogram of likelihood distances below, we can see that
+none of the values are near the traditional cutoff of 12.83. This
+suggests that the likelihood distance on its own may be “too
+conservative” of an influence statistic for this data set and using the
+JaB algorithm with the likelihood distance may be more appropriate.</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="va">result4</span><span class="op">$</span><span class="va">orig</span>, breaks <span class="op">=</span> <span class="fl">12</span>, freq <span class="op">=</span> <span class="cn">T</span>,</span>
+<span>     main <span class="op">=</span> <span class="st">"Histogram of Likelihood Distance"</span>,</span>
+<span>     xlab <span class="op">=</span> <span class="st">"Likelihood Disance"</span>, </span>
+<span>     ylab <span class="op">=</span> <span class="st">"Frequency"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="jab-regression_files/figure-html/unnamed-chunk-15-1.png" width="700"></p>
+<p>Looking at the results of the JaB algorithm with likelihood distance
+for our six counties, we can see that the likelihood distance values for
+Zambia and Libya are well above their respective cutoff values
+suggesting they are definitely influential, whereas Japan’s value is
+only slight above its cutoff suggesting it is “barley” influential.</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">result4</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rowwise.html" class="external-link">rowwise</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>country <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">LifeCycleSavings</span><span class="op">)</span><span class="op">[</span><span class="va">row.ID</span><span class="op">]</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">country</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Chile"</span>, <span class="st">"Zambia"</span>, <span class="st">"Japan"</span>, <span class="st">"Libya"</span>, <span class="st">"Spain"</span>, <span class="st">"Italy"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_segment.html" class="external-link">geom_segment</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">country</span>, y <span class="op">=</span> <span class="va">lower</span>, yend <span class="op">=</span> <span class="va">upper</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"darkgray"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">country</span>, y <span class="op">=</span> <span class="va">orig</span>, color <span class="op">=</span> <span class="va">influential</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Result of JaB Algorithm"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">xlab</a></span><span class="op">(</span><span class="st">"Country"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"Lieklihood Distance"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_colour_discrete.html" class="external-link">scale_color_discrete</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"Flagged as Influential"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="jab-regression_files/figure-html/unnamed-chunk-16-1.png" width="700"></p>
+</div>
 </div>
 <div class="section level2 unnumbered">
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>

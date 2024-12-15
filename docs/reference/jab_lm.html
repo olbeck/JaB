@@ -75,7 +75,7 @@ ADD CITATIONS</p>
 
 
 <dt>stat</dt>
-<dd><p>A character string of the function name used to calculate the desired centrality statistic.</p></dd>
+<dd><p>A character string of the function name used to calculate the desired centrality statistic. The function must input an lm model object as is first argument and output a length \(n\) vector of the statistic of interest.</p></dd>
 
 
 <dt>quant.lower</dt>
@@ -146,13 +146,12 @@ ADD CITATIONS</p>
 <span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## JaB with Likelihood Distance</span></span></span>
-<span class="r-in"><span><span class="co"># JaB with DFFITS</span></span></span>
 <span class="r-in"><span><span class="va">result2</span> <span class="op">&lt;-</span> <span class="fu">jab_lm</span><span class="op">(</span><span class="va">mod</span>,</span></span>
 <span class="r-in"><span>                  stat <span class="op">=</span> <span class="st">"infl_like"</span>,</span></span>
-<span class="r-in"><span>                  quant.lower <span class="op">=</span> <span class="fl">0.05</span>,</span></span>
+<span class="r-in"><span>                  quant.lower <span class="op">=</span> <span class="fl">0.00</span>,</span></span>
 <span class="r-in"><span>                  quant.upper <span class="op">=</span> <span class="fl">0.95</span>,</span></span>
 <span class="r-in"><span>                  B <span class="op">=</span> <span class="fl">3100</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in jab_lm(mod, stat = "infl_like", quant.lower = 0.05, quant.upper = 0.95,     B = 3100):</span> The functioninfl_likedoes not exist in your environment.</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in jab_lm(mod, stat = "infl_like", quant.lower = 0, quant.upper = 0.95,     B = 3100):</span> The functioninfl_likedoes not exist in your environment.</span>
 <span class="r-in"><span><span class="va">result2</span><span class="op">[</span><span class="va">result2</span><span class="op">$</span><span class="va">influential</span>, <span class="op">]</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'result2' not found</span>
 </code></pre></div>

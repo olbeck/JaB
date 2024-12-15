@@ -17,7 +17,7 @@ jab_lm(
 \arguments{
 \item{mod}{An \code{lm} object. Output from \link{lm}{stats}.}
 
-\item{stat}{A character string of the function name used to calculate the desired centrality statistic.}
+\item{stat}{A character string of the function name used to calculate the desired centrality statistic. The function must input an lm model object as is first argument and output a length \eqn{n} vector of the statistic of interest.}
 
 \item{quant.lower}{A numeric between 0 and 1 used as the lower cutoff in the JaB algorithm. Default is 0.05. Must be smaller than \code{quant.upper}.}
 
@@ -75,10 +75,9 @@ infl_like <- function(mod){
 }
 
 ## JaB with Likelihood Distance
-# JaB with DFFITS
 result2 <- jab_lm(mod,
                   stat = "infl_like",
-                  quant.lower = 0.05,
+                  quant.lower = 0.00,
                   quant.upper = 0.95,
                   B = 3100)
 result2[result2$influential, ]

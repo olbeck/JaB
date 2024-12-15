@@ -68,7 +68,7 @@ get_infl <- function(mod, func.name, package.name = NULL, args = NULL ){
 #' ADD CITATIONS
 #'
 #' @param mod An `lm` object. Output from \link{lm}{stats}.
-#' @param stat A character string of the function name used to calculate the desired centrality statistic.
+#' @param stat A character string of the function name used to calculate the desired centrality statistic. The function must input an lm model object as is first argument and output a length \eqn{n} vector of the statistic of interest.
 #' @param quant.lower A numeric between 0 and 1 used as the lower cutoff in the JaB algorithm. Default is 0.05. Must be smaller than `quant.upper`.
 #' @param quant.upper A numeric between 0 and 1 used as the upper cutoff in the JaB algorithm. Default is 0.95. Must be larger than `quant.lower`.
 #' @param B Number of bootstrap samples. Default is 3100
@@ -115,10 +115,9 @@ get_infl <- function(mod, func.name, package.name = NULL, args = NULL ){
 #' }
 #'
 #' ## JaB with Likelihood Distance
-#' # JaB with DFFITS
 #' result2 <- jab_lm(mod,
 #'                   stat = "infl_like",
-#'                   quant.lower = 0.05,
+#'                   quant.lower = 0.00,
 #'                   quant.upper = 0.95,
 #'                   B = 3100)
 #' result2[result2$influential, ]
