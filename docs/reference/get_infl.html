@@ -81,6 +81,10 @@
 
 <p>A numeric vector of the influence/outlier statistic as calculated by <code>func.name</code>.</p>
     </div>
+    <div class="section level2">
+    <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
+    <div class="dont-index"><p><code><a href="jab_lm.html">jab_lm()</a></code></p></div>
+    </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
@@ -89,7 +93,7 @@
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">sr</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">LifeCycleSavings</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">#defined functions in stats</span></span></span>
+<span class="r-in"><span><span class="co"># defined functions in stats</span></span></span>
 <span class="r-in"><span><span class="fu">get_infl</span><span class="op">(</span><span class="va">mod</span>, <span class="st">"dffits"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      Australia        Austria        Belgium        Bolivia         Brazil </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     0.06271756     0.06324405     0.18780542    -0.05967770     0.26464755 </span>
@@ -134,8 +138,7 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span>     2.85355834    -0.85376418    -0.62253411    -1.08930326    -0.80489153 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">#define the likelihood distance as influence statistic</span></span></span>
-<span class="r-in"><span><span class="co">## NEED TO CITE</span></span></span>
+<span class="r-in"><span><span class="co"># define the likelihood distance as influence statistic (Cook, 1986)</span></span></span>
 <span class="r-in"><span><span class="va">infl_like</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">mod</span><span class="op">)</span><span class="op">{</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span>  <span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">mod</span><span class="op">$</span><span class="va">fitted.values</span><span class="op">)</span></span></span>

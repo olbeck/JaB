@@ -7,19 +7,19 @@
 #' @param package.name A character string of the name of the package that `func.name` function is in. If left as `NULL` if the function will be called as loaded in the users environment.
 #' @param args A named list of additional arguments the `func.name` function may need beyond the `mod` object.
 #' @returns A numeric vector of the influence/outlier statistic as calculated by `func.name`.
+#' @seealso [jab_lm()]
 #' @examples
 #' library(stats)
 #' data("LifeCycleSavings")
 #'
 #' mod <- lm(sr ~ ., data = LifeCycleSavings)
 #'
-#' #defined functions in stats
+#' # defined functions in stats
 #' get_infl(mod, "dffits")
 #' get_infl(mod, "rstudent")
 #'
 #'
-#' #define the likelihood distance as influence statistic
-#' ## NEED TO CITE
+#' # define the likelihood distance as influence statistic (Cook, 1986)
 #' infl_like <- function(mod){
 #'
 #'   n <- length(mod$fitted.values)
@@ -64,10 +64,45 @@ get_infl <- function(mod, func.name, package.name = NULL, args = NULL ){
 
 #' Jackknife-after-Bootstrap for Linear Regression
 #'
-#' ADD DESCRIPTION - add something that the default is 0.05-0.95 i.e. center 90%- why default for B =3100
-#' ADD CITATIONS
+#' Conduct Jackknife-after-Bootstrap (JaB) algorithm for linear regression \insertCite{martin-roberts-2013}{JaB}.
 #'
-#' @param mod An `lm` object. Output from \link{lm}{stats}.
+#'
+#' @details
+#'
+#' The JaB algorithm, proposed by \insertCite{martin-roberts-2013;textual}{JaB}
+#' and further described by \insertCite{beyaztas-alin-2013;textual}{JaB}, detects
+#' influential/outlier points in linear regression models. The algorithm is as follows:
+#'
+#' 1. Let \eqn{\gamma} (`stat`) be the diagnostic statistic of interest. Fit the
+#' model (`mod`) and calculate \eqn{\gamma_i} for \eqn{i=1,…,n}.
+#'
+#' 2.  Construct \eqn{B} bootstrap samples, with replacement, from the original data set.
+#'
+#' 3.  For \eqn{i = 1,…,n},
+#' \itemize{
+#'    \item{3.1: }{Let \eqn{B_{(i)}} be the set of all bootstrap samples that did not contain data point \eqn{i}.}
+#'    \item{3.2: }{For each sample in \eqn{B_{(i)}}, fit the regression model then calculate the \eqn{n} values of \eqn{\gamma_{i, (b)}}. Aggregate them into one vector \eqn{\Gamma_i}.}
+#'    \item{3.1: }{Calculate suitable quantiles of \eqn{\Gamma_i} (`quant.lower` and `quant.upper`). If \eqn{\gamma_i} is outside of this range, flag point \eqn{i} as influential.}
+#'  }
+#'
+#' The default for `quant.lower` and `quant.upper` is 0.05 and 0.95, respectively.
+#' This means that if \eqn{\gamma_i} is in the center 90% of \eqn{\Gamma_i}, it
+#' will not be flagged as influential.
+#'
+#' Some influence statistics, such as the likelihood distance from \insertCite{cook-1986;textual}{JaB},
+#' are only positive values and large values imply influence. In these scenarios,
+#' it is appropriate to set `quant.lower` to 0 and `quant.upper` to some suitable
+#' quantile (say 0.90) so that point \eqn{i} is only flagged when \eqn{\gamma_i}
+#' is in the upper quantiles of \eqn{\Gamma_i}.
+#'
+#' As described in \insertCite{martin-roberts-2013;textual}{JaB}, to have approximately
+#' 1000 bootstrap samples in \eqn{B_{(i)}}, we need \eqn{Be^{1}\approx 3000} bootstrap
+#' samples.
+#'
+#' See `vignette("jab-regression")` for more details and examples.
+#'
+#'
+#' @param mod An [`lm`] object. Output from [stats::lm()].
 #' @param stat A character string of the function name used to calculate the desired centrality statistic. The function must input an lm model object as is first argument and output a length \eqn{n} vector of the statistic of interest.
 #' @param quant.lower A numeric between 0 and 1 used as the lower cutoff in the JaB algorithm. Default is 0.05. Must be smaller than `quant.upper`.
 #' @param quant.upper A numeric between 0 and 1 used as the upper cutoff in the JaB algorithm. Default is 0.95. Must be larger than `quant.lower`.
@@ -82,6 +117,8 @@ get_infl <- function(mod, func.name, package.name = NULL, args = NULL ){
 #'    \item{"orig": }{The original influence/outlier statistic calculated by `stat`.}
 #'    \item{"influential": }{Logical flagging if the observation is influential or not. TRUE if `orig` < `lower` or `orig` > `upper`. FALSE otherwise.}
 #'  }
+#'
+#' @references \insertAllCited{}
 #'
 #' @examples
 #' library(stats)
@@ -98,8 +135,7 @@ get_infl <- function(mod, func.name, package.name = NULL, args = NULL ){
 #' result1[result1$influential, ]
 #'
 #'
-#' #define the likelihood distance as influence statistic
-#' ## NEED TO CITE
+#' # define the likelihood distance as influence statistic (Cook, 1986)
 #' infl_like <- function(mod){
 #'
 #'   n <- length(mod$fitted.values)
@@ -114,7 +150,7 @@ get_infl <- function(mod, func.name, package.name = NULL, args = NULL ){
 #'   return(n*p1 + p2 - 1)
 #' }
 #'
-#' ## JaB with Likelihood Distance
+#' # JaB with Likelihood Distance
 #' result2 <- jab_lm(mod,
 #'                   stat = "infl_like",
 #'                   quant.lower = 0.00,

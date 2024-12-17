@@ -27,13 +27,12 @@ data("LifeCycleSavings")
 
 mod <- lm(sr ~ ., data = LifeCycleSavings)
 
-#defined functions in stats
+# defined functions in stats
 get_infl(mod, "dffits")
 get_infl(mod, "rstudent")
 
 
-#define the likelihood distance as influence statistic
-## NEED TO CITE
+# define the likelihood distance as influence statistic (Cook, 1986)
 infl_like <- function(mod){
 
   n <- length(mod$fitted.values)
@@ -50,4 +49,7 @@ infl_like <- function(mod){
 
 infl_like(mod)
 get_infl(mod, "infl_like")
+}
+\seealso{
+\code{\link[=jab_lm]{jab_lm()}}
 }

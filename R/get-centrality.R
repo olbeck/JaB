@@ -32,7 +32,7 @@ get_centrality <- function(network,
                            package.name = NULL,
                            func.args = NULL){
 
-  class <- JaB:::detect_type(list(network))
+  class <- JaB::detect_type(list(network))
 
   if(class != "igraph"){
     stop("network argument must be an igraph object.")

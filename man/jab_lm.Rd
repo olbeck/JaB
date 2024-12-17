@@ -15,7 +15,7 @@ jab_lm(
 )
 }
 \arguments{
-\item{mod}{An \code{lm} object. Output from \link{lm}{stats}.}
+\item{mod}{An \code{\link{lm}} object. Output from \code{\link[stats:lm]{stats::lm()}}.}
 
 \item{stat}{A character string of the function name used to calculate the desired centrality statistic. The function must input an lm model object as is first argument and output a length \eqn{n} vector of the statistic of interest.}
 
@@ -40,8 +40,40 @@ A data frame with 5 columns.
 }
 }
 \description{
-ADD DESCRIPTION - add something that the default is 0.05-0.95 i.e. center 90\%- why default for B =3100
-ADD CITATIONS
+Conduct Jackknife-after-Bootstrap (JaB) algorithm for linear regression \insertCite{martin-roberts-2013}{JaB}.
+}
+\details{
+The JaB algorithm, proposed by \insertCite{martin-roberts-2013;textual}{JaB}
+and further described by \insertCite{beyaztas-alin-2013;textual}{JaB}, detects
+influential/outlier points in linear regression models. The algorithm is as follows:
+\enumerate{
+\item Let \eqn{\gamma} (\code{stat}) be the diagnostic statistic of interest. Fit the
+model (\code{mod}) and calculate \eqn{\gamma_i} for \eqn{i=1,…,n}.
+
+\item Construct \eqn{B} bootstrap samples, with replacement, from the original data set.
+\item For \eqn{i = 1,…,n},
+\itemize{
+\item{3.1: }{Let \eqn{B_{(i)}} be the set of all bootstrap samples that did not contain data point \eqn{i}.}
+\item{3.2: }{For each sample in \eqn{B_{(i)}}, fit the regression model then calculate the \eqn{n} values of \eqn{\gamma_{i, (b)}}. Aggregate them into one vector \eqn{\Gamma_i}.}
+\item{3.1: }{Calculate suitable quantiles of \eqn{\Gamma_i} (\code{quant.lower} and \code{quant.upper}). If \eqn{\gamma_i} is outside of this range, flag point \eqn{i} as influential.}
+}
+}
+
+The default for \code{quant.lower} and \code{quant.upper} is 0.05 and 0.95, respectively.
+This means that if \eqn{\gamma_i} is in the center 90\% of \eqn{\Gamma_i}, it
+will not be flagged as influential.
+
+Some influence statistics, such as the likelihood distance from \insertCite{cook-1986;textual}{JaB},
+are only positive values and large values imply influence. In these scenarios,
+it is appropriate to set \code{quant.lower} to 0 and \code{quant.upper} to some suitable
+quantile (say 0.90) so that point \eqn{i} is only flagged when \eqn{\gamma_i}
+is in the upper quantiles of \eqn{\Gamma_i}.
+
+As described in \insertCite{martin-roberts-2013;textual}{JaB}, to have approximately
+1000 bootstrap samples in \eqn{B_{(i)}}, we need \eqn{Be^{1}\approx 3000} bootstrap
+samples.
+
+See \code{vignette("jab-regression")} for more details and examples.
 }
 \examples{
 library(stats)
@@ -58,8 +90,7 @@ result1 <- jab_lm(mod,
 result1[result1$influential, ]
 
 
-#define the likelihood distance as influence statistic
-## NEED TO CITE
+# define the likelihood distance as influence statistic (Cook, 1986)
 infl_like <- function(mod){
 
   n <- length(mod$fitted.values)
@@ -74,11 +105,14 @@ infl_like <- function(mod){
   return(n*p1 + p2 - 1)
 }
 
-## JaB with Likelihood Distance
+# JaB with Likelihood Distance
 result2 <- jab_lm(mod,
                   stat = "infl_like",
                   quant.lower = 0.00,
                   quant.upper = 0.95,
                   B = 3100)
 result2[result2$influential, ]
+}
+\references{
+\insertAllCited{}
 }

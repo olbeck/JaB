@@ -81,7 +81,7 @@ Our goal is to determine if the $i^{\text{th}}$ observation is influential given
 
 The JaB algorithm for detecting influential observations in linear regression proposed by @martin-roberts-2013 is as follows:
 
-Step 1: Let $\gamma_i$ be the diagnostic statistic of interest. Fit the model $M$ and calculate $\gamma_i$ for $i=1,…,n$.
+Step 1: Let $\gamma$ be the diagnostic statistic of interest. Fit the model $M$ and calculate $\gamma_i$ for $i=1,…,n$.
 
 Step 2: Construct $B$ bootstrap samples, with replacement, from the original data set.
 

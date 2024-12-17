@@ -6,5 +6,7 @@ devtools::check()
 devtools::load_all()
 
 
+#clean and install
 pkgdown::build_site()
+pkgdown::build_reference()
 pkgdown::build_articles()
