@@ -35,7 +35,7 @@ trump.world
 }
 \description{
 Association network of Donald Trump and associates pre-2020 inauguration
-compiled by Buzz Feed News \insertCite{trump-world}{JaB}.
+compiled by Buzz Feed News \insertCite{trump-world-buzzfeed}{JaB}.
 }
 \details{
 In January 2017 just before Donald Trump's inauguration, Buzz Feed News published
