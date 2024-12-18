@@ -27,7 +27,7 @@ reference:
     contents:
     - mallows_distance
     - mallows_distance_trimmed
-    - mallow_equiv_test
+    - mallows_equiv_test
   - title: Data
     contents:
     - hamster
