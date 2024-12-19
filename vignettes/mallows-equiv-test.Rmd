@@ -99,7 +99,7 @@ For the remainder of this vignette, we only consider the case when $n=m$.
 
 
 Let's construct an example where two distributions on [0, 1] should be somewhat similar. 
-For $i=1,...,500$, let $X_i \overset{iid}{\sim} F$ and $Y_i\overset{iid}{\sim} F$ where F is $\text{Uniform}(0,1)$ and $\text{TruncNormal}(\mu = 0.5, \sigma^2 = 25, a = 0, b=1)$.  $\text{TruncNormal}(\mu, \sigma^2, a = 0, b=1)$ is the truncated normal distribution with mean $\mu$, variance $\sigma^2$, minimum $a$ and maximum $b$. The pdf of $TruncNormal}(\mu = 0.5, \sigma^2 = 25, a = 0, b=1)$ is quite "flat" on the interval [0, 1].  
+For $i=1,...,500$, let $X_i \overset{iid}{\sim} F$ and $Y_i\overset{iid}{\sim} F$ where F is $\text{Uniform}(0,1)$ and $\text{TruncNormal}(\mu = 0.5, \sigma^2 = 25, a = 0, b=1)$.  $\text{TruncNormal}(\mu, \sigma^2, a = 0, b=1)$ is the truncated normal distribution with mean $\mu$, variance $\sigma^2$, minimum $a$ and maximum $b$. The pdf of $\text{TruncNormal}(\mu = 0.5, \sigma^2 = 25, a = 0, b=1)$ is quite "flat" on the interval [0, 1].  
 
 We can look at the histogram of the samples below and see that they look fairly similar. 
 
