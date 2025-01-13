@@ -64,7 +64,7 @@
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>network</dt>
-<dd><p>An igraph object with \(n\) nodes.</p></dd>
+<dd><p>An <code>igraph</code> object with \(n\) nodes.</p></dd>
 
 
 <dt>d</dt>
@@ -77,7 +77,7 @@
 
 <dt>output.type</dt>
 <dd><p>The class of object the resulting bootstrap networks should be.
-The default is <code>igraph</code> which will make bootstrap samples of class "igraph". Note that for large \(B\), this may not be an efficient use of storage space.
+The default is <code>igraph</code> which will make bootstrap samples of class <code>igraph.</code> Note that for large \(B\), this may not be an efficient use of storage space.
 Other options include <code>matrix</code> which will return bootstrap samples as an \(n\)-by-\(n\) adjacency matrix,
 <code>dgCMatrix</code> which will return scarce matrices (package <code>Matrix</code> must be loaded), or
 <code>edgelist</code> which will return a \(n\)-by-\(2\) matrix of the list of edges in the network.

@@ -14,16 +14,17 @@ reference:
     - bootstrap_latent_space
     - bootstrap_snowboot
     - bootstrap_vertex
-  - title: Jackknife-after-Bootstrap for Linear Regression
-    contents:
-    - get_infl
-    - jab_lm
   - title: Jackknife-after-Bootstrap for Networks
     contents:
+    - jab_network
     - get_bootstrap_centrality
     - get_centrality
     - get_jackknife_after
-  - title: Mallows' Ditance
+  - title: Jackknife-after-Bootstrap for Linear Regression
+    contents:
+    - jab_lm
+    - get_infl
+  - title: Mallows' Distance
     contents:
     - mallows_distance
     - mallows_distance_trimmed

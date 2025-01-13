@@ -61,7 +61,7 @@
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>network</dt>
-<dd><p>The network object. This should be the appropriate object type needed for the <code>func.name</code> specified.</p></dd>
+<dd><p>The network as an <code>igraph</code> object.</p></dd>
 
 
 <dt>func.name</dt>
@@ -69,11 +69,11 @@
 
 
 <dt>package.name</dt>
-<dd><p>A character string of the name of the package that <code>func.name</code> function is in. If left as <code>NULL</code> if the function will be called as loaded in the users environment.</p></dd>
+<dd><p>(Optional) A character string of the name of the package that <code>func.name</code> function is in. If <code>NULL</code>, the function will be called as loaded in the users environment.</p></dd>
 
 
 <dt>func.args</dt>
-<dd><p>A list of additional arguments the <code>func.name</code> function may need beyond the <code>network</code> object.</p></dd>
+<dd><p>(Optional) A list of additional arguments the <code>func.name</code> function may need beyond the <code>network</code> object. If <code>NULL</code>, no additional arguments will be passed to <code>func.name</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">

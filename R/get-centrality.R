@@ -1,9 +1,9 @@
 #' Calculate given centrality statistic on a network
 #'
-#' @param network The network object. This should be the appropriate object type needed for the `func.name` specified.
+#' @param network The network as an `igraph` object.
 #' @param func.name A character string of the function name used to calculate the desired centrality statistic.
-#' @param package.name A character string of the name of the package that `func.name` function is in. If left as `NULL` if the function will be called as loaded in the users environment.
-#' @param func.args A list of additional arguments the `func.name` function may need beyond the `network` object.
+#' @param package.name (Optional) A character string of the name of the package that `func.name` function is in. If `NULL`, the function will be called as loaded in the users environment.
+#' @param func.args (Optional) A list of additional arguments the `func.name` function may need beyond the `network` object. If `NULL`, no additional arguments will be passed to `func.name`.
 #' @returns A numeric vector of the centrality statistic as calculated by `func.name`.
 #' @examples
 #' library(igraph)

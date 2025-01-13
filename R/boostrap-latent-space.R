@@ -72,11 +72,11 @@ ASE <- function(network, d){
 #' There may be cases in which \eqn{X_i^T X_j \not\in [0,1]}. In these cases, replace
 #' \eqn{X_i^T X_j} with \eqn{\max(\min(X_i^T X_j, 1), 0)}.
 #'
-#' @param network An igraph object with \eqn{n} nodes.
+#' @param network An `igraph` object with \eqn{n} nodes.
 #' @param d Dimension of latent space. Recommended only 2 or 3 to maintain interpretability.
 #' @param B number of bootstrap samples to calculate
 #' @param output.type The class of object the resulting bootstrap networks should be.
-#' The default is `igraph` which will make bootstrap samples of class "igraph". Note that for large \eqn{B}, this may not be an efficient use of storage space.
+#' The default is `igraph` which will make bootstrap samples of class `igraph.` Note that for large \eqn{B}, this may not be an efficient use of storage space.
 #' Other options include `matrix` which will return bootstrap samples as an \eqn{n}-by-\eqn{n} adjacency matrix,
 #' `dgCMatrix` which will return scarce matrices (package `Matrix` must be loaded), or
 #' `edgelist` which will return a \eqn{n}-by-\eqn{2} matrix of the list of edges in the network.
@@ -147,7 +147,7 @@ bootstrap_latent_space <- function(network, d=2, B=1000,
     A <- base::matrix(0, n, n)
     base::colnames(A) <- base::rownames(A) <- names
 
-    # Get the upper triangle indices and sample from binomial with respective probabilites
+    # Get the upper triangle indices and sample from binomial with respective probabilities
     upper_indices <- base::which(upper.tri(P))
     A[upper_indices] <- stats::rbinom(length(upper_indices), 1, P[upper_indices])
     ret[[b]] <- A + base::t(A) #makes a symmetric adjacency matrix

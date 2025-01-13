@@ -2,7 +2,7 @@
 % Please edit documentation in R/get-jackknife-after.R
 \name{get_jackknife_after}
 \alias{get_jackknife_after}
-\title{Jackknife After-Bootstrap}
+\title{Jackknife-After in JaB Algorithm for Networks}
 \usage{
 get_jackknife_after(
   network,
@@ -19,15 +19,15 @@ get_jackknife_after(
 
 \item{boot.result}{A list of bootstrap network samples, as produced by a \code{bootstrap_} function.}
 
-\item{quant}{A numeric value of length 2 specifying the upper quantile used to flag influential nodes (e.g., \code{ 0.95}).}
+\item{quant}{A numeric value specifying the upper quantile used to flag influential nodes (e.g., \code{0.95}).}
 
 \item{func.name}{A character string specifying the centrality function to be applied (e.g., \code{"degree"}, \code{"betweenness"}). See \code{\link{get_centrality}} for details.}
 
 \item{package.name}{(Optional) A character string specifying the package containing \code{func.name}. See \code{\link{get_centrality}} for details.}
 
-\item{func.args}{(Optional) A list of additional arguments for \code{func.name}.See \code{\link{get_centrality}} for details.}
+\item{func.args}{(Optional) A list of additional arguments for \code{func.name}. See \code{\link{get_centrality}} for details.}
 
-\item{nodes}{(Optional) A vector of node names to run JaB algorithm for. If \code{NULL}, algorithm will be run on all \eqn{n} nodes.}
+\item{nodes}{(Optional) A vector of node names to run JaB algorithm for. If \code{NULL}, algorithm will be run on all \eqn{n} nodes in \code{network}.}
 }
 \value{
 A data frame containing:
@@ -37,26 +37,48 @@ A data frame containing:
 \item \code{Orig_Stat}: The original centrality statistic of each node.
 \item \code{Upper_Quantile}: Upper quantile of the jackknife-after-bootstrap distribution of centrality statistic for each node.
 \item \code{Influential}: Logical indicating if each node is influential, i.e. is \code{Orig_Stat} greater than \code{Upper_Quantile}?
-\item \code{Influential}: Logical indicating if there were bootstrap samples that
+\item \code{Rank}: Rank from most (1) to least (\eqn{n}) influential. There can be ties in the rankings.
+\item \code{Can_Jackknife}: Logical indicating if there were bootstrap samples that
 \emph{did not} include that node, meaning there \emph{are} jackknife-after sample to generate
 the distribution of centrality statistics in networks that do not contain that node.
 If \code{FALSE}, then all bootstrap samples contained that node and the \code{Upper_Quantile} column will generally be \code{NA}.
-If many nodes are \code{FALSE} it
-could mean that the bootstrap method is poorly tuned and is sampling more nodes that is appropriate
-for this data set. If only a few nodes are \code{FALSE} it could mean the bootstrap method is
+If many nodes are \code{FALSE} it could mean that the bootstrap method is poorly tuned and is
+sampling more nodes that is appropriate for this data set.
+If only a few nodes are \code{FALSE} it could mean the bootstrap method is
 poorly tuned for this data set, or it could mean that the node is extremely influential as
 it is highly improbable to generate a bootstrap sample that does not contain that node.
 Which explanation is appropriate depends on the data set and the bootstrap method used.
+\item \code{Num_Boot_Samps}: Number of bootstrap samples the node appeared in. If there are
+\eqn{B} bootstrap samples in \code{boot.result}, then \eqn{B} - \code{Num_Boot_Samps} bootstrap samples are
+used to calculate \code{Upper_Quantile}. If \code{Can_Jackknife} is \code{FALSE}, then this number
+will be 0.
 }
 }
 \description{
-Detects influential nodes in a network with the jackknife-after-bootstrap algorithm.
+This function performs the "Jackknife-after" portion of the Jackknife-after-Bootstrap (JaB) algorithm for networks.
 }
 \details{
-This function performs a jackknife after-bootstrap procedure for each node in the network.
-OUTLINE ALGORITHM
+This function performs the "jackknife-after" portion of the JaB algorithm for
+network data. See \code{\link[=jab_network]{jab_network()}} wrapper function for entire algorithm.
 }
 \examples{
-#add example later
+library(igraphdata)
+library(igraph)
+data(karate)
 
+#first get bootstrap samples
+boot.result <- bootstrap_snowboot(karate, B = 100, num.seed = 1, num.wave = 2)
+
+#then do jackknife-after
+get_jackknife_after(network = karate,
+  boot.result = boot.result,
+  quant = 0.9,
+  func.name = "degree",
+  package.name = "igraph",
+  func.args = list(normalized = TRUE),
+  nodes = NULL)
+
+}
+\seealso{
+\code{\link[=jab_network]{jab_network()}}
 }

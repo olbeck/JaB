@@ -7,14 +7,14 @@
 bootstrap_latent_space(network, d = 2, B = 1000, output.type = "igraph")
 }
 \arguments{
-\item{network}{An igraph object with \eqn{n} nodes.}
+\item{network}{An \code{igraph} object with \eqn{n} nodes.}
 
 \item{d}{Dimension of latent space. Recommended only 2 or 3 to maintain interpretability.}
 
 \item{B}{number of bootstrap samples to calculate}
 
 \item{output.type}{The class of object the resulting bootstrap networks should be.
-The default is \code{igraph} which will make bootstrap samples of class "igraph". Note that for large \eqn{B}, this may not be an efficient use of storage space.
+The default is \code{igraph} which will make bootstrap samples of class \code{igraph.} Note that for large \eqn{B}, this may not be an efficient use of storage space.
 Other options include \code{matrix} which will return bootstrap samples as an \eqn{n}-by-\eqn{n} adjacency matrix,
 \code{dgCMatrix} which will return scarce matrices (package \code{Matrix} must be loaded), or
 \code{edgelist} which will return a \eqn{n}-by-\eqn{2} matrix of the list of edges in the network.
