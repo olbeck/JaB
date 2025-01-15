@@ -120,6 +120,9 @@ get_infl <- function(mod, func.name, package.name = NULL, args = NULL ){
 #'
 #' @references \insertAllCited{}
 #'
+#' @importFrom methods existsFunction
+#' @importFrom stats lm pnorm qnorm quantile
+#'
 #' @examples
 #' library(stats)
 #' data("LifeCycleSavings")

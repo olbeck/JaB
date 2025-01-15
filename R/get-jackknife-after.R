@@ -58,7 +58,7 @@
 #'   nodes = NULL)
 #'
 #' @importFrom igraph V gorder
-#' @importFrom dplyr group_by arrange ungroup mutate select min_rank
+#' @importFrom dplyr group_by arrange ungroup mutate select min_rank desc
 #' @export
 get_jackknife_after <- function(network,
                           boot.result,
@@ -81,7 +81,11 @@ get_jackknife_after <- function(network,
 
   #Get bootstrap centrality statistics
   obj.type <- detect_type(boot.result)
-  central.result <- get_bootstrap_centrality(boot.result, func.name, obj.type = obj.type, func.args = func.args)
+  central.result <-
+    get_bootstrap_centrality(boot.result = boot.result,
+                             func.name = func.name,
+                             package.name = package.name,
+                             func.args = func.args)
 
 
   #node list in each bootstrap sample
@@ -117,7 +121,7 @@ get_jackknife_after <- function(network,
     #centrality_storage[[i]] <- centrality_vector
 
     #Get Quantiles
-    jack.result[counter] <- quantile(centrality_vector, quant, na.rm = T)
+    jack.result[counter] <- stats::quantile(centrality_vector, quant, na.rm = T)
 
 
   }
@@ -136,7 +140,7 @@ get_jackknife_after <- function(network,
   ret$diff <- ret$Orig_Stat - ret$Upper_Quantile
   ret <- ret %>%
     dplyr::group_by(top) %>%
-    dplyr::arrange(desc(diff)) %>%
+    dplyr::arrange(dplyr::desc(diff)) %>%
     dplyr::ungroup() %>%
     dplyr::mutate(Rank = dplyr::min_rank(dplyr::desc(diff))) %>%
     dplyr::mutate(Influential = !top)%>%

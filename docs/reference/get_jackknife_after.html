@@ -24,6 +24,7 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="../articles/jab-networks.html">Jackknife-after-Bootstrap for Networks</a>
     <a class="dropdown-item" href="../articles/jab-regression.html">Jackknife-after-Bootstrap for Linear Regression</a>
     <a class="dropdown-item" href="../articles/mallows-equiv-test.html">Mallows Distance Equivalence Test</a>
   </div>
@@ -154,16 +155,16 @@ network data. See <code><a href="jab_network.html">jab_network()</a></code> wrap
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 34 × 8</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    Node_Number Node_Name Orig_Stat Upper_Quantile Influential  Rank</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>           1 Mr Hi        0.485           0.254 TRUE            1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>          34 John A       0.515           0.375 TRUE            2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>          33 Actor 33     0.364           0.263 TRUE            3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>          28 Actor 28     0.121           0.263 FALSE           4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>          29 Actor 29     0.090<span style="text-decoration: underline;">9</span>          0.263 FALSE           5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>          24 Actor 24     0.152           0.380 FALSE           6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>          25 Actor 25     0.090<span style="text-decoration: underline;">9</span>          0.333 FALSE           7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>          26 Actor 26     0.090<span style="text-decoration: underline;">9</span>          0.333 FALSE           7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>          17 Actor 17     0.060<span style="text-decoration: underline;">6</span>          0.333 FALSE           9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>          30 Actor 30     0.121           0.4   FALSE          10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>           1 Mr Hi        0.485           0.235 TRUE            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>          34 John A       0.515           0.286 TRUE            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>          33 Actor 33     0.364           0.235 TRUE            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>           3 Actor 3      0.303           0.4   FALSE           4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>          28 Actor 28     0.121           0.235 FALSE           5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>          29 Actor 29     0.090<span style="text-decoration: underline;">9</span>          0.235 FALSE           6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>          24 Actor 24     0.152           0.36  FALSE           7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>          25 Actor 25     0.090<span style="text-decoration: underline;">9</span>          0.3   FALSE           8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>          26 Actor 26     0.090<span style="text-decoration: underline;">9</span>          0.3   FALSE           8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>           6 Actor 6      0.121           0.333 FALSE          10</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 24 more rows</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 2 more variables: Can_Jackknife &lt;lgl&gt;, Num_Boot_Samps &lt;int&gt;</span></span>
 <span class="r-in"><span></span></span>

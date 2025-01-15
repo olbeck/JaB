@@ -78,7 +78,7 @@ Wrapper function for the Jackknife-after-Bootstrap (JaB) algorithm for networks.
 \details{
 Suppose we have a network \eqn{G} with \eqn{n} nodes. Specify a centrality statistic \eqn{\gamma}.
 
-For each node \eqn{i, i = 1,...,n} we aim to test the hypotheses \eqn{H_0}:
+For each node \eqn{i = 1,...,n} we test the hypotheses \eqn{H_0}:
 node \eqn{i} is not influential to the network, versus \eqn{H_1}: node \eqn{i}
 is influential to the network.
 

@@ -22,13 +22,16 @@ TruncNormal
 Wasserstein
 algroithm
 boldsymbol
+centralities
 circ
 dgCMatrix
 ds
 dt
 du
 edgelist
+eigen
 eqn
+ev
 frac
 geq
 hamsterster
@@ -45,6 +48,7 @@ nonumber
 overset
 pre
 snowboot
+textit
 th
 undirected
 vee

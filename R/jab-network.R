@@ -48,7 +48,7 @@
 #'
 #' Suppose we have a network \eqn{G} with \eqn{n} nodes. Specify a centrality statistic \eqn{\gamma}.
 #'
-#' For each node \eqn{i, i = 1,...,n} we aim to test the hypotheses \eqn{H_0}:
+#' For each node \eqn{i = 1,...,n} we test the hypotheses \eqn{H_0}:
 #' node \eqn{i} is not influential to the network, versus \eqn{H_1}: node \eqn{i}
 #' is influential to the network.
 #'
@@ -152,13 +152,13 @@ jab_network <- function(network,
 
   # Get Jackknife After
   jack.after <-
-    get_jackknife_after(network,
-                        boot.result,
-                        quant,
-                        central.func.name,
-                        central.package.name,
-                        central.func.args,
-                        nodes)
+    get_jackknife_after(network = network,
+                        boot.result = boot.result,
+                        quant = quant,
+                        func.name = central.func.name,
+                        package.name = central.package.name,
+                        func.args = central.func.args,
+                        nodes = nodes)
 
   # Return
   if(!return.boot.samples){

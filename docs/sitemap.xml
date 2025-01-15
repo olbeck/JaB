@@ -10,6 +10,9 @@
     <loc>/articles/index.html</loc>
   </url>
   <url>
+    <loc>/articles/jab-networks.html</loc>
+  </url>
+  <url>
     <loc>/articles/jab-regression.html</loc>
   </url>
   <url>
@@ -65,6 +68,9 @@
   </url>
   <url>
     <loc>/reference/jab_lm.html</loc>
+  </url>
+  <url>
+    <loc>/reference/jab_network.html</loc>
   </url>
   <url>
     <loc>/reference/karate.html</loc>

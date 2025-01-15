@@ -147,7 +147,7 @@ will be 0.</p></li>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>Suppose we have a network \(G\) with \(n\) nodes. Specify a centrality statistic \(\gamma\).</p>
-<p>For each node \(i, i = 1,...,n\) we aim to test the hypotheses \(H_0\):
+<p>For each node \(i = 1,...,n\) we test the hypotheses \(H_0\):
 node \(i\) is not influential to the network, versus \(H_1\): node \(i\)
 is influential to the network.</p>
 <p>Define \(q\in [0, 1]\) to be the upper quantile cut off value and \(B\) to
@@ -199,19 +199,22 @@ centrality statistics using <code><a href="get_bootstrap_centrality.html">get_bo
 <span class="r-in"><span>  quant <span class="op">=</span> <span class="fl">0.90</span>,</span></span>
 <span class="r-in"><span>  nodes <span class="op">=</span> <span class="cn">NULL</span>,</span></span>
 <span class="r-in"><span>  return.boot.samples <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> This graph was created by an old(er) igraph version.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   Call upgrade_graph() on it to use with the current igraph version</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   For now we convert it on the fly...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 34 × 8</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    Node_Number Node_Name Orig_Stat Upper_Quantile Influential  Rank</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>           1 Mr Hi        0.485           0.263 TRUE            1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>          34 John A       0.515           0.4   TRUE            2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>          33 Actor 33     0.364           0.4   FALSE           3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>          24 Actor 24     0.152           0.4   FALSE           4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>           6 Actor 6      0.121           0.375 FALSE           5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>           7 Actor 7      0.121           0.375 FALSE           5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>          17 Actor 17     0.060<span style="text-decoration: underline;">6</span>          0.333 FALSE           7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>          28 Actor 28     0.121           0.4   FALSE           8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>          31 Actor 31     0.121           0.4   FALSE           8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>           5 Actor 5      0.090<span style="text-decoration: underline;">9</span>          0.375 FALSE          10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>          34 John A       0.515           0.375 TRUE            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>          33 Actor 33     0.364           0.235 TRUE            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>          28 Actor 28     0.121           0.235 FALSE           4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>          29 Actor 29     0.090<span style="text-decoration: underline;">9</span>          0.235 FALSE           5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>          26 Actor 26     0.090<span style="text-decoration: underline;">9</span>          0.333 FALSE           6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>          24 Actor 24     0.152           0.4   FALSE           7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>           6 Actor 6      0.121           0.375 FALSE           8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>           7 Actor 7      0.121           0.375 FALSE           8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>          30 Actor 30     0.121           0.4   FALSE          10</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 24 more rows</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 2 more variables: Can_Jackknife &lt;lgl&gt;, Num_Boot_Samps &lt;int&gt;</span></span>
 </code></pre></div>
