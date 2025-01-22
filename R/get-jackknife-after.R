@@ -28,10 +28,11 @@
 #'  poorly tuned for this data set, or it could mean that the node is extremely influential as
 #'  it is highly improbable to generate a bootstrap sample that does not contain that node.
 #'  Which explanation is appropriate depends on the data set and the bootstrap method used.
-#'  \item `Num_Boot_Samps`: Number of bootstrap samples the node appeared in. If there are
-#'  \eqn{B} bootstrap samples in `boot.result`, then \eqn{B} - `Num_Boot_Samps` bootstrap samples are
-#'  used to calculate `Upper_Quantile`. If `Can_Jackknife` is `FALSE`, then this number
-#'  will be 0.
+#'  \item `Num_Boot_Samps`: Number of bootstrap samples used to construct the distribution in the Jackknife-after step.
+#'  If there are \eqn{B} bootstrap samples in `boot.result`, then \eqn{B - Num_Boot_Samps}
+#'  bootstrap samples *contained* node \eqn{v_i} and, \eqn{Num_Boot_Samps} *did not contain* node \eqn{v_i}
+#'  If `Can_Jackknife` is `FALSE`, then this number will be 0 (i.e. *all* bootstrap samples contained
+#'  node \eqn{v_i} and thus *none* of them can be used in the Jackknife-after step).
 #' }
 #'
 #' @details
