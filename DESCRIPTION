@@ -21,7 +21,8 @@ Imports:
     Rdpack,
     snowboot,
     methods,
-    stats
+    stats,
+    localboot
 Suggests: 
     knitr,
     rmarkdown,

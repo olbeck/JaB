@@ -31,6 +31,9 @@
     <loc>/reference/bootstrap_latent_space.html</loc>
   </url>
   <url>
+    <loc>/reference/bootstrap_local.html</loc>
+  </url>
+  <url>
     <loc>/reference/bootstrap_snowboot.html</loc>
   </url>
   <url>
@@ -38,6 +41,15 @@
   </url>
   <url>
     <loc>/reference/detect_type.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dist_ASE.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dist_max.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dist_max_ij.html</loc>
   </url>
   <url>
     <loc>/reference/get_bootstrap_centrality.html</loc>

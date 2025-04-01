@@ -25,6 +25,10 @@ This function uses the node names (not node IDs),
 and it returns the edge list of the bootstrap sample (not the nodes included in the sample).
 
 This is primarily used as an internal function for \link[JaB:bootstrap_snowboot]{bootstrap_snowboot}.
+Most code in this function is directly from \link[snowboot:sample_about_one_seed]{sample_about_one_seed}
+from the \pkg{snowboot} package. This function is designed to be a wrapper function
+to format the \link[snowboot:sample_about_one_seed]{sample_about_one_seed} results
+into the JaB package syntax.
 }
 \references{
 \insertRef{snowboot}{JaB}

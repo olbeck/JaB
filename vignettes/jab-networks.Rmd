@@ -10,12 +10,249 @@ bibliography: "REFERENCES.bib"
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+knitr::opts_chunk$set(message = FALSE)
+knitr::opts_chunk$set(warning = FALSE)
+
 ```
+
+```{r}
+set.seed(924)
+
+#For Functionality
+library(JaB)
+library(igraph)
+
+## For Plotting
+library(ggplot2)
+library(GGally)
+library(network)
+library(sna)
+library(colourvalues)
+```
+
 
 In this vignette, we discuss the Jackknife-after-Bootstrap (JaB) algorithm for influential nodes in networks. The JaB algorithm for regression data was proposed by @martin-roberts-2013 and further studied in @beyaztas-alin-2013. Here we expand this methodology to network data. 
 
+JaB for regression uses outlier, leverage, and influence statistics to quantify influence (see `vignette("jab-regression")`). In network data, centrality statistics are used to quantify influence.  Each centrality statistic measures influence as control over information moving throughout the network. 
 
-## Centrality Statitics
+Generally, larger networks have more complex data structures which are notoriously
+difficult to exactly quantify. One approach is to identify central nodes whose positions 
+data allow them to influence the movement of objects or information throughout the network. But what does it mean for a node to be central or influential? There is no clear consensus on these definitions and thus dozens of centrality statistics have been proposed to quantify influence [@boldi-vigna-2014, @lu-et-al-2016, @rodrigues-2019]. 
+
+Nodes with large centrality statistics are influential because of their critical position in the network [@valente-2008]. But how large does a centrality statistic need to be
+in order for the node to be considered influential? While these statistics are very helpful in quantifying each node’s influence, they do not provide a clear answer to this question. It is also not clear if the definition of “large enough to be influential” is the same across all measures of centrality. In this vignette we introduce the Jackknife-after-Bootstrap algorithm for network data that utilizes centrality statistics to answer the question “Which nodes in the network are influential?” It is important to bear in mind that the answer to this question cannot be divorced from the definition of influential. And since there are many proposed definitions, our algorithm is designed to adapt to any centrality statistic. 
 
 
-JaB for regression uses outlier, leverage, and influence statistics to detect influential points. See `vignette("jab-regression")`. In network data, centrality statistics are used to quantify influence. Just as there are many definitons of 
+
+## Centrality Statistics
+
+We begin by introducing a few centrality statistics and defining the types of influence they measure. The [igraph](https://igraph.org) package has many useful functions. A network $G = (V, E)$ consists of two sets, the set of nodes (also called vertices), $V$, and the set of edges, $E$. The node set, $V = \{v_i: i = 1, ..., n\}$, consists of all $n$ nodes in the network which, without loss of generality, are labeled 1, 2, ..., $n$. The edge set $E = \{(i,j) : e_{i,j} = 1, i,j = 1,...,n\}$ consists of all edges where $e_{i,j}=1$ if there exists a connection between nodes $v_i$ and $v_j$, and is 0 otherwise. It is often mathematically convenient to arrange the edges in a matrix. Let $\boldsymbol{A}$ be the \textit{adjacency matrix} of graph $G$, where $A_{i,j} = e_{i,j}$ is the $(i,j)^{\text{th}}$ entry of $\boldsymbol{A}$.
+
+
+Throughout this section, we will use the `karate` network as an example. 
+This network represents the members of a university karate club that broke
+into two factors, one led by John A (circles), and the other by Mr. Hi (squares). 
+The nodes are members of the karate club and and edge is present between two nodes 
+if the two respective actors participated in common activities together. 
+
+
+```{r}
+data("karate")
+l <- layout_nicely(karate)
+V(karate)$x <- l[,1]
+V(karate)$y <- l[,2]
+
+net <- intergraph::asNetwork(karate)
+
+net %v% "shape" <- ifelse(V(karate)$Faction == 1, "circle", "triangle")
+delete.vertex.attribute(net, "color")
+
+ggnet2(net,
+       label = TRUE, 
+       node.shape = "shape",
+       mode = c("x", "y"),
+       node.label = "label") +
+  scale_shape(name = "Faction", labels = c("Mr. Hi", "John A."))
+
+
+
+```
+
+### Degree Centrality
+
+One way to measure influence is the number of connections an actor has. If an actor
+has many connections we consider them influential due to their "popularity" among the other 
+actors, whereas if an actor as relatively few connections we consider them "unpopular". 
+Degree centrality measures this type of influence. The \textit{degree}, $d_i$, of a node is the number of edges connected to it and is defined through multiple statistics,  
+\begin{equation}
+    \gamma_i^{\text{deg}} = \sum_{j} e_{i,j} = \sum_{j} A_{i,j} = \sum_{i} A_{i,j}.
+\end{equation}
+
+Popular actors will have a large degree as they are connected to many other actors,
+and unpopular actors will have a small degree as they are connected to only a few actors. 
+
+The maximum degree is $n-1$ and occurs when a node is connected to all other nodes.
+The minimum degree is $0$ and occurs when a node is not connected to any other node (i.e. it is *isolated*). 
+For this reason, degree is often normalized by the constant $n-1$. 
+\begin{equation}
+    \gamma_i^{\text{deg}} = \frac{1}{n-1}\sum_{j} e_{i,j} = \frac{1}{n-1}\sum_{j} A_{i,j} = \frac{1}{n-1}\sum_{i} A_{i,j}.
+\end{equation}
+
+
+Let's look at the degree of the karate network. In the plot below light blue nodes have a low degree and dark blue nodes have a high degree. Mr. Hi, John A., and Node 33 have the highest degree values and 
+thus are the most "popular". 
+
+```{r}
+deg <- igraph::degree(karate)
+net %v% "deg.cols" <- colour_values(deg, palette = "blues")
+ggnet2(net,
+       label = TRUE, 
+       node.shape = "shape",
+       mode = c("x", "y"),
+       node.label = "label",
+       node.color = "deg.cols") +
+  scale_shape(name = "Faction", labels = c("Mr. Hi", "John A.")) 
+```
+
+
+### Eigenvector centrality
+
+Degree centrality measures influence as the number of connections a node has. However, 
+it may be the case that not all nodes are equally as important to be connected to. 
+For example, when measuring a node's popularity, in addition to the number of connections a node has, 
+we may also want to consider how popular those nodes are [@lu-et-al-2016]. 
+This relational structure is captured by eigenvector centrality [@bonacich-1972]. 
+Nodes with high eigenvector centrality are influential because they are 
+closely connected to other nodes that are also influential. Eigenvector centrality is calculated as
+\begin{equation}\label{eqn:eigen}
+    \gamma_i^{\text{ev}} = \frac{1}{\lambda} \sum_{j=1}^n A_{i,j}\gamma_j^{\text{ev}}.
+\end{equation}
+
+
+
+In the karate network, Node 3 has a large eigenvector centrality because it is connected to Mr. Hi and Actor 33, 
+both of which also have large eigenvector centralities. 
+
+```{r}
+ev <- igraph::eigen_centrality(karate)$vector
+net %v% "ev.cols" <- colour_values(ev, palette = "blues")
+ggnet2(net,
+       label = TRUE, 
+       node.shape = "shape",
+       mode = c("x", "y"),
+       node.label = "label",
+       node.color = "ev.cols") +
+  scale_shape(name = "Faction", labels = c("Mr. Hi", "John A.")) 
+
+# Connections of Node 3
+igraph::neighborhood(karate, order = 1, nodes = 3)
+```
+
+### Closeness Centrality
+
+Closeness centrality is a distance-based metric that captures how central a node is to the network [@bavelas-1950]. The closeness of node $i$ is the reciprocal of the average distance along the shortest paths from node $i$ to the other $n-1$ nodes in the network. ``Close'' nodes are those with large closeness values as they have short average distance to all other nodes in the network and are influential due to their ability to receive and disseminate information quickly and directly to every other node in the network. ``Far'' nodes are those with small closeness values because they have a long average distance to all other nodes. 
+
+
+Mr. Hi, John A., and Node 33 have large closeness centralities because they have 
+large degree values. Nodes with large degree values tend to have large closeness centralities
+due to their highly connected positions in the network. Additionally, Node 20 has a high 
+closeness centrality because it is connected to two highly connected nodes (Mr. Hi and John A.). 
+
+```{r}
+close <- igraph::closeness(karate)
+net %v% "close.cols" <- colour_values(close, palette = "blues")
+ggnet2(net,
+       label = TRUE, 
+       node.shape = "shape",
+       mode = c("x", "y"),
+       node.label = "label",
+       node.color = "close.cols") +
+  scale_shape(name = "Faction", labels = c("Mr. Hi", "John A.")) 
+
+igraph::neighborhood(karate, order = 1, nodes = 20)
+
+```
+
+## Jackknife-after-Bootstrap
+
+As described in `vignette("jab-regression")`, the JaB algorithm in regression 
+identifies influential points. This algorithm has a direct analogy to network data. Using centrality statistics, we can detect influential nodes in networks as follows: 
+
+
+For each node $i = 1,...,n$ we test the hypotheses $H_0$:
+node $i$ is not influential to the network, versus $H_1$: node $i$
+is influential to the network.
+
+Specify a centrality statistic, $\gamma$, that quantifies the type of influence 
+we want to measure. 
+Define $q\in [0, 1]$ to be the upper quantile cut off value and $B$ to
+be the number of bootstrap samples. 
+
+The JaB algorithm has three steps:
+
+1. **Original Centrality Step**: Calculate $n$ centrality statistics of the
+original network, $\gamma_1, \gamma_2, ..., \gamma_n$.
+
+2. **Bootstrapping Step**: Generate $B$ bootstrap samples.
+
+3. **Jackknife-after Step**: For $i \in 1,...,n$ do:
+
+   A. Find all bootstrap samples that *do not* contain node $i$ and store all of their respective centrality statistics in one vector, $V_i$.
+
+   B. Calculate $q_i$, the $q^{\text{th}}$ quantile of $V_i$.
+
+   C. If $\gamma_i > q_i$ then we reject the null hypothesis for node $i$
+   and conclude that node $i$ is influential.
+
+Once we run the algorithm, we have a set of nodes that are influential a set of nodes that are not.
+
+We can also generate a ranking of all nodes from most to least influential
+determined by $\gamma_i - q_i$ in step 3C. Node $i$ is considered influential
+when $\gamma_i - q_i$ is large and positive, somewhat influential when $\gamma_i - q_i$
+is small and positive, somewhat not influential when $\gamma_i - q_i$, a
+
+
+### The choice of $q$ 
+
+In JaB for network data, $q$ is generally only an upper quantile cutoff 
+(opposed to upper and lower as in the case of regression) because centrality statistics
+are generally only positive; nodes with large centrality statistics are influential
+and nodes with statistics close to zero are not influential. Thus when detecting 
+influential nodes, we only need to consider the upper tail of the distribution 
+
+### Notes on Network Bootstrap
+
+
+
+## Examples 
+
+
+### Karate Network 
+
+```{r}
+karate.result <- jab_network(
+  network = karate,
+  central.func.name = "degree",
+  central.package.name = "igraph",
+  central.func.args = list(normalized = TRUE),
+  bootstrap.func.name = "bootstrap_snowboot" ,
+  bootstrap.package.name = "JaB" ,
+  bootstrap.func.args = list( num.seed = 1, num.wave = 2 ),
+  B = 1000,
+  quant = 0.90,
+  nodes = NULL,
+  return.boot.samples = FALSE)
+
+karate.result
+
+```
+
+
+
+
+
+## References 

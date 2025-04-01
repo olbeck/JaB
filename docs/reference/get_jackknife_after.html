@@ -117,10 +117,11 @@ If only a few nodes are <code>FALSE</code> it could mean the bootstrap method is
 poorly tuned for this data set, or it could mean that the node is extremely influential as
 it is highly improbable to generate a bootstrap sample that does not contain that node.
 Which explanation is appropriate depends on the data set and the bootstrap method used.</p></li>
-<li><p><code>Num_Boot_Samps</code>: Number of bootstrap samples the node appeared in. If there are
-\(B\) bootstrap samples in <code>boot.result</code>, then \(B\) - <code>Num_Boot_Samps</code> bootstrap samples are
-used to calculate <code>Upper_Quantile</code>. If <code>Can_Jackknife</code> is <code>FALSE</code>, then this number
-will be 0.</p></li>
+<li><p><code>Num_Boot_Samps</code>: Number of bootstrap samples used to construct the distribution in the Jackknife-after step.
+If there are \(B\) bootstrap samples in <code>boot.result</code>, then \(B - Num_Boot_Samps\)
+bootstrap samples <em>contained</em> node \(v_i\) and, \(Num_Boot_Samps\) <em>did not contain</em> node \(v_i\)
+If <code>Can_Jackknife</code> is <code>FALSE</code>, then this number will be 0 (i.e. <em>all</em> bootstrap samples contained
+node \(v_i\) and thus <em>none</em> of them can be used in the Jackknife-after step).</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>

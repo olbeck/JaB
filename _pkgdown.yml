@@ -12,6 +12,7 @@ reference:
   - title: Network Bootstrap
     contents:
     - bootstrap_latent_space
+    - bootstrap_local
     - bootstrap_snowboot
     - bootstrap_vertex
   - title: Jackknife-after-Bootstrap for Networks
@@ -40,6 +41,9 @@ reference:
     contents:
     - ASE
     - detect_type
+    - dist_ASE
+    - dist_max
+    - dist_max_ij
     - get_largest_component
     - get_nodes
     - make_network_type

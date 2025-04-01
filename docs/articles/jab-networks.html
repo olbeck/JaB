@@ -79,34 +79,330 @@
 
     
     
-<div class="section level2">
-<h2 id="r-markdown">R Markdown<a class="anchor" aria-label="anchor" href="#r-markdown"></a>
-</h2>
-<p>This is an R Markdown document. Markdown is a simple formatting
-syntax for authoring HTML, PDF, and MS Word documents. For more details
-on using R Markdown see <a href="http://rmarkdown.rstudio.com" class="external-link uri">http://rmarkdown.rstudio.com</a>.</p>
-<p>When you click the <strong>Knit</strong> button a document will be
-generated that includes both content as well as the output of any
-embedded R code chunks within the document. You can embed an R code
-chunk like this:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">cars</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##      speed           dist       </span></span>
-<span><span class="co">##  Min.   : 4.0   Min.   :  2.00  </span></span>
-<span><span class="co">##  1st Qu.:12.0   1st Qu.: 26.00  </span></span>
-<span><span class="co">##  Median :15.0   Median : 36.00  </span></span>
-<span><span class="co">##  Mean   :15.4   Mean   : 42.98  </span></span>
-<span><span class="co">##  3rd Qu.:19.0   3rd Qu.: 56.00  </span></span>
-<span><span class="co">##  Max.   :25.0   Max.   :120.00</span></span></code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">924</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">#For Functionality</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://olbeck.github.io/JaB/" class="external-link">JaB</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r.igraph.org/" class="external-link">igraph</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## For Plotting</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggobi.github.io/ggally/" class="external-link">GGally</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://statnet.org/" class="external-link">network</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://statnet.org" class="external-link">sna</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://symbolixau.github.io/colourvalues/" class="external-link">colourvalues</a></span><span class="op">)</span></span></code></pre></div>
+<p>In this vignette, we discuss the Jackknife-after-Bootstrap (JaB)
+algorithm for influential nodes in networks. The JaB algorithm for
+regression data was proposed by <span class="citation">Martin and
+Roberts (2010)</span> and further studied in <span class="citation">Beyaztas and Alin (2013)</span>. Here we expand this
+methodology to network data.</p>
+<p>JaB for regression uses outlier, leverage, and influence statistics
+to quantify influence (see <code><a href="../articles/jab-regression.html">vignette("jab-regression")</a></code>). In
+network data, centrality statistics are used to quantify influence. Each
+centrality statistic measures influence as control over information
+moving throughout the network.</p>
+<p>Generally, larger networks have more complex data structures which
+are notoriously difficult to exactly quantify. One approach is to
+identify central nodes whose positions data allow them to influence the
+movement of objects or information throughout the network. But what does
+it mean for a node to be central or influential? There is no clear
+consensus on these definitions and thus dozens of centrality statistics
+have been proposed to quantify influence <span class="citation">Rodrigues (2019)</span>.</p>
+<p>Nodes with large centrality statistics are influential because of
+their critical position in the network <span class="citation">(Valente
+et al. 2008)</span>. But how large does a centrality statistic need to
+be in order for the node to be considered influential? While these
+statistics are very helpful in quantifying each node’s influence, they
+do not provide a clear answer to this question. It is also not clear if
+the definition of “large enough to be influential” is the same across
+all measures of centrality. In this vignette we introduce the
+Jackknife-after-Bootstrap algorithm for network data that utilizes
+centrality statistics to answer the question “Which nodes in the network
+are influential?” It is important to bear in mind that the answer to
+this question cannot be divorced from the definition of influential. And
+since there are many proposed definitions, our algorithm is designed to
+adapt to any centrality statistic.</p>
+<div class="section level2">
+<h2 id="centrality-statistics">Centrality Statistics<a class="anchor" aria-label="anchor" href="#centrality-statistics"></a>
+</h2>
+<p>We begin by introducing a few centrality statistics and defining the
+types of influence they measure. The <a href="https://igraph.org" class="external-link">igraph</a> package has many useful functions.
+A network <span class="math inline">\(G = (V, E)\)</span> consists of
+two sets, the set of nodes (also called vertices), <span class="math inline">\(V\)</span>, and the set of edges, <span class="math inline">\(E\)</span>. The node set, <span class="math inline">\(V = \{v_i: i = 1, ..., n\}\)</span>, consists of
+all <span class="math inline">\(n\)</span> nodes in the network which,
+without loss of generality, are labeled 1, 2, …, <span class="math inline">\(n\)</span>. The edge set <span class="math inline">\(E = \{(i,j) : e_{i,j} = 1, i,j =
+1,...,n\}\)</span> consists of all edges where <span class="math inline">\(e_{i,j}=1\)</span> if there exists a connection
+between nodes <span class="math inline">\(v_i\)</span> and <span class="math inline">\(v_j\)</span>, and is 0 otherwise. It is often
+mathematically convenient to arrange the edges in a matrix. Let <span class="math inline">\(\boldsymbol{A}\)</span> be the of graph <span class="math inline">\(G\)</span>, where <span class="math inline">\(A_{i,j} = e_{i,j}\)</span> is the <span class="math inline">\((i,j)^{\text{th}}\)</span> entry of <span class="math inline">\(\boldsymbol{A}\)</span>.</p>
+<p>Throughout this section, we will use the <code>karate</code> network
+as an example. This network represents the members of a university
+karate club that broke into two factors, one led by John A (circles),
+and the other by Mr. Hi (squares). The nodes are members of the karate
+club and and edge is present between two nodes if the two respective
+actors participated in common activities together.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"karate"</span><span class="op">)</span></span>
+<span><span class="va">l</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r.igraph.org/reference/layout_nicely.html" class="external-link">layout_nicely</a></span><span class="op">(</span><span class="va">karate</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://r.igraph.org/reference/V.html" class="external-link">V</a></span><span class="op">(</span><span class="va">karate</span><span class="op">)</span><span class="op">$</span><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">l</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span></span>
+<span><span class="fu"><a href="https://r.igraph.org/reference/V.html" class="external-link">V</a></span><span class="op">(</span><span class="va">karate</span><span class="op">)</span><span class="op">$</span><span class="va">y</span> <span class="op">&lt;-</span> <span class="va">l</span><span class="op">[</span>,<span class="fl">2</span><span class="op">]</span></span>
+<span></span>
+<span><span class="va">net</span> <span class="op">&lt;-</span> <span class="fu">intergraph</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/intergraph/man/asNetwork.html" class="external-link">asNetwork</a></span><span class="op">(</span><span class="va">karate</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">net</span> <span class="op"><a href="https://rdrr.io/pkg/network/man/network.extraction.html" class="external-link">%v%</a></span> <span class="st">"shape"</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://r.igraph.org/reference/V.html" class="external-link">V</a></span><span class="op">(</span><span class="va">karate</span><span class="op">)</span><span class="op">$</span><span class="va">Faction</span> <span class="op">==</span> <span class="fl">1</span>, <span class="st">"circle"</span>, <span class="st">"triangle"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/network/man/attribute.methods.html" class="external-link">delete.vertex.attribute</a></span><span class="op">(</span><span class="va">net</span>, <span class="st">"color"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://ggobi.github.io/ggally/reference/ggnet2.html" class="external-link">ggnet2</a></span><span class="op">(</span><span class="va">net</span>,</span>
+<span>       label <span class="op">=</span> <span class="cn">TRUE</span>, </span>
+<span>       node.shape <span class="op">=</span> <span class="st">"shape"</span>,</span>
+<span>       mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"x"</span>, <span class="st">"y"</span><span class="op">)</span>,</span>
+<span>       node.label <span class="op">=</span> <span class="st">"label"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_shape.html" class="external-link">scale_shape</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"Faction"</span>, labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Mr. Hi"</span>, <span class="st">"John A."</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="jab-networks_files/figure-html/unnamed-chunk-2-1.png" width="700"></p>
+<div class="section level3">
+<h3 id="degree-centrality">Degree Centrality<a class="anchor" aria-label="anchor" href="#degree-centrality"></a>
+</h3>
+<p>One way to measure influence is the number of connections an actor
+has. If an actor has many connections we consider them influential due
+to their “popularity” among the other actors, whereas if an actor as
+relatively few connections we consider them “unpopular”. Degree
+centrality measures this type of influence. The , <span class="math inline">\(d_i\)</span>, of a node is the number of edges
+connected to it and is defined through multiple statistics,<br><span class="math display">\[\begin{equation}
+    \gamma_i^{\text{deg}} = \sum_{j} e_{i,j} = \sum_{j} A_{i,j} =
+\sum_{i} A_{i,j}.
+\end{equation}\]</span></p>
+<p>Popular actors will have a large degree as they are connected to many
+other actors, and unpopular actors will have a small degree as they are
+connected to only a few actors.</p>
+<p>The maximum degree is <span class="math inline">\(n-1\)</span> and
+occurs when a node is connected to all other nodes. The minimum degree
+is <span class="math inline">\(0\)</span> and occurs when a node is not
+connected to any other node (i.e. it is <em>isolated</em>). For this
+reason, degree is often normalized by the constant <span class="math inline">\(n-1\)</span>. <span class="math display">\[\begin{equation}
+    \gamma_i^{\text{deg}} = \frac{1}{n-1}\sum_{j} e_{i,j} =
+\frac{1}{n-1}\sum_{j} A_{i,j} = \frac{1}{n-1}\sum_{i} A_{i,j}.
+\end{equation}\]</span></p>
+<p>Let’s look at the degree of the karate network. In the plot below
+light blue nodes have a low degree and dark blue nodes have a high
+degree. Mr. Hi, John A., and Node 33 have the highest degree values and
+thus are the most “popular”.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">deg</span> <span class="op">&lt;-</span> <span class="fu">igraph</span><span class="fu">::</span><span class="fu"><a href="https://r.igraph.org/reference/degree.html" class="external-link">degree</a></span><span class="op">(</span><span class="va">karate</span><span class="op">)</span></span>
+<span><span class="va">net</span> <span class="op"><a href="https://rdrr.io/pkg/network/man/network.extraction.html" class="external-link">%v%</a></span> <span class="st">"deg.cols"</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://symbolixau.github.io/colourvalues/reference/colour_values.html" class="external-link">colour_values</a></span><span class="op">(</span><span class="va">deg</span>, palette <span class="op">=</span> <span class="st">"blues"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://ggobi.github.io/ggally/reference/ggnet2.html" class="external-link">ggnet2</a></span><span class="op">(</span><span class="va">net</span>,</span>
+<span>       label <span class="op">=</span> <span class="cn">TRUE</span>, </span>
+<span>       node.shape <span class="op">=</span> <span class="st">"shape"</span>,</span>
+<span>       mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"x"</span>, <span class="st">"y"</span><span class="op">)</span>,</span>
+<span>       node.label <span class="op">=</span> <span class="st">"label"</span>,</span>
+<span>       node.color <span class="op">=</span> <span class="st">"deg.cols"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_shape.html" class="external-link">scale_shape</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"Faction"</span>, labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Mr. Hi"</span>, <span class="st">"John A."</span><span class="op">)</span><span class="op">)</span> </span></code></pre></div>
+<p><img src="jab-networks_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
+</div>
+<div class="section level3">
+<h3 id="eigenvector-centrality">Eigenvector centrality<a class="anchor" aria-label="anchor" href="#eigenvector-centrality"></a>
+</h3>
+<p>Degree centrality measures influence as the number of connections a
+node has. However, it may be the case that not all nodes are equally as
+important to be connected to. For example, when measuring a node’s
+popularity, in addition to the number of connections a node has, we may
+also want to consider how popular those nodes are <span class="citation">(Lü et al. 2016)</span>. This relational structure is
+captured by eigenvector centrality <span class="citation">(Bonacich
+1972)</span>. Nodes with high eigenvector centrality are influential
+because they are closely connected to other nodes that are also
+influential. Eigenvector centrality is calculated as <span class="math display">\[\begin{equation}\label{eqn:eigen}
+    \gamma_i^{\text{ev}} = \frac{1}{\lambda} \sum_{j=1}^n
+A_{i,j}\gamma_j^{\text{ev}}.
+\end{equation}\]</span></p>
+<p>In the karate network, Node 3 has a large eigenvector centrality
+because it is connected to Mr. Hi and Actor 33, both of which also have
+large eigenvector centralities.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">ev</span> <span class="op">&lt;-</span> <span class="fu">igraph</span><span class="fu">::</span><span class="fu"><a href="https://r.igraph.org/reference/eigen_centrality.html" class="external-link">eigen_centrality</a></span><span class="op">(</span><span class="va">karate</span><span class="op">)</span><span class="op">$</span><span class="va">vector</span></span>
+<span><span class="va">net</span> <span class="op"><a href="https://rdrr.io/pkg/network/man/network.extraction.html" class="external-link">%v%</a></span> <span class="st">"ev.cols"</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://symbolixau.github.io/colourvalues/reference/colour_values.html" class="external-link">colour_values</a></span><span class="op">(</span><span class="va">ev</span>, palette <span class="op">=</span> <span class="st">"blues"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://ggobi.github.io/ggally/reference/ggnet2.html" class="external-link">ggnet2</a></span><span class="op">(</span><span class="va">net</span>,</span>
+<span>       label <span class="op">=</span> <span class="cn">TRUE</span>, </span>
+<span>       node.shape <span class="op">=</span> <span class="st">"shape"</span>,</span>
+<span>       mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"x"</span>, <span class="st">"y"</span><span class="op">)</span>,</span>
+<span>       node.label <span class="op">=</span> <span class="st">"label"</span>,</span>
+<span>       node.color <span class="op">=</span> <span class="st">"ev.cols"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_shape.html" class="external-link">scale_shape</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"Faction"</span>, labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Mr. Hi"</span>, <span class="st">"John A."</span><span class="op">)</span><span class="op">)</span> </span></code></pre></div>
+<p><img src="jab-networks_files/figure-html/unnamed-chunk-4-1.png" width="700"></p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="co"># Connections of Node 3</span></span>
+<span><span class="fu">igraph</span><span class="fu">::</span><span class="fu"><a href="https://r.igraph.org/reference/ego.html" class="external-link">neighborhood</a></span><span class="op">(</span><span class="va">karate</span>, order <span class="op">=</span> <span class="fl">1</span>, nodes <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [[1]]</span></span>
+<span><span class="co">#&gt; + 11/34 vertices, named, from 4b458a1:</span></span>
+<span><span class="co">#&gt;  [1] Actor 3  Mr Hi    Actor 2  Actor 4  Actor 8  Actor 9  Actor 10 Actor 14</span></span>
+<span><span class="co">#&gt;  [9] Actor 28 Actor 29 Actor 33</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="closeness-centrality">Closeness Centrality<a class="anchor" aria-label="anchor" href="#closeness-centrality"></a>
+</h3>
+<p>Closeness centrality is a distance-based metric that captures how
+central a node is to the network <span class="citation">(<strong>bavelas-1950?</strong>)</span>. The closeness
+of node <span class="math inline">\(i\)</span> is the reciprocal of the
+average distance along the shortest paths from node <span class="math inline">\(i\)</span> to the other <span class="math inline">\(n-1\)</span> nodes in the network.
+<code>Close'' nodes are those with large closeness values as they have short average distance to all other nodes in the network and are influential due to their ability to receive and disseminate information quickly and directly to every other node in the network.</code>Far’’
+nodes are those with small closeness values because they have a long
+average distance to all other nodes.</p>
+<p>Mr. Hi, John A., and Node 33 have large closeness centralities
+because they have large degree values. Nodes with large degree values
+tend to have large closeness centralities due to their highly connected
+positions in the network. Additionally, Node 20 has a high closeness
+centrality because it is connected to two highly connected nodes (Mr. Hi
+and John A.).</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">close</span> <span class="op">&lt;-</span> <span class="fu">igraph</span><span class="fu">::</span><span class="fu"><a href="https://r.igraph.org/reference/closeness.html" class="external-link">closeness</a></span><span class="op">(</span><span class="va">karate</span><span class="op">)</span></span>
+<span><span class="va">net</span> <span class="op"><a href="https://rdrr.io/pkg/network/man/network.extraction.html" class="external-link">%v%</a></span> <span class="st">"close.cols"</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://symbolixau.github.io/colourvalues/reference/colour_values.html" class="external-link">colour_values</a></span><span class="op">(</span><span class="va">close</span>, palette <span class="op">=</span> <span class="st">"blues"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://ggobi.github.io/ggally/reference/ggnet2.html" class="external-link">ggnet2</a></span><span class="op">(</span><span class="va">net</span>,</span>
+<span>       label <span class="op">=</span> <span class="cn">TRUE</span>, </span>
+<span>       node.shape <span class="op">=</span> <span class="st">"shape"</span>,</span>
+<span>       mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"x"</span>, <span class="st">"y"</span><span class="op">)</span>,</span>
+<span>       node.label <span class="op">=</span> <span class="st">"label"</span>,</span>
+<span>       node.color <span class="op">=</span> <span class="st">"close.cols"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_shape.html" class="external-link">scale_shape</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"Faction"</span>, labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Mr. Hi"</span>, <span class="st">"John A."</span><span class="op">)</span><span class="op">)</span> </span></code></pre></div>
+<p><img src="jab-networks_files/figure-html/unnamed-chunk-5-1.png" width="700"></p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="fu">igraph</span><span class="fu">::</span><span class="fu"><a href="https://r.igraph.org/reference/ego.html" class="external-link">neighborhood</a></span><span class="op">(</span><span class="va">karate</span>, order <span class="op">=</span> <span class="fl">1</span>, nodes <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [[1]]</span></span>
+<span><span class="co">#&gt; + 4/34 vertices, named, from 4b458a1:</span></span>
+<span><span class="co">#&gt; [1] Actor 20 Mr Hi    Actor 2  John A</span></span></code></pre></div>
+</div>
 </div>
 <div class="section level2">
-<h2 id="including-plots">Including Plots<a class="anchor" aria-label="anchor" href="#including-plots"></a>
+<h2 id="jackknife-after-bootstrap">Jackknife-after-Bootstrap<a class="anchor" aria-label="anchor" href="#jackknife-after-bootstrap"></a>
 </h2>
-<p>You can also embed plots, for example:</p>
-<p><img src="jab-networks_files/figure-html/pressure-1.png" width="700"></p>
-<p>Note that the <code>echo = FALSE</code> parameter was added to the
-code chunk to prevent printing of the R code that generated the
-plot.</p>
+<p>As described in <code><a href="../articles/jab-regression.html">vignette("jab-regression")</a></code>, the JaB
+algorithm in regression identifies influential points. This algorithm
+has a direct analogy to network data. Using centrality statistics, we
+can detect influential nodes in networks as follows:</p>
+<p>For each node <span class="math inline">\(i = 1,...,n\)</span> we
+test the hypotheses <span class="math inline">\(H_0\)</span>: node <span class="math inline">\(i\)</span> is not influential to the network,
+versus <span class="math inline">\(H_1\)</span>: node <span class="math inline">\(i\)</span> is influential to the network.</p>
+<p>Specify a centrality statistic, <span class="math inline">\(\gamma\)</span>, that quantifies the type of
+influence we want to measure. Define <span class="math inline">\(q\in
+[0, 1]\)</span> to be the upper quantile cut off value and <span class="math inline">\(B\)</span> to be the number of bootstrap
+samples.</p>
+<p>The JaB algorithm has three steps:</p>
+<ol style="list-style-type: decimal">
+<li><p><strong>Original Centrality Step</strong>: Calculate <span class="math inline">\(n\)</span> centrality statistics of the original
+network, <span class="math inline">\(\gamma_1, \gamma_2, ...,
+\gamma_n\)</span>.</p></li>
+<li><p><strong>Bootstrapping Step</strong>: Generate <span class="math inline">\(B\)</span> bootstrap samples.</p></li>
+<li>
+<p><strong>Jackknife-after Step</strong>: For <span class="math inline">\(i \in 1,...,n\)</span> do:</p>
+<p>A. Find all bootstrap samples that <em>do not</em> contain node <span class="math inline">\(i\)</span> and store all of their respective
+centrality statistics in one vector, <span class="math inline">\(V_i\)</span>.</p>
+<p>B. Calculate <span class="math inline">\(q_i\)</span>, the <span class="math inline">\(q^{\text{th}}\)</span> quantile of <span class="math inline">\(V_i\)</span>.</p>
+<p>C. If <span class="math inline">\(\gamma_i &gt; q_i\)</span> then we
+reject the null hypothesis for node <span class="math inline">\(i\)</span> and conclude that node <span class="math inline">\(i\)</span> is influential.</p>
+</li>
+</ol>
+<p>Once we run the algorithm, we have a set of nodes that are
+influential a set of nodes that are not.</p>
+<p>We can also generate a ranking of all nodes from most to least
+influential determined by <span class="math inline">\(\gamma_i -
+q_i\)</span> in step 3C. Node <span class="math inline">\(i\)</span> is
+considered influential when <span class="math inline">\(\gamma_i -
+q_i\)</span> is large and positive, somewhat influential when <span class="math inline">\(\gamma_i - q_i\)</span> is small and positive,
+somewhat not influential when <span class="math inline">\(\gamma_i -
+q_i\)</span>, a</p>
+<div class="section level3">
+<h3 id="the-choice-of-q">The choice of <span class="math inline">\(q\)</span><a class="anchor" aria-label="anchor" href="#the-choice-of-q"></a>
+</h3>
+<p>In JaB for network data, <span class="math inline">\(q\)</span> is
+generally only an upper quantile cutoff (opposed to upper and lower as
+in the case of regression) because centrality statistics are generally
+only positive; nodes with large centrality statistics are influential
+and nodes with statistics close to zero are not influential. Thus when
+detecting influential nodes, we only need to consider the upper tail of
+the distribution</p>
+</div>
+<div class="section level3">
+<h3 id="notes-on-network-bootstrap">Notes on Network Bootstrap<a class="anchor" aria-label="anchor" href="#notes-on-network-bootstrap"></a>
+</h3>
+</div>
+</div>
+<div class="section level2">
+<h2 id="examples">Examples<a class="anchor" aria-label="anchor" href="#examples"></a>
+</h2>
+<div class="section level3">
+<h3 id="karate-network">Karate Network<a class="anchor" aria-label="anchor" href="#karate-network"></a>
+</h3>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">karate.result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/jab_network.html">jab_network</a></span><span class="op">(</span></span>
+<span>  network <span class="op">=</span> <span class="va">karate</span>,</span>
+<span>  central.func.name <span class="op">=</span> <span class="st">"degree"</span>,</span>
+<span>  central.package.name <span class="op">=</span> <span class="st">"igraph"</span>,</span>
+<span>  central.func.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>normalized <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>  bootstrap.func.name <span class="op">=</span> <span class="st">"bootstrap_snowboot"</span> ,</span>
+<span>  bootstrap.package.name <span class="op">=</span> <span class="st">"JaB"</span> ,</span>
+<span>  bootstrap.func.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span> num.seed <span class="op">=</span> <span class="fl">1</span>, num.wave <span class="op">=</span> <span class="fl">2</span> <span class="op">)</span>,</span>
+<span>  B <span class="op">=</span> <span class="fl">1000</span>,</span>
+<span>  quant <span class="op">=</span> <span class="fl">0.90</span>,</span>
+<span>  nodes <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  return.boot.samples <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">karate.result</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 34 × 8</span></span></span>
+<span><span class="co">#&gt;    Node_Number Node_Name Orig_Stat Upper_Quantile Influential  Rank</span></span>
+<span><span class="co">#&gt;          <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>           1 Mr Hi        0.485           0.263 TRUE            1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>          34 John A       0.515           0.375 TRUE            2</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>          33 Actor 33     0.364           0.375 FALSE           3</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>          26 Actor 26     0.090<span style="text-decoration: underline;">9</span>          0.333 FALSE           4</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>          24 Actor 24     0.152           0.4   FALSE           5</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>           6 Actor 6      0.121           0.375 FALSE           6</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>           7 Actor 7      0.121           0.375 FALSE           6</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>          28 Actor 28     0.121           0.375 FALSE           6</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>          17 Actor 17     0.060<span style="text-decoration: underline;">6</span>          0.333 FALSE           9</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>          30 Actor 30     0.121           0.4   FALSE          10</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 24 more rows</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 2 more variables: Can_Jackknife &lt;lgl&gt;, Num_Boot_Samps &lt;int&gt;</span></span></span></code></pre></div>
+</div>
+</div>
+<div class="section level2 unnumbered">
+<h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+</h2>
+<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
+<div id="ref-beyaztas-alin-2013" class="csl-entry">
+Beyaztas, U., and A. Alin. 2013. <span>“Jackknife-After-Bootstrap Method
+for Detection of Influential Observations in Linear Regression
+Models.”</span> <em>Communications in Statistics-Simulation and
+Computation</em> 42 (6): 1256–67.
+</div>
+<div id="ref-boldi-vigna-2014" class="csl-entry">
+Boldi, P., and S. Vigna. 2014. <span>“Axioms for Centrality.”</span>
+<em>Internet Mathematics</em> 10 (3-4): 222–62.
+</div>
+<div id="ref-bonacich-1972" class="csl-entry">
+Bonacich, P. 1972. <span>“Factoring and Weighting Approaches to Status
+Scores and Clique Identification.”</span> <em>Journal of Mathematical
+Sociology</em> 2 (1): 113–20.
+</div>
+<div id="ref-lu-et-al-2016" class="csl-entry">
+Lü, L., D. Chen, X. L. Ren, Q. M. Zhang, Y. C. Zhang, and T. Zhou. 2016.
+<span>“Vital Nodes Identification in Complex Networks.”</span>
+<em>Physics Reports</em> 650: 1–63.
+</div>
+<div id="ref-martin-roberts-2013" class="csl-entry">
+Martin, M. A., and S. Roberts. 2010. <span>“Jackknife-After-Bootstrap
+Regression Influence Diagnostics.”</span> <em>Journal of Nonparametric
+Statistics</em> 22 (2): 257–69. <a href="https://doi.org/10.1080/10485250903287906" class="external-link">https://doi.org/10.1080/10485250903287906</a>.
+</div>
+<div id="ref-rodrigues-2019" class="csl-entry">
+Rodrigues, F. A. 2019. <span>“Network Centrality: An
+Introduction.”</span> In <em>A Mathematical Modeling Approach from
+Nonlinear Dynamics to Complex Systems</em>, 177–96. Springer.
+</div>
+<div id="ref-valente-2008" class="csl-entry">
+Valente, T. W., K. Coronges, C. Lakon, and E. Costenbader. 2008.
+<span>“How Correlated Are Network Centrality Measures?”</span>
+<em>Connections (Toronto, Ont.)</em> 28 (1): 16.
+</div>
+</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>

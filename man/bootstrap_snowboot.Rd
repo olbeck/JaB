@@ -39,6 +39,11 @@ This is a slightly modified version of the \link[snowboot:lsmi]{lsmi} from the \
 This is a slightly modified version of the \link[snowboot:lsmi]{lsmi} from the \pkg{snowboot} package.
 This function inputs a \code{igraph} object, it uses the node names (not node IDs),
 and it returns the edge list of the bootstrap sample (not the nodes included in the sample).
+
+Most code in this function is directly from \link[snowboot:lsmi]{lsmi}
+from the \pkg{snowboot} package. This function is designed to be a wrapper function
+to format the \link[snowboot:lsmi]{lsmi} results
+into the JaB package syntax.
 }
 \examples{
 library(igraph)
