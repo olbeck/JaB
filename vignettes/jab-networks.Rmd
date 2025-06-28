@@ -32,6 +32,7 @@ library(GGally)
 library(network)
 library(sna)
 library(colourvalues)
+library(kableExtra)
 ```
 
 
@@ -183,7 +184,7 @@ As described in `vignette("jab-regression")`, the JaB algorithm in regression
 identifies influential points. This algorithm has a direct analogy to network data. Using centrality statistics, we can detect influential nodes in networks as follows: 
 
 
-For each node $i = 1,...,n$ we test the hypotheses $H_0$:
+For each node in the network $G=(V,E)$, we test the hypotheses $H_0$:
 node $i$ is not influential to the network, versus $H_1$: node $i$
 is influential to the network.
 
@@ -194,26 +195,33 @@ be the number of bootstrap samples.
 
 The JaB algorithm has three steps:
 
-1. **Original Centrality Step**: Calculate $n$ centrality statistics of the
-original network, $\gamma_1, \gamma_2, ..., \gamma_n$.
 
-2. **Bootstrapping Step**: Generate $B$ bootstrap samples.
+**Step 1 (centrality step):** For all $v_i \in V$, calculate $\gamma_i$. 
 
-3. **Jackknife-after Step**: For $i \in 1,...,n$ do:
+**Step 2 (bootstrapping step):** Generate bootstrap samples $G^{*b}=(V^{*b}, E^{*b})$ for $b=1,...,B$. For each bootstrap sample, calculate $\{\gamma_j^{*b} : j=1,...,n\}$.  
 
-   A. Find all bootstrap samples that *do not* contain node $i$ and store all of their respective centrality statistics in one vector, $V_i$.
+**Step 3 (jackknife-after step):** For $i=1,...,n$; 
 
-   B. Calculate $q_i$, the $q^{\text{th}}$ quantile of $V_i$.
 
-   C. If $\gamma_i > q_i$ then we reject the null hypothesis for node $i$
-   and conclude that node $i$ is influential.
+a. Calculate $S_i^{*b} = \boldsymbol{1}(v_i \in V^{*b})$ for $b=1,...,B$ and construct $\mathcal{B}_{-i} = {G^{*b}: S_i^{*b} = 0)$ which is the set of all bootstrap sample networks that \textit{do not} contain node $i$. 
 
-Once we run the algorithm, we have a set of nodes that are influential a set of nodes that are not.
+b.  Let $\Gamma\_{-i} = \{\gamma_j^{*b} : G^{*b} \in \mathcal{B}_{-i}, j=1,...,n\}$ be the set of all centrality statistics calculated from all bootstrap sample networks that \textit{do not} contain node $i$.  
 
-We can also generate a ranking of all nodes from most to least influential
-determined by $\gamma_i - q_i$ in step 3C. Node $i$ is considered influential
-when $\gamma_i - q_i$ is large and positive, somewhat influential when $\gamma_i - q_i$
-is small and positive, somewhat not influential when $\gamma_i - q_i$, a
+c. Calculate the cutoff value, $q_{-i}$, the $q^{\text{th}}$ quantile of $\Gamma_{-i}$. 
+
+d. If $\gamma_i > q_{-i}$, reject Hypothesis the null hypothesis and conclude data node $i$ is influential. 
+
+
+
+
+Additionally, we use the bootstrap samples generated in Step 2 of the JaB algorithm to construct bootstrap standard errors and confidence intervals. Let $\mathcal{B}_i = \{G^{*b} : S_i^{*b} = 1\}$ be the set of all bootstrap networks that include $v_i$ and
+$\Gamma_i = \{\gamma_j : v_j^{*b} = v_i , v_j^{*b} \in V^{*b}\}$ be the set of centrality statistics corresponding to the nodes that are sampled to be $v_i$. 
+Then the bootstrap standard error of $\gamma_i$ is 
+$$\sigma_i^* = \sqrt{(|\Gamma_i |-1)^{-1} \sum_{\gamma_j \in \Gamma_i} (\gamma_j - \Bar{\gamma}_i)^2}$$
+where $\Bar{\gamma}_i = |\Gamma_i|^{-1}\sum_{\gamma_j \in \Gamma_i} \gamma_j$. 
+Using $\sigma_i^{ *}$, bootstrap confidence intervals are constructed in the traditional way. For example, a 95\% bootstrap confidence interval for $\gamma_i$ is $(\gamma_i - 1.96\sigma_i^{ *} , \gamma_i + 1.96\sigma_i^{ *})$. For many centrality statistics $\gamma_i$ must be a non-negative value. If it is the case that $\gamma_i$ must be non-negative and  $\gamma_i - 1.96\sigma_i^{ *}<0$, we set the 95\% bootstrap confidence interval to be $(0, \gamma_i + 1.96\sigma_i^{ *})$. By construction $\mathcal{B}_i \cap \mathcal{B}_{-i} = \emptyset$. The bootstrap samples in $\mathcal{B}_i$ are used for the bootstrap standard errors and the bootstrap samples in $\mathcal{B}_{-i}$ are used for the hypothesis test of node $v_i$'s influence. 
+
+
 
 
 ### The choice of $q$ 
@@ -234,7 +242,7 @@ influential nodes, we only need to consider the upper tail of the distribution
 ### Karate Network 
 
 ```{r}
-karate.result <- jab_network(
+result <- karate.result <- jab_network(
   network = karate,
   central.func.name = "degree",
   central.package.name = "igraph",
@@ -247,7 +255,8 @@ karate.result <- jab_network(
   nodes = NULL,
   return.boot.samples = FALSE)
 
-karate.result
+kable(karate.result) %>% 
+  kable_styling()
 
 ```
 

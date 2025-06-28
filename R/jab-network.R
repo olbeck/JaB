@@ -19,6 +19,7 @@
 #'   \item \code{Node_Number}: Numeric IDs of nodes.
 #'   \item \code{Node_Name}: Name of nodes.
 #'   \item \code{Orig_Stat}: The original centrality statistic of each node.
+#'   \item \code{Boot_mean}, \code{Boot_sd}, \code{Boot_skew}: The mean, standard deviation, and skewness of the elements of \eqn{\Gamma_i}
 #'   \item \code{Upper_Quantile}: Upper quantile of the jackknife-after-bootstrap distribution of centrality statistic for each node.
 #'   \item \code{Influential}: Logical indicating if each node is influential, i.e. is `Orig_Stat` greater than `Upper_Quantile`?
 #'   \item \code{Rank}: Rank from most (1) to least (\eqn{n}) influential. There can be ties in the rankings.
@@ -53,24 +54,34 @@
 #' node \eqn{i} is not influential to the network, versus \eqn{H_1}: node \eqn{i}
 #' is influential to the network.
 #'
-#' Define \eqn{q\in [0, 1]} to be the upper quantile cut off value and \eqn{B} to
-#' be the number of bootstrap samples.
+#' Define \eqn{q\in [0, 1]} as the upper quantile cut off value and \eqn{B} as
+#' the number of bootstrap samples.
 #'
 #' The JaB algorithm has three steps:
 #'
 #' 1. **Original Centrality Step**: Calculate \eqn{n} centrality statistics of the
 #' original network, \eqn{\gamma_1, \gamma_2, ..., \gamma_n}.
 #'
-#' 2. **Bootstrapping Step**: Generate \eqn{B} bootstrap samples.
+#' 2. **Bootstrapping Step**: Generate bootstrap samples \eqn{G^{*b}=(V^{*b}, E^{*b})}
+#'  for \eqn{b=1,...,B}. For each bootstrap sample, calculate \eqn{\{\gamma_j^{*b} : j=1,...,n\}}.
 #'
 #' 3. **Jackknife-after Step**: For \eqn{i \in 1,...,n}, do:
 #'
-#'    A. Find all bootstrap samples that *do not* contain node \eqn{i} and store all of their respective centrality statistics in one vector, \eqn{V_i}.
+#'    A. Calculate \eqn{S_i^{*b} = \boldsymbol{1}(v_i \in V^{*b})} for \eqn{b=1,...,B}
+#'     and construct \eqn{\mathcal{B}_{-i} = \{G^{*b}: S_i^{*b} = 0)} which is the set of
+#'     all bootstrap sample networks that *do not* contain node *i*.
 #'
-#'    B. Calculate \eqn{q_i}, the \eqn{q^{\text{th}}} quantile of \eqn{V_i}.
+#'    B. Let \eqn{\Gamma_{-i} = \{\gamma_j^{*b} : G^{*b} \in \mathcal{B}_{-i}, j=1,...,n\}}
+#'    be the set of all centrality statistics calculated from all bootstrap sample
+#'    networks that *do not* contain node *i*.
 #'
-#'    C. If \eqn{\gamma_i > q_i} then we reject the null hypothesis for node \eqn{i}
+#'    C. Calculate the cutoff value, \eqn{q_{-i}}, the \eqn{q^{\text{th}}}
+#'     quantile of \eqn{\Gamma^{-i}}.
+#'
+#'    D. If \eqn{\gamma_i > q_{-i}}, reject  null hypothesis for node \eqn{i}
 #'    and conclude that node \eqn{i} is influential.
+#'
+#'
 #'
 #' Once we run the algorithm, we have a set of nodes that are influential a set of nodes that are not.
 #'
@@ -79,6 +90,26 @@
 #' when \eqn{\gamma_i - q_i} is large and positive, somewhat influential when \eqn{\gamma_i - q_i}
 #' is small and positive, somewhat not influential when \eqn{\gamma_i - q_i}, and
 #' very not influential when \eqn{\gamma_i - q_i} is large and negative.
+#'
+#'
+#' We construct bootstrap standard errors and confidence intervals the bootstrap samples generated in Step 2 this algorithm.
+#' Let \eqn{\mathcal{B}_i = \{G^{*b} : S_i^{*b} = 1\}} be the set of all bootstrap
+#' networks that include \eqn{v_i} and \eqn{\Gamma_i = \{\gamma_j : v_j^{*b} = v_i , v_j^{*b} \in V^{*b}\}}
+#' be the set of centrality statistics corresponding to the nodes that are sampled to be \eqn{v_i}.
+#' Then the bootstrap standard error of \eqn{\gamma_i} is \eqn{\sigma_i^{ *} = \sqrt{(|\Gamma_i |-1)^{-1} \sum_{\gamma_j \in \Gamma_i} (\gamma_j - \Bar{\gamma}_i)^2}}
+#' where \eqn{\Bar{\gamma}_i = |\Gamma_i|^{-1}\sum_{\gamma_j \in \Gamma_i} \gamma_j}.
+#' Using \eqn{\sigma_i^{ *}}, bootstrap confidence intervals are constructed in the traditional way.
+#' For example, a 95% bootstrap confidence interval for \eqn{\gamma_i} is \eqn{(\gamma_i - 1.96\sigma_i^{ *} , \gamma_i + 1.96\sigma_i^{ *})}.
+#' For many centrality statistics \eqn{\gamma_i} must be a non-negative value.
+#' If it is the case that \eqn{\gamma_i} must be non-negative and  \eqn{\gamma_i - 1.96\sigma_i^{ *}<0},
+#' we set the 95% bootstrap confidence interval to be \eqn{(0, \gamma_i + 1.96\sigma_i^{ *})}.
+#'
+#'
+#' By construction \eqn{\mathcal{B}_i \cap \mathcal{B}_{-i} = \emptyset}.
+#' The bootstrap samples in \eqn{\mathcal{B}_i} are used for the bootstrap standard
+#' errors and the bootstrap samples in \eqn{\mathcal{B}_{-i}} are used for the
+#' hypothesis test of node $v_i$'s influence.
+#'
 #'
 #' `jab_network` is a wrapper function for the entire JaB algorithm. For each step of the JaB algorithm,
 #' the following functions are used:

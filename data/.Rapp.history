@@ -1,0 +1,5 @@
+load("/Users/oliviabeck/Dropbox/Olivia/Conflict/school/EL/PlayingWithCode/JaB/data/hamster.rda")
+load("/Users/oliviabeck/Dropbox/Olivia/Conflict/school/EL/PlayingWithCode/JaB/data/karate.rda")
+load("/Users/oliviabeck/Dropbox/Olivia/Conflict/school/EL/PlayingWithCode/JaB/data/paul.revere.groups.rda")
+load("/Users/oliviabeck/Dropbox/Olivia/Conflict/school/EL/PlayingWithCode/JaB/data/paul.revere.rda")
+load("/Users/oliviabeck/Dropbox/Olivia/Conflict/school/EL/PlayingWithCode/JaB/data/trump.world.rda")

@@ -35,6 +35,7 @@ A data frame containing:
 \item \code{Node_Number}: Numeric IDs of nodes.
 \item \code{Node_Name}: Name of nodes.
 \item \code{Orig_Stat}: The original centrality statistic of each node.
+\item \code{Boot_mean}, \code{boot_sd}, \code{boot_skew}: The mean, standard deviaiton, and skewness of the elements of \eqn{\Gamma_i}
 \item \code{Upper_Quantile}: Upper quantile of the jackknife-after-bootstrap distribution of centrality statistic for each node.
 \item \code{Influential}: Logical indicating if each node is influential, i.e. is \code{Orig_Stat} greater than \code{Upper_Quantile}?
 \item \code{Rank}: Rank from most (1) to least (\eqn{n}) influential. There can be ties in the rankings.
