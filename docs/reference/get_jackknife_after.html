@@ -104,7 +104,8 @@
 <p>A data frame containing:</p><ul><li><p><code>Node_Number</code>: Numeric IDs of nodes.</p></li>
 <li><p><code>Node_Name</code>: Name of nodes.</p></li>
 <li><p><code>Orig_Stat</code>: The original centrality statistic of each node.</p></li>
-<li><p><code>Boot_mean</code>, <code>boot_sd</code>, <code>boot_skew</code>: The mean, standard deviaiton, and skewness of the elements of \(\Gamma_i\)</p></li>
+<li><p><code>Boot_mean</code>, <code>boot_sd</code>, <code>boot_skew</code>: The mean, standard deviation, and skewness of the elements of \(\Gamma_i\)</p></li>
+<li><p><code>pval</code>: Pvalue, see formula below</p></li>
 <li><p><code>Upper_Quantile</code>: Upper quantile of the jackknife-after-bootstrap distribution of centrality statistic for each node.</p></li>
 <li><p><code>Influential</code>: Logical indicating if each node is influential, i.e. is <code>Orig_Stat</code> greater than <code>Upper_Quantile</code>?</p></li>
 <li><p><code>Rank</code>: Rank from most (1) to least (\(n\)) influential. There can be ties in the rankings.</p></li>
@@ -154,22 +155,22 @@ network data. See <code><a href="jab_network.html">jab_network()</a></code> wrap
 <span class="r-in"><span>  package.name <span class="op">=</span> <span class="st">"igraph"</span>,</span></span>
 <span class="r-in"><span>  func.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>normalized <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  nodes <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 34 × 11</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    Node_Number Node_Name Orig_Stat Boot_mean Boot_sd Boot_skew Upper_Quantile</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>           1 Mr Hi        0.485      0.137   0.174     162.           0.235</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>          34 John A       0.515      0.136   0.171     142.           0.286</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>          33 Actor 33     0.364      0.137   0.172     148.           0.235</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>           3 Actor 3      0.303      0.137   0.179     191.           0.4  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>          28 Actor 28     0.121      0.137   0.172     148.           0.235</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>          29 Actor 29     0.090<span style="text-decoration: underline;">9</span>     0.137   0.172     148.           0.235</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>          24 Actor 24     0.152      0.134   0.174     125.           0.36 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>          25 Actor 25     0.090<span style="text-decoration: underline;">9</span>     0.140   0.150      44.0          0.3  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>          26 Actor 26     0.090<span style="text-decoration: underline;">9</span>     0.145   0.157      39.6          0.3  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>           6 Actor 6      0.121      0.135   0.178     125.           0.333</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 34 × 12</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    Node_Number Node_Name Orig_Stat Boot_mean Boot_sd Boot_skew   pval</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>           1 Mr Hi        0.485     0.589   0.346     -<span style="color: #BB0000;">0.980</span> 0.088<span style="text-decoration: underline;">6</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>          34 John A       0.515     0.629   0.309     -<span style="color: #BB0000;">1.16</span>  0.070<span style="text-decoration: underline;">2</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>          33 Actor 33     0.364     0.295   0.237      1.04  0.088<span style="text-decoration: underline;">2</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>           3 Actor 3      0.303     0.211   0.164      1.27  0.146 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>          28 Actor 28     0.121     0.089<span style="text-decoration: underline;">1</span>  0.076<span style="text-decoration: underline;">7</span>     6.87  0.251 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>          29 Actor 29     0.090<span style="text-decoration: underline;">9</span>    0.072<span style="text-decoration: underline;">7</span>  0.026<span style="text-decoration: underline;">7</span>     1.70  0.345 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>          24 Actor 24     0.152     0.126   0.103      4.63  0.259 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>          25 Actor 25     0.090<span style="text-decoration: underline;">9</span>    0.109   0.105      1.15  0.361 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>          26 Actor 26     0.090<span style="text-decoration: underline;">9</span>    0.117   0.105      1.03  0.360 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>           6 Actor 6      0.121     0.128   0.151      5.60  0.221 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 24 more rows</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 4 more variables: Influential &lt;lgl&gt;, Rank &lt;int&gt;, Can_Jackknife &lt;lgl&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   Num_Boot_Samps &lt;int&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 5 more variables: Upper_Quantile &lt;dbl&gt;, Influential &lt;lgl&gt;, Rank &lt;int&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   Can_Jackknife &lt;lgl&gt;, Num_Boot_Samps &lt;int&gt;</span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

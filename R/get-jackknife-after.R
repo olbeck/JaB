@@ -15,7 +15,8 @@
 #'   \item \code{Node_Number}: Numeric IDs of nodes.
 #'   \item \code{Node_Name}: Name of nodes.
 #'   \item \code{Orig_Stat}: The original centrality statistic of each node.
-#'   \item \code{Boot_mean}, \code{boot_sd}, \code{boot_skew}: The mean, standard deviaiton, and skewness of the elements of \eqn{\Gamma_i}
+#'   \item \code{Boot_mean}, \code{boot_sd}, \code{boot_skew}: The mean, standard deviation, and skewness of the elements of \eqn{\Gamma_i}
+#'   \item \code{pval}: Pvalue, see formula below
 #'   \item \code{Upper_Quantile}: Upper quantile of the jackknife-after-bootstrap distribution of centrality statistic for each node.
 #'   \item \code{Influential}: Logical indicating if each node is influential, i.e. is `Orig_Stat` greater than `Upper_Quantile`?
 #'   \item \code{Rank}: Rank from most (1) to least (\eqn{n}) influential. There can be ties in the rankings.
@@ -102,6 +103,7 @@ get_jackknife_after <- function(network,
   boot.mean <- rep(NA, m)
   boot.sd <- rep(NA, m)
   boot.skew <- rep(NA, m)
+  pval <- rep(NA, m)
 
   #centrality_storage <- list(n) #used for exploration purposes, not actually needed in algorithm
   counter <- 0
@@ -122,8 +124,8 @@ get_jackknife_after <- function(network,
     #Get centrality statistic for all networks in keep_index
     #This repeats each vertex each number of times it was samples
     # i.e. if in bootstrap sample b, node i was sampled 3 times, there will be 3 repetitions of the i^th statistics in the null distribution
+    # Gamma_{-i} = centrality_vector
     centrality_vector <- stats::na.omit(c(unlist(central.result[keep_index])))
-    has_i <- stats::na.omit(c(unlist(central.result[!keep_index])))
 
     #just for exploring null distribution shape, not actually needed to run the algorithm
     #this generally uses a lot of storage even for moderately large B
@@ -131,13 +133,22 @@ get_jackknife_after <- function(network,
 
     #Get Quantiles
     jack.result[counter] <- stats::quantile(centrality_vector, quant, na.rm = T)
+    pval[counter] <- mean(centrality_vector > orig.stat[i])
+
+
+    #\Gamma_i = samps
+    samps <- c()
+    temp.central <- central.result[!keep_index]
+    samps <- unlist( lapply(temp.central, function(x) {x[names(x) == names[i]] }) )
 
     #Get means and sd
-    boot.mean[i] <- mean(has_i, na.rm = TRUE)
-    boot.sd[i] <- sd(has_i, na.rm = TRUE)
-    boot.skew[i] <- n / (n-1) / (n-2) * sum((has_i -boot.mean[i])^3 ) / boot.sd[i]^3
+    boot.mean[i] <- mean(samps, na.rm = TRUE)
+    boot.sd[i] <- sd(samps, na.rm = TRUE)
+    boot.skew[i] <- n / (n-1) / (n-2) * sum((samps -boot.mean[i])^3 ) / boot.sd[i]^3
+
 
   }
+
 
 
   ### Return something useful
@@ -147,12 +158,13 @@ get_jackknife_after <- function(network,
                     Boot_mean = boot.mean[ids],
                     Boot_sd = boot.sd[ids],
                     Boot_skew = boot.skew[ids],
+                    pval = pval[ids],
                     Upper_Quantile = jack.result,
                     Can_Jackknife = can.jackknife,
                     Num_Boot_Samps = number.boot.samps)
 
   #order from most outside on CI to least
-  ret$top <- ! (ret$Orig_Stat > ret$Upper_Quantile )
+  ret$top <- ! (ret$Orig_Stat >= ret$Upper_Quantile )
   ret$diff <- ret$Orig_Stat - ret$Upper_Quantile
   ret <- ret %>%
     dplyr::group_by(top) %>%
@@ -163,9 +175,10 @@ get_jackknife_after <- function(network,
     dplyr::select(-c( top, diff)) %>%
     dplyr::select(Node_Number, Node_Name, Orig_Stat, #original sample information
                   Boot_mean, Boot_sd, Boot_skew, #bootstrap information of \Gamma_i
-                  Upper_Quantile, Influential, Rank, #JaB information from \Gamma_{-i}
+                  pval, Upper_Quantile, Influential, Rank, #JaB information from \Gamma_{-i}
                   Can_Jackknife, Num_Boot_Samps) #Bootstrap Information
 
 
   return(ret)
 }
+

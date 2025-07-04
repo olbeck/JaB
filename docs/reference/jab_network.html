@@ -125,6 +125,7 @@
 <li><p><code>Node_Name</code>: Name of nodes.</p></li>
 <li><p><code>Orig_Stat</code>: The original centrality statistic of each node.</p></li>
 <li><p><code>Boot_mean</code>, <code>Boot_sd</code>, <code>Boot_skew</code>: The mean, standard deviation, and skewness of the elements of \(\Gamma_i\)</p></li>
+<li><p><code>pval</code>: P-value, see formula below</p></li>
 <li><p><code>Upper_Quantile</code>: Upper quantile of the jackknife-after-bootstrap distribution of centrality statistic for each node.</p></li>
 <li><p><code>Influential</code>: Logical indicating if each node is influential, i.e. is <code>Orig_Stat</code> greater than <code>Upper_Quantile</code>?</p></li>
 <li><p><code>Rank</code>: Rank from most (1) to least (\(n\)) influential. There can be ties in the rankings.</p></li>
@@ -156,8 +157,8 @@ is influential to the network.</p>
 the number of bootstrap samples.</p>
 <p>The JaB algorithm has three steps:</p><ol><li><p><strong>Original Centrality Step</strong>: Calculate \(n\) centrality statistics of the
 original network, \(\gamma_1, \gamma_2, ..., \gamma_n\).</p></li>
-<li><p><strong>Bootstrapping Step</strong>: Generate bootstrap samples \(G\pb=(V\pb, E\pb)\)
-for \(b=1,...,B\). For each bootstrap sample, calculate \(\{\gamma_j\pb : j=1,...,n\}\).</p></li>
+<li><p><strong>Bootstrapping Step</strong>: Generate bootstrap samples \(G^{*b}=(V^{*b}, E^{*b})\)
+for \(b=1,...,B\). For each bootstrap sample, calculate \(\{\gamma_j^{*b} : j=1,...,n\}\).</p></li>
 <li><p><strong>Jackknife-after Step</strong>: For \(i \in 1,...,n\), do:</p>
 <p>A. Calculate \(S_i^{*b} = \boldsymbol{1}(v_i \in V^{*b})\) for \(b=1,...,B\)
 and construct \(\mathcal{B}_{-i} = \{G^{*b}: S_i^{*b} = 0)\) which is the set of
@@ -177,7 +178,7 @@ is small and positive, somewhat not influential when \(\gamma_i - q_i\), and
 very not influential when \(\gamma_i - q_i\) is large and negative.</p>
 <p>We construct bootstrap standard errors and confidence intervals the bootstrap samples generated in Step 2 this algorithm.
 Let \(\mathcal{B}_i = \{G^{*b} : S_i^{*b} = 1\}\) be the set of all bootstrap
-networks that include \(v_i\) and \(\Gamma_i = \{\gamma_j : v_j\pb = v_i , v_j\pb \in V\pb\}\)
+networks that include \(v_i\) and \(\Gamma_i = \{\gamma_j : v_j^{*b} = v_i , v_j^{*b} \in V^{*b}\}\)
 be the set of centrality statistics corresponding to the nodes that are sampled to be \(v_i\).
 Then the bootstrap standard error of \(\gamma_i\) is \(\sigma_i^{ *} = \sqrt{(|\Gamma_i |-1)^{-1} \sum_{\gamma_j \in \Gamma_i} (\gamma_j - \Bar{\gamma}_i)^2}\)
 where \(\Bar{\gamma}_i = |\Gamma_i|^{-1}\sum_{\gamma_j \in \Gamma_i} \gamma_j\).
@@ -190,6 +191,13 @@ we set the 95% bootstrap confidence interval to be \((0, \gamma_i + 1.96\sigma_i
 The bootstrap samples in \(\mathcal{B}_i\) are used for the bootstrap standard
 errors and the bootstrap samples in \(\mathcal{B}_{-i}\) are used for the
 hypothesis test of node $v_i$'s influence.</p>
+<p>Additionally, we use the sets constructed in Step 3(b) of the JaB algorithm
+to compute p-values. For each node, the associated p-value is defined as
+\(p_{-i}= |\Gamma_{-i}|^{-1}\sum_{\gamma_j \in \Gamma_{-i}} \boldsymbol{1}(\gamma_j \geq \gamma_i)\),
+which is the proportion of elements in \(\Gamma_{-i}\) that are greater than
+or equal to \(\gamma_i\).
+Rejecting Null Hypothesis when \(\gamma_i &gt; q_{-i}\) is equivalent to
+rejecting when \(p_{-i} &lt; q\).</p>
 <p><code>jab_network</code> is a wrapper function for the entire JaB algorithm. For each step of the JaB algorithm,
 the following functions are used:</p><ol><li><p><strong>Original Centrality Step</strong>: Calculate the original centrality statistics using <code><a href="get_centrality.html">get_centrality()</a></code> according to <code>central.func.name</code>.</p></li>
 <li><p><strong>Bootstrapping Step</strong>: Generate Bootstrap samples according to <code>bootstrap.func.name</code> and calculate their
@@ -226,22 +234,22 @@ centrality statistics using <code><a href="get_bootstrap_centrality.html">get_bo
 <span class="r-msg co"><span class="r-pr">#&gt;</span> This graph was created by an old(er) igraph version.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   Call upgrade_graph() on it to use with the current igraph version</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   For now we convert it on the fly...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 34 × 11</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    Node_Number Node_Name Orig_Stat Boot_mean Boot_sd Boot_skew Upper_Quantile</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>           1 Mr Hi        0.485      0.142   0.174     <span style="text-decoration: underline;">1</span>458.          0.263</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>          34 John A       0.515      0.143   0.175     <span style="text-decoration: underline;">1</span>434.          0.375</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>          33 Actor 33     0.364      0.144   0.175     <span style="text-decoration: underline;">1</span>479.          0.235</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>          28 Actor 28     0.121      0.144   0.175     <span style="text-decoration: underline;">1</span>479.          0.235</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>          29 Actor 29     0.090<span style="text-decoration: underline;">9</span>     0.144   0.175     <span style="text-decoration: underline;">1</span>479.          0.235</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>          26 Actor 26     0.090<span style="text-decoration: underline;">9</span>     0.156   0.166      513.          0.333</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>          24 Actor 24     0.152      0.142   0.178     <span style="text-decoration: underline;">1</span>257.          0.4  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>           6 Actor 6      0.121      0.137   0.178     <span style="text-decoration: underline;">1</span>047.          0.375</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>           7 Actor 7      0.121      0.137   0.178     <span style="text-decoration: underline;">1</span>047.          0.375</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>          30 Actor 30     0.121      0.139   0.177     <span style="text-decoration: underline;">1</span>264.          0.4  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 34 × 12</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    Node_Number Node_Name Orig_Stat Boot_mean Boot_sd Boot_skew   pval</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>           1 Mr Hi        0.485     0.532   0.353      -<span style="color: #BB0000;">2.89</span> 0.096<span style="text-decoration: underline;">9</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>          34 John A       0.515     0.626   0.302     -<span style="color: #BB0000;">14.2</span>  0.073<span style="text-decoration: underline;">7</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>          33 Actor 33     0.364     0.337   0.244       3.76 0.098<span style="text-decoration: underline;">3</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>          28 Actor 28     0.121     0.102   0.086<span style="text-decoration: underline;">6</span>     60.0  0.262 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>          29 Actor 29     0.090<span style="text-decoration: underline;">9</span>    0.074<span style="text-decoration: underline;">5</span>  0.029<span style="text-decoration: underline;">5</span>     15.4  0.366 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>          26 Actor 26     0.090<span style="text-decoration: underline;">9</span>    0.127   0.106      12.7  0.379 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>          24 Actor 24     0.152     0.150   0.119      39.1  0.263 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>           6 Actor 6      0.121     0.128   0.167      48.0  0.256 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>           7 Actor 7      0.121     0.127   0.166      48.8  0.256 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>          30 Actor 30     0.121     0.110   0.061<span style="text-decoration: underline;">1</span>     10.3  0.312 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 24 more rows</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 4 more variables: Influential &lt;lgl&gt;, Rank &lt;int&gt;, Can_Jackknife &lt;lgl&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   Num_Boot_Samps &lt;int&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 5 more variables: Upper_Quantile &lt;dbl&gt;, Influential &lt;lgl&gt;, Rank &lt;int&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   Can_Jackknife &lt;lgl&gt;, Num_Boot_Samps &lt;int&gt;</span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

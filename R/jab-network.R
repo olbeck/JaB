@@ -20,6 +20,7 @@
 #'   \item \code{Node_Name}: Name of nodes.
 #'   \item \code{Orig_Stat}: The original centrality statistic of each node.
 #'   \item \code{Boot_mean}, \code{Boot_sd}, \code{Boot_skew}: The mean, standard deviation, and skewness of the elements of \eqn{\Gamma_i}
+#'   \item \code{pval}: P-value, see formula below
 #'   \item \code{Upper_Quantile}: Upper quantile of the jackknife-after-bootstrap distribution of centrality statistic for each node.
 #'   \item \code{Influential}: Logical indicating if each node is influential, i.e. is `Orig_Stat` greater than `Upper_Quantile`?
 #'   \item \code{Rank}: Rank from most (1) to least (\eqn{n}) influential. There can be ties in the rankings.
@@ -109,6 +110,14 @@
 #' The bootstrap samples in \eqn{\mathcal{B}_i} are used for the bootstrap standard
 #' errors and the bootstrap samples in \eqn{\mathcal{B}_{-i}} are used for the
 #' hypothesis test of node $v_i$'s influence.
+#'
+#' Additionally, we use the sets constructed in Step 3(b) of the JaB algorithm
+#' to compute p-values. For each node, the associated p-value is defined as
+#' \eqn{p_{-i}= |\Gamma_{-i}|^{-1}\sum_{\gamma_j \in \Gamma_{-i}} \boldsymbol{1}(\gamma_j \geq \gamma_i)},
+#' which is the proportion of elements in \eqn{\Gamma_{-i}} that are greater than
+#' or equal to \eqn{\gamma_i}.
+#' Rejecting Null Hypothesis when \eqn{\gamma_i > q_{-i}} is equivalent to
+#' rejecting when \eqn{p_{-i} < q}.
 #'
 #'
 #' `jab_network` is a wrapper function for the entire JaB algorithm. For each step of the JaB algorithm,
